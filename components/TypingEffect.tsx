@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { playKeyPressSound } from '../utils/uiSfx';
+import { playTypingSound } from '../utils/terminalSounds';
 
 interface TypingEffectProps {
   text: string;
@@ -32,7 +33,7 @@ const TypingEffect: React.FC<TypingEffectProps> = ({ text, speed = 50, delay = 0
     if (displayedText.length < text.length) {
       const timeoutId = setTimeout(() => {
         if (playSound) {
-          playKeyPressSound();
+          playTypingSound();
         }
         setDisplayedText(text.slice(0, displayedText.length + 1));
       }, speed);

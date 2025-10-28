@@ -4,6 +4,7 @@ import DashboardScreen from './components/DashboardScreen';
 import ChallengeScreen from './components/ChallengeScreen';
 import LiveScreen from './components/LiveScreen';
 import DecryptionHubScreen from './components/DecryptionHubScreen';
+import BootScreen from './components/BootScreen';
 import { Screen, User, ChallengeCategory, VoiceSettings } from './types';
 import { CHALLENGE_CATEGORIES } from './constants';
 import SettingsIcon from './components/SettingsIcon';
@@ -12,11 +13,13 @@ import Toast from './components/Toast';
 import { saveUserData } from './services/userService';
 import { loadVoiceSettings, saveVoiceSettings } from './services/settingsService';
 import { useToast } from './hooks/useToast';
+import { playStartupSound } from './utils/terminalSounds';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [screen, setScreen] = useState<Screen>(Screen.Login);
   const [currentChallenge, setCurrentChallenge] = useState<ChallengeCategory | null>(null);
+  const [showBoot, setShowBoot] = useState(true);
   
   // Settings State - Load from localStorage on mount
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -29,6 +32,23 @@ const App: React.FC = () => {
   useEffect(() => {
     saveVoiceSettings(voiceSettings);
   }, [voiceSettings]);
+
+  // Play startup sound on mount
+  useEffect(() => {
+    const hasBooted = sessionStorage.getItem('hasBooted');
+    if (hasBooted) {
+      setShowBoot(false);
+    } else {
+      if (voiceSettings.uiSoundsEnabled) {
+        setTimeout(() => playStartupSound(), 100);
+      }
+    }
+  }, [voiceSettings.uiSoundsEnabled]);
+
+  const handleBootComplete = () => {
+    sessionStorage.setItem('hasBooted', 'true');
+    setShowBoot(false);
+  };
 
   const handleLogin = (loggedInUser: User) => {
     setUser(loggedInUser);
@@ -136,31 +156,36 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="crt-screen min-h-screen selection:bg-primary selection:text-bg flex flex-col" style={{ padding: '2vh 3vw' }}>
-      <div className="w-full flex-grow relative">
-        {screen === Screen.Dashboard && <SettingsIcon onClick={() => setIsSettingsOpen(true)} />}
-        <SettingsModal 
-            isOpen={isSettingsOpen}
-            onClose={() => setIsSettingsOpen(false)}
-            settings={voiceSettings}
-            onSettingsChange={setVoiceSettings}
-            onLogout={handleLogout}
-        />
-        <main className="relative z-10 terminal-text">
-          {renderScreen()}
-        </main>
-      </div>
+    <>
+      {showBoot && <BootScreen onComplete={handleBootComplete} />}
       
-      {/* Toast notifications */}
-      {toasts.map(toast => (
-        <Toast
-          key={toast.id}
-          message={toast.message}
-          type={toast.type}
-          onClose={() => hideToast(toast.id)}
-        />
-      ))}
-    </div>
+      <div className="crt-screen min-h-screen selection:bg-primary selection:text-bg flex flex-col" style={{ padding: '2vh 3vw' }}>
+        <div className="crt-vignette"></div>
+        <div className="w-full flex-grow relative">
+          {screen === Screen.Dashboard && <SettingsIcon onClick={() => setIsSettingsOpen(true)} />}
+          <SettingsModal 
+              isOpen={isSettingsOpen}
+              onClose={() => setIsSettingsOpen(false)}
+              settings={voiceSettings}
+              onSettingsChange={setVoiceSettings}
+              onLogout={handleLogout}
+          />
+          <main className="relative z-10 terminal-text">
+            {renderScreen()}
+          </main>
+        </div>
+        
+        {/* Toast notifications */}
+        {toasts.map(toast => (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() => hideToast(toast.id)}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 

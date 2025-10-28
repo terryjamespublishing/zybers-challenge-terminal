@@ -3,6 +3,7 @@ import { User, ChallengeCategory, VoiceSettings } from '../types';
 import TerminalWindow from './TerminalWindow';
 import TypingEffect from './TypingEffect';
 import { DECRYPTION_HUB_ITEM } from '../constants';
+import { playNavigationSound, playBeep } from '../utils/terminalSounds';
 
 interface DashboardScreenProps {
   user: User;
@@ -18,11 +19,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
 
   return (
     <div>
-      <div className="mb-6">
+      <div className="mb-6 text-2xl">
         <TypingEffect text={`> TERMINAL SESSION ACTIVE - USER: ${user.username.toUpperCase()}`} playSound={voiceSettings.uiSoundsEnabled} />
       </div>
       
-      <div className="mb-6 text-xl space-y-1" role="region" aria-label="User statistics">
+      <div className="mb-6 text-2xl space-y-2" role="region" aria-label="User statistics">
         <div className="flex justify-between" aria-label={`Level ${user.level}`}>
           <span className="opacity-70">LEVEL:</span>
           <span>{user.level}</span>
@@ -45,12 +46,16 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
       </div>
       
       <div className="border-t border-primary/30 pt-4 mt-6">
-        <div className="text-xl mb-4 opacity-70">&gt; SELECT OPERATION:</div>
-        <div className="space-y-3 text-xl" role="list" aria-label="Available operations">
+        <div className="text-2xl mb-4 opacity-70">&gt; SELECT OPERATION:</div>
+        <div className="space-y-3 text-2xl" role="list" aria-label="Available operations">
           {categories.map((cat, index) => (
             <button
               key={cat.title}
-              onClick={() => onSelectChallenge(cat)}
+              onClick={() => {
+                if (voiceSettings.uiSoundsEnabled) playNavigationSound();
+                onSelectChallenge(cat);
+              }}
+              onMouseEnter={() => { if (voiceSettings.uiSoundsEnabled) playBeep(400, 0.03); }}
               className="block w-full text-left hover:bg-primary/10 hover:text-accent focus:bg-primary/10 focus:text-accent focus:outline-none transition-colors py-2 px-3"
               role="listitem"
               aria-label={`Start ${cat.title} challenge: ${cat.description}`}
@@ -58,8 +63,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
               <div className="flex items-start gap-3">
                 <span className="opacity-50">[{index + 1}]</span>
                 <div className="flex-1">
-                  <div className="uppercase tracking-wide">{cat.title}</div>
-                  <div className="text-base opacity-60 mt-1">{cat.description}</div>
+                  <div className="uppercase tracking-wide text-2xl">{cat.title}</div>
+                  <div className="text-xl opacity-60 mt-1">{cat.description}</div>
                 </div>
               </div>
             </button>
@@ -68,7 +73,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
           <div className="border-t border-primary/20 my-4"></div>
           
           <button
-            onClick={onOpenDecryptionHub}
+            onClick={() => {
+              if (voiceSettings.uiSoundsEnabled) playNavigationSound();
+              onOpenDecryptionHub();
+            }}
+            onMouseEnter={() => { if (voiceSettings.uiSoundsEnabled) playBeep(400, 0.03); }}
             className="block w-full text-left hover:bg-primary/10 hover:text-accent focus:bg-primary/10 focus:text-accent focus:outline-none transition-colors py-2 px-3"
             role="listitem"
             aria-label={`Open ${DECRYPTION_HUB_ITEM.title}`}
@@ -76,14 +85,18 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
             <div className="flex items-start gap-3">
               <span className="opacity-50">[{categories.length + 1}]</span>
               <div className="flex-1">
-                <div className="uppercase tracking-wide">{DECRYPTION_HUB_ITEM.title}</div>
-                <div className="text-base opacity-60 mt-1">{DECRYPTION_HUB_ITEM.description}</div>
+                <div className="uppercase tracking-wide text-2xl">{DECRYPTION_HUB_ITEM.title}</div>
+                <div className="text-xl opacity-60 mt-1">{DECRYPTION_HUB_ITEM.description}</div>
               </div>
             </div>
           </button>
           
           <button
-            onClick={onStartLiveChat}
+            onClick={() => {
+              if (voiceSettings.uiSoundsEnabled) playNavigationSound();
+              onStartLiveChat();
+            }}
+            onMouseEnter={() => { if (voiceSettings.uiSoundsEnabled) playBeep(400, 0.03); }}
             className="block w-full text-left hover:bg-primary/10 hover:text-accent focus:bg-primary/10 focus:text-accent focus:outline-none transition-colors py-2 px-3"
             role="listitem"
             aria-label="Start live voice chat"
@@ -91,8 +104,8 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
             <div className="flex items-start gap-3">
               <span className="opacity-50">[{categories.length + 2}]</span>
               <div className="flex-1">
-                <div className="uppercase tracking-wide">LIVE VOICE INTERFACE</div>
-                <div className="text-base opacity-60 mt-1">Engage in real-time voice communication</div>
+                <div className="uppercase tracking-wide text-2xl">LIVE VOICE INTERFACE</div>
+                <div className="text-xl opacity-60 mt-1">Engage in real-time voice communication</div>
               </div>
             </div>
           </button>

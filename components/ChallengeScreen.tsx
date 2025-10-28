@@ -201,7 +201,7 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
 
   return (
     <TerminalWindow title={`SESSION: ${challenge.title.toUpperCase()}`} onExit={onExit}>
-      <div className="flex flex-col text-base sm:text-xl md:text-2xl" style={{ height: 'calc(100vh - 12rem)', minHeight: '400px' }}>
+      <div className="flex flex-col text-xl sm:text-2xl md:text-3xl" style={{ height: 'calc(100vh - 12rem)', minHeight: '400px' }}>
         <div className="flex-grow overflow-y-auto">
           {messages.map((msg, index) => (
             <div key={index} className="mb-3">
@@ -233,7 +233,7 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
           <div ref={messagesEndRef} />
         </div>
         <form onSubmit={handleSubmit} className="mt-4 pt-3 border-t border-primary/20 flex-shrink-0">
-          <div className="flex items-center cursor-text text-xl" onClick={focusInput}>
+          <div className="flex items-center cursor-text text-2xl" onClick={focusInput}>
             <span className="mr-2 text-primary opacity-70">$</span>
             <span>{userInput}</span>
             {!userInput && (

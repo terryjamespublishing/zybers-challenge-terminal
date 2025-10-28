@@ -84,11 +84,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
   const inputValue = step === 'USERNAME' ? username : password;
 
   return (
-    <div className="flex flex-col justify-center h-[90vh] text-xl sm:text-2xl md:text-3xl px-4">
+    <div className="flex flex-col justify-center h-[90vh] text-2xl sm:text-3xl md:text-4xl px-4">
       <div className="w-full max-w-3xl">
         <div className="mb-8 opacity-80">
-          <div className="text-sm sm:text-base opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
-          <div className="text-sm sm:text-base opacity-60">Copyright (C) 1985 Zyber Corp.</div>
+          <div className="text-xl sm:text-2xl opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
+          <div className="text-lg sm:text-xl opacity-60">Copyright (C) 1985 Zyber Corp.</div>
         </div>
         
         <TypingEffect text="> Initializing system..." playSound={voiceSettings.uiSoundsEnabled} />
