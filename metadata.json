@@ -1,0 +1,7 @@
+{
+  "name": "Zyber's Challenge Terminal",
+  "description": "An 80s hacker-themed educational app for European children and teenagers aged 10-16. Engage in academic challenges, experiments, and quizzes guided by Zyber, a cheeky AI tutor. Earn rewards, level up, and chat with the AI in real-time.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
