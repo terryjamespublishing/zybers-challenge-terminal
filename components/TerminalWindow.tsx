@@ -9,19 +9,21 @@ interface TerminalWindowProps {
 
 const TerminalWindow: React.FC<TerminalWindowProps> = ({ title, children, onExit, solidBackground = false }) => {
   return (
-    <div className={`border-2 border-primary shadow-primary ${solidBackground ? 'bg-background' : 'bg-background/80'}`}>
-      <div className="relative flex justify-center items-center bg-primary text-bg px-4 py-1">
-        <h2 className="text-2xl md:text-3xl font-bold uppercase">{title}</h2>
-        {onExit && (
-          <button 
-            onClick={onExit} 
-            className="absolute top-1/2 right-2 -translate-y-1/2 text-2xl font-bold hover:bg-black/20 px-2 transition-colors rounded-sm"
-            aria-label="Close window"
-          >
-            X
-          </button>
-        )}
-      </div>
+    <div className="terminal-window">
+      {title && (
+        <div className="flex justify-between items-center mb-2 pb-1 border-b border-primary/30">
+          <h2 className="text-xl md:text-2xl uppercase tracking-wider opacity-70">{title}</h2>
+          {onExit && (
+            <button 
+              onClick={onExit} 
+              className="text-xl hover:text-accent transition-colors"
+              aria-label="Exit"
+            >
+              [EXIT]
+            </button>
+          )}
+        </div>
+      )}
       <div>{children}</div>
     </div>
   );

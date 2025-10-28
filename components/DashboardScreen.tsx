@@ -17,66 +17,87 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
   const xpForNextLevel = user.level * 100;
 
   return (
-    <div className="p-4">
-      <TypingEffect text={`> Welcome back, USER_ID: ${user.username.toUpperCase()}`} playSound={voiceSettings.uiSoundsEnabled} />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-4 text-2xl" role="region" aria-label="User statistics">
-        <div className="border border-primary p-2" aria-label={`Level ${user.level}`}>LEVEL: {user.level}</div>
-        <div className="border border-primary p-2 relative" aria-label={`Experience points: ${user.xp} out of ${xpForNextLevel}`}>
-          XP: {user.xp} / {xpForNextLevel}
-          <div className="absolute bottom-0 left-0 h-1 bg-primary/30 w-full" role="progressbar" aria-valuenow={user.xp} aria-valuemin={0} aria-valuemax={xpForNextLevel}>
-            <div className="h-1 bg-primary" style={{ width: `${(user.xp/xpForNextLevel)*100}%`}}></div>
-          </div>
-        </div>
-        <div className="border border-primary p-2" aria-label={`Data bits: ${user.dataBits}`}>DATA BITS: {user.dataBits} DB</div>
-        <div className="border border-primary p-2" aria-label={`Access keys: ${user.accessKeys}`}>ACCESS KEYS: {user.accessKeys} AK</div>
+    <div>
+      <div className="mb-6">
+        <TypingEffect text={`> TERMINAL SESSION ACTIVE - USER: ${user.username.toUpperCase()}`} playSound={voiceSettings.uiSoundsEnabled} />
       </div>
       
-      <TerminalWindow title="SELECT A CHALLENGE">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4" role="list" aria-label="Available challenges">
-          {categories.map((cat) => (
+      <div className="mb-6 text-xl space-y-1" role="region" aria-label="User statistics">
+        <div className="flex justify-between" aria-label={`Level ${user.level}`}>
+          <span className="opacity-70">LEVEL:</span>
+          <span>{user.level}</span>
+        </div>
+        <div className="flex justify-between" aria-label={`Experience points: ${user.xp} out of ${xpForNextLevel}`}>
+          <span className="opacity-70">EXPERIENCE:</span>
+          <span>{user.xp} / {xpForNextLevel}</span>
+        </div>
+        <div className="relative h-2 bg-primary/20 my-2" role="progressbar" aria-valuenow={user.xp} aria-valuemin={0} aria-valuemax={xpForNextLevel}>
+          <div className="h-full bg-primary" style={{ width: `${(user.xp/xpForNextLevel)*100}%`}}></div>
+        </div>
+        <div className="flex justify-between" aria-label={`Data bits: ${user.dataBits}`}>
+          <span className="opacity-70">DATA_BITS:</span>
+          <span>{user.dataBits}</span>
+        </div>
+        <div className="flex justify-between" aria-label={`Access keys: ${user.accessKeys}`}>
+          <span className="opacity-70">ACCESS_KEYS:</span>
+          <span>{user.accessKeys}</span>
+        </div>
+      </div>
+      
+      <div className="border-t border-primary/30 pt-4 mt-6">
+        <div className="text-xl mb-4 opacity-70">&gt; SELECT OPERATION:</div>
+        <div className="space-y-3 text-xl" role="list" aria-label="Available operations">
+          {categories.map((cat, index) => (
             <button
               key={cat.title}
               onClick={() => onSelectChallenge(cat)}
-              className="flex items-start p-4 border-2 border-transparent hover:border-primary hover:bg-primary/10 focus:border-primary focus:bg-primary/10 focus:outline-none transition-all duration-300 text-left"
+              className="block w-full text-left hover:bg-primary/10 hover:text-accent focus:bg-primary/10 focus:text-accent focus:outline-none transition-colors py-2 px-3"
               role="listitem"
               aria-label={`Start ${cat.title} challenge: ${cat.description}`}
             >
-              <div className="mr-4 text-primary" aria-hidden="true">{cat.icon}</div>
-              <div>
-                <h3 className="text-2xl md:text-3xl mb-1">{cat.title}</h3>
-                <p className="text-lg md:text-xl opacity-80">{cat.description}</p>
+              <div className="flex items-start gap-3">
+                <span className="opacity-50">[{index + 1}]</span>
+                <div className="flex-1">
+                  <div className="uppercase tracking-wide">{cat.title}</div>
+                  <div className="text-base opacity-60 mt-1">{cat.description}</div>
+                </div>
               </div>
             </button>
           ))}
-            <button
-              onClick={onOpenDecryptionHub}
-              className="flex items-start p-4 border-2 border-transparent text-accent hover:border-accent hover:bg-accent/10 focus:border-accent focus:bg-accent/10 focus:outline-none transition-all duration-300 text-left"
-              role="listitem"
-              aria-label={`Open ${DECRYPTION_HUB_ITEM.title}: ${DECRYPTION_HUB_ITEM.description}`}
-            >
-              <div className="mr-4">{DECRYPTION_HUB_ITEM.icon}</div>
-              <div>
-                <h3 className="text-2xl md:text-3xl mb-1">{DECRYPTION_HUB_ITEM.title}</h3>
-                <p className="text-lg md:text-xl opacity-80">{DECRYPTION_HUB_ITEM.description}</p>
+          
+          <div className="border-t border-primary/20 my-4"></div>
+          
+          <button
+            onClick={onOpenDecryptionHub}
+            className="block w-full text-left hover:bg-primary/10 hover:text-accent focus:bg-primary/10 focus:text-accent focus:outline-none transition-colors py-2 px-3"
+            role="listitem"
+            aria-label={`Open ${DECRYPTION_HUB_ITEM.title}`}
+          >
+            <div className="flex items-start gap-3">
+              <span className="opacity-50">[{categories.length + 1}]</span>
+              <div className="flex-1">
+                <div className="uppercase tracking-wide">{DECRYPTION_HUB_ITEM.title}</div>
+                <div className="text-base opacity-60 mt-1">{DECRYPTION_HUB_ITEM.description}</div>
               </div>
-            </button>
-           <button
-              onClick={onStartLiveChat}
-              className="flex items-start p-4 border-2 border-transparent text-accent hover:border-accent hover:bg-accent/10 focus:border-accent focus:bg-accent/10 focus:outline-none transition-all duration-300 text-left"
-              role="listitem"
-              aria-label="Start live voice chat with Zyber AI"
-            >
-              <div className="mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
+            </div>
+          </button>
+          
+          <button
+            onClick={onStartLiveChat}
+            className="block w-full text-left hover:bg-primary/10 hover:text-accent focus:bg-primary/10 focus:text-accent focus:outline-none transition-colors py-2 px-3"
+            role="listitem"
+            aria-label="Start live voice chat"
+          >
+            <div className="flex items-start gap-3">
+              <span className="opacity-50">[{categories.length + 2}]</span>
+              <div className="flex-1">
+                <div className="uppercase tracking-wide">LIVE VOICE INTERFACE</div>
+                <div className="text-base opacity-60 mt-1">Engage in real-time voice communication</div>
               </div>
-              <div>
-                <p className="text-lg md:text-xl opacity-80">Engage in a real-time voice conversation with your AI tutor.</p>
-              </div>
-            </button>
+            </div>
+          </button>
         </div>
-      </TerminalWindow>
+      </div>
     </div>
   );
 };

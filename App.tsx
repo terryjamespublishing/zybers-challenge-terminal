@@ -136,10 +136,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 md:p-8 selection:bg-primary selection:text-bg flex flex-col">
-      <div className="w-full flex-grow border-2 border-primary p-4 relative shadow-primary">
-        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-20 pointer-events-none animate-pulse-fast"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-repeat bg-center opacity-5 pointer-events-none" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'6\' height=\'6\' viewBox=\'0 0 6 6\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%2300ff41\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M5 0h1L0 6V5zM6 5v1H5z\'/%3E%3C/g%3E%3C/svg%3E")'}}></div>
+    <div className="crt-screen min-h-screen selection:bg-primary selection:text-bg flex flex-col" style={{ padding: '2vh 3vw' }}>
+      <div className="w-full flex-grow relative">
         {screen === Screen.Dashboard && <SettingsIcon onClick={() => setIsSettingsOpen(true)} />}
         <SettingsModal 
             isOpen={isSettingsOpen}
@@ -148,7 +146,7 @@ const App: React.FC = () => {
             onSettingsChange={setVoiceSettings}
             onLogout={handleLogout}
         />
-        <main className="relative z-10">
+        <main className="relative z-10 terminal-text">
           {renderScreen()}
         </main>
       </div>

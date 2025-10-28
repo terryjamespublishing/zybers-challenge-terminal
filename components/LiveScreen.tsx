@@ -173,30 +173,34 @@ const LiveScreen: React.FC<LiveScreenProps> = ({ onExit, voiceSettings }) => {
     }, [transcriptions]);
 
     return (
-        <TerminalWindow title="" onExit={handleExitClick}>
-            <div className="flex flex-col p-2 sm:p-4 text-xl md:text-2xl" style={{ height: 'calc(100vh - 11rem)' }}>
-                <div className="flex-grow overflow-y-auto pr-2">
+        <TerminalWindow title="VOICE INTERFACE SESSION" onExit={handleExitClick}>
+            <div className="flex flex-col text-xl md:text-2xl" style={{ height: 'calc(100vh - 12rem)' }}>
+                <div className="flex-grow overflow-y-auto">
                     {isConnecting && (
-                        <div className="flex-grow flex items-center justify-center h-full">
-                            <p className="animate-pulse">INITIALIZING LIVE CONNECTION...</p>
+                        <div className="flex items-center justify-center h-full">
+                            <p className="animate-pulse opacity-70">&gt; Establishing voice link...</p>
                         </div>
                     )}
                     {error && (
-                        <div className="flex-grow flex items-center justify-center h-full text-red-500">
-                            <p>{error}</p>
+                        <div className="flex items-center justify-center h-full text-red-500">
+                            <p>&gt; ERROR: {error}</p>
                         </div>
                     )}
                     {!isConnecting && !error && (
                         <>
                            {transcriptions.length === 0 && (
-                                <p className="text-center opacity-70 animate-pulse">AWAITING AUDIO STREAM... LISTENING...</p>
+                                <p className="opacity-50 animate-pulse">&gt; Voice channel active. Listening...</p>
                            )}
                            {transcriptions.map((t, i) => (
                                <div key={i} className="mb-4">
-                                   <p className="font-bold text-accent">USER:</p>
-                                   <p className="pl-4 whitespace-pre-wrap">{t.user || '...'}</p>
-                                   <p className="font-bold text-primary mt-2">ZYBER:</p>
-                                   <p className="pl-4 whitespace-pre-wrap">{t.model || '...'}</p>
+                                   <div className="flex gap-2 mb-1">
+                                       <span className="text-accent opacity-70">&gt;</span>
+                                       <span className="text-accent">{t.user || '...'}</span>
+                                   </div>
+                                   <div className="flex gap-2 mt-2">
+                                       <span className="text-primary opacity-70">&gt;&gt;</span>
+                                       <span className="whitespace-pre-wrap">{t.model || '...'}</span>
+                                   </div>
                                </div>
                            ))}
                            <div ref={messagesEndRef} />

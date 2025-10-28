@@ -200,35 +200,46 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
   };
 
   return (
-    <TerminalWindow title={challenge.title} onExit={onExit}>
-      <div className="flex flex-col p-2 sm:p-4 text-base sm:text-xl md:text-2xl" style={{ height: 'calc(100vh - 11rem)', minHeight: '400px' }}>
-        <div className="flex-grow overflow-y-auto pr-2">
+    <TerminalWindow title={`SESSION: ${challenge.title.toUpperCase()}`} onExit={onExit}>
+      <div className="flex flex-col text-base sm:text-xl md:text-2xl" style={{ height: 'calc(100vh - 12rem)', minHeight: '400px' }}>
+        <div className="flex-grow overflow-y-auto">
           {messages.map((msg, index) => (
-            <div key={index} className={`mb-4 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-3xl ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                <p className={`font-bold uppercase ${msg.sender === 'user' ? 'text-accent' : 'text-primary'}`}>{msg.sender}</p>
-                 <div className="whitespace-pre-wrap leading-tight flex items-center gap-2">
-                    {msg.sender === 'Zyber' && msg.audio && (
-                        <button onClick={() => playAudio(msg)} className="focus:outline-none">
-                            <SoundIcon isPlaying={playingMessage === msg} />
-                        </button>
-                    )}
+            <div key={index} className="mb-3">
+              <div className="flex items-start gap-2">
+                <span className={`${msg.sender === 'user' ? 'text-accent' : 'text-primary'} opacity-70`}>
+                  {msg.sender === 'user' ? '>' : '>>'}
+                </span>
+                <div className="flex-1">
+                  {msg.sender === 'Zyber' && msg.audio && (
+                    <button onClick={() => playAudio(msg)} className="focus:outline-none inline-block mr-2 opacity-70 hover:opacity-100">
+                      <SoundIcon isPlaying={playingMessage === msg} />
+                    </button>
+                  )}
+                  <span className={`${msg.sender === 'user' ? 'text-accent' : ''} whitespace-pre-wrap leading-relaxed`}>
                     {msg.sender === 'Zyber' ? <TypingEffect text={msg.text} key={index} instant={index < messages.length - 1} playSound={voiceSettings.uiSoundsEnabled}/> : msg.text}
+                  </span>
                 </div>
               </div>
             </div>
           ))}
-          {isLoading && <div className="text-left"><p className="font-bold uppercase text-primary">Zyber</p> <TypingEffect text="> Processing...▋" playSound={voiceSettings.uiSoundsEnabled}/></div>}
+          {isLoading && (
+            <div className="mb-3">
+              <div className="flex items-start gap-2">
+                <span className="text-primary opacity-70">&gt;&gt;</span>
+                <TypingEffect text="Processing..." playSound={voiceSettings.uiSoundsEnabled}/>
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
-        <form onSubmit={handleSubmit} className="mt-4 flex-shrink-0">
-          <div className="flex items-center cursor-text" onClick={focusInput}>
-            <span className="mr-2 text-primary">$</span>
+        <form onSubmit={handleSubmit} className="mt-4 pt-3 border-t border-primary/20 flex-shrink-0">
+          <div className="flex items-center cursor-text text-xl" onClick={focusInput}>
+            <span className="mr-2 text-primary opacity-70">$</span>
             <span>{userInput}</span>
-             {!userInput && (
-                <span className="opacity-50">
-                    {isLoading ? 'Awaiting response...' : 'Type your answer...'}
-                </span>
+            {!userInput && (
+              <span className="opacity-30 italic">
+                {isLoading ? 'awaiting_response' : 'enter_command'}
+              </span>
             )}
             {!isLoading && <span className="animate-blink">▋</span>}
             <input

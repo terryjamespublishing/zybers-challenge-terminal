@@ -84,16 +84,21 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
   const inputValue = step === 'USERNAME' ? username : password;
 
   return (
-    <div className="flex flex-col items-center justify-center h-[80vh] text-2xl sm:text-3xl md:text-5xl px-4">
-      <div className="w-full max-w-2xl">
-        <TypingEffect text="ZYBER CHALLENGE TERMINAL v1.0" playSound={voiceSettings.uiSoundsEnabled} />
-        <TypingEffect text="> CONNECTING TO MAINFRAME..." delay={2000} playSound={voiceSettings.uiSoundsEnabled} />
-        <TypingEffect text="> CONNECTION ESTABLISHED." delay={3500} playSound={voiceSettings.uiSoundsEnabled} />
+    <div className="flex flex-col justify-center h-[90vh] text-xl sm:text-2xl md:text-3xl px-4">
+      <div className="w-full max-w-3xl">
+        <div className="mb-8 opacity-80">
+          <div className="text-sm sm:text-base opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
+          <div className="text-sm sm:text-base opacity-60">Copyright (C) 1985 Zyber Corp.</div>
+        </div>
         
-        <form onSubmit={handleSubmit} className="mt-8 animate-fade-in" style={{ animationDelay: '4.5s' }}>
-          <label htmlFor="authInput" className="block mb-2">{getPrompt()}</label>
-          <div className="flex items-center cursor-text" onClick={focusInput}>
-            <span className="mr-2 text-green-400">$</span>
+        <TypingEffect text="> Initializing system..." playSound={voiceSettings.uiSoundsEnabled} />
+        <TypingEffect text="> Loading neural network..." delay={1500} playSound={voiceSettings.uiSoundsEnabled} />
+        <TypingEffect text="> Connection established." delay={2500} playSound={voiceSettings.uiSoundsEnabled} />
+        
+        <form onSubmit={handleSubmit} className="mt-8 animate-fade-in" style={{ animationDelay: '4s' }}>
+          <div className="mb-3 opacity-70">{getPrompt()}</div>
+          <div className="flex items-center cursor-text border-b border-primary/30 pb-1" onClick={focusInput}>
+            <span className="mr-2 opacity-50">$</span>
             <span>{displayedValue}</span>
             <span className="animate-blink">▋</span>
             <input
@@ -109,7 +114,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
               autoComplete="off"
             />
           </div>
-          {error && <p className="text-red-500 mt-4 text-2xl animate-pulse">{error}</p>}
+          {error && <p className="text-red-500 mt-4 text-lg opacity-80">{error}</p>}
         </form>
       </div>
     </div>
