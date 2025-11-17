@@ -114,3 +114,26 @@ export const playProcessingSound = () => {
     }
 };
 
+/**
+ * Keystroke sound - mechanical key press for boot sequences
+ */
+export const playKeystroke = () => {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.frequency.value = 100 + Math.random() * 50;
+    oscillator.type = 'square';
+
+    gainNode.gain.setValueAtTime(0.08, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
+
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + 0.02);
+};
+
