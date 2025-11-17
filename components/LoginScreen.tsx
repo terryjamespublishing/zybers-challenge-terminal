@@ -97,7 +97,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
         
         <form onSubmit={handleSubmit} className="mt-8 animate-fade-in" style={{ animationDelay: '4s' }}>
           <div className="mb-3 opacity-70">{getPrompt()}</div>
-          <div className="flex items-center cursor-text border-b border-primary/30 pb-1" onClick={focusInput}>
+          <div className="flex items-center cursor-text" onClick={focusInput}>
             <span className="mr-2 opacity-50">$</span>
             <span>{displayedValue}</span>
             <span className="animate-blink">▋</span>
