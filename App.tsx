@@ -161,6 +161,7 @@ const App: React.FC = () => {
       
       <div className="crt-screen min-h-screen selection:bg-primary selection:text-bg flex flex-col" style={{ padding: '2vh 3vw' }}>
         <div className="crt-vignette"></div>
+        <div className="crt-scanbeam"></div>
         <div className="w-full flex-grow relative">
           {screen === Screen.Dashboard && <SettingsIcon onClick={() => setIsSettingsOpen(true)} />}
           <SettingsModal 
