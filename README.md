@@ -72,7 +72,7 @@ npm install
 
 # Set up environment variables
 cp .env.example .env.local
-# Edit .env.local and add your GEMINI_API_KEY
+# Edit .env.local and add your VITE_GEMINI_API_KEY
 
 # Start development server
 npm run dev
@@ -98,7 +98,7 @@ npm i -g vercel
 vercel --prod
 ```
 
-**Don't forget to add `GEMINI_API_KEY` in Vercel environment variables!**
+**Don't forget to add `VITE_GEMINI_API_KEY` in Vercel environment variables!**
 
 See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for detailed instructions.
 
