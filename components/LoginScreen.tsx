@@ -85,7 +85,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
 
   return (
     <div className="flex flex-col justify-center h-[90vh] text-2xl sm:text-3xl md:text-4xl px-4">
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-3xl bg-transparent">
         <div className="mb-8 opacity-80">
           <div className="text-xl sm:text-2xl opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
           <div className="text-lg sm:text-xl opacity-60">Copyright (C) 1985 Zyber Corp.</div>
@@ -95,9 +95,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
         <TypingEffect text="> Loading neural network..." delay={1500} playSound={voiceSettings.uiSoundsEnabled} />
         <TypingEffect text="> Connection established." delay={2500} playSound={voiceSettings.uiSoundsEnabled} />
         
-        <form onSubmit={handleSubmit} className="mt-8 animate-fade-in" style={{ animationDelay: '4s' }}>
+        <form onSubmit={handleSubmit} className="mt-8 animate-fade-in bg-transparent" style={{ animationDelay: '4s' }}>
           <div className="mb-3 opacity-70">{getPrompt()}</div>
-          <div className="flex items-center cursor-text border-b border-primary/30 pb-1" onClick={focusInput}>
+          <div className="flex items-center cursor-text border-b border-primary/30 pb-1 bg-transparent" onClick={focusInput}>
             <span className="mr-2 opacity-50">$</span>
             <span>{displayedValue}</span>
             <span className="animate-blink">▋</span>
@@ -107,11 +107,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
               type={step === 'USERNAME' ? 'text' : 'password'}
               value={inputValue}
               onChange={handleInputChange}
-              className="absolute -left-[9999px] opacity-0"
+              className="absolute -left-[9999px] opacity-0 bg-transparent"
               autoFocus
               maxLength={20}
               autoCapitalize="none"
               autoComplete="off"
+              style={{ background: 'transparent' }}
             />
           </div>
           {error && <p className="text-red-500 mt-4 text-lg opacity-80">{error}</p>}
