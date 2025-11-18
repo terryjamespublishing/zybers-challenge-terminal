@@ -47,8 +47,6 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
       } else {
         clearInterval(interval);
         setBootComplete(true);
-        // Show menu automatically after boot completes
-        setTimeout(() => setShowMenu(true), 500);
       }
     }, 400);
 
