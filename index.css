@@ -290,15 +290,16 @@ input, select {
 
 /* Responsive text sizing for very small screens */
 @media (max-width: 480px) {
+  /* Keep readable text size for kids */
   html {
-    font-size: 14px;
+    font-size: 18px;
   }
-  
+
   /* Ensure text is readable */
   body {
     min-width: 320px;
   }
-  
+
   /* Reduce spacing on mobile */
   .grid {
     gap: 0.5rem !important;
