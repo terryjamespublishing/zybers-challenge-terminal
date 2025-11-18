@@ -246,6 +246,33 @@ input, select {
   font-family: 'VT323', monospace;
 }
 
+/* Remove white background from inputs - terminal aesthetic */
+input {
+  background: transparent !important;
+  color: var(--color-primary) !important;
+  border: none;
+  outline: none;
+}
+
+/* Override browser autofill styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+  -webkit-text-fill-color: var(--color-primary) !important;
+  background-color: transparent !important;
+  background: transparent !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Remove focus outlines from hidden inputs */
+input.opacity-0:focus,
+input.opacity-0:focus-visible {
+  outline: none !important;
+  border: none !important;
+}
+
 /* Slide-in animation for toasts */
 @keyframes slide-in {
   from {
