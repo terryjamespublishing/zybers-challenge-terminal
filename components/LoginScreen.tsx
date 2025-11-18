@@ -84,7 +84,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
   const inputValue = step === 'USERNAME' ? username : password;
 
   return (
-    <div className="flex flex-col justify-center h-[90vh] text-2xl sm:text-3xl md:text-4xl px-4">
+    <div className="flex flex-col justify-center h-full text-2xl sm:text-3xl md:text-4xl px-4">
       <div className="w-full max-w-3xl bg-transparent">
         <div className="mb-8 opacity-80">
           <div className="text-xl sm:text-2xl opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>

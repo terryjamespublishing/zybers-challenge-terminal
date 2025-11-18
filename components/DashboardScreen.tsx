@@ -65,7 +65,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
   const xpForNextLevel = user.level * 100;
 
   return (
-    <div className="relative min-h-[70vh]">
+    <div className="relative h-full">
       {/* Menu Toggle Icon - Top Right */}
       <button
         onClick={() => {

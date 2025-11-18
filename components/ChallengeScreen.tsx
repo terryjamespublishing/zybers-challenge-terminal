@@ -201,7 +201,7 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
 
   return (
     <TerminalWindow title={`SESSION: ${challenge.title.toUpperCase()}`} onExit={onExit}>
-      <div className="flex flex-col text-xl sm:text-2xl md:text-3xl" style={{ height: 'calc(100vh - 12rem)', minHeight: '400px' }}>
+      <div className="flex flex-col text-xl sm:text-2xl md:text-3xl h-full">
         <div className="flex-grow overflow-y-auto">
           {messages.map((msg, index) => (
             <div key={index} className="mb-3">

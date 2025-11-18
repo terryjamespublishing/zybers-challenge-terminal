@@ -159,7 +159,7 @@ const App: React.FC = () => {
     <>
       {showBoot && <BootScreen onComplete={handleBootComplete} />}
       
-      <div className="crt-screen h-screen selection:bg-primary selection:text-bg flex flex-col" style={{ padding: '2vh 3vw' }}>
+      <div className="crt-screen h-screen selection:bg-primary selection:text-bg flex flex-col">
         <div className="crt-vignette"></div>
         <div className="crt-scanbeam"></div>
         <div className="w-full flex-grow relative">
@@ -171,7 +171,7 @@ const App: React.FC = () => {
               onSettingsChange={setVoiceSettings}
               onLogout={handleLogout}
           />
-          <main className="relative z-10 terminal-text">
+          <main className="relative z-10 terminal-text h-full">
             {renderScreen()}
           </main>
         </div>
