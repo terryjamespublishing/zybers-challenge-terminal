@@ -161,19 +161,19 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
     <div className="flex flex-col h-full px-4 py-8">
       <div className="w-full max-w-4xl flex-grow flex flex-col">
         <div className="mb-6 opacity-80">
-          <div className="text-xl opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
-          <div className="text-base opacity-60">Copyright (C) 1985 Zyber Corp.</div>
+          <div className="text-xl sm:text-2xl opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
+          <div className="text-lg sm:text-xl opacity-60">Copyright (C) 1985 Zyber Corp.</div>
         </div>
 
         {/* Initial boot messages */}
-        <div className="text-lg mb-4">
+        <div className="terminal-conversation mb-4">
           <TypingEffect text="> Initializing system..." playSound={voiceSettings.uiSoundsEnabled} />
           <TypingEffect text="> Loading neural network..." delay={1500} playSound={voiceSettings.uiSoundsEnabled} />
           <TypingEffect text="> Connection established." delay={2500} playSound={voiceSettings.uiSoundsEnabled} />
         </div>
 
         {/* Conversation messages */}
-        <div className="flex-grow overflow-y-auto mb-4 text-lg space-y-2">
+        <div className="flex-grow overflow-y-auto mb-4 terminal-conversation space-y-2">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -188,10 +188,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
         {/* Input prompt */}
         {showInput && (
           <form onSubmit={handleSubmit} className="mt-auto">
-            <div className="flex items-center cursor-text border-t border-primary/30 pt-3" onClick={focusInput}>
-              <span className="mr-2 opacity-50 text-lg">&gt;</span>
-              <span className="text-lg">{input}</span>
-              <span className="animate-blink text-lg">▋</span>
+            <div className="flex items-center cursor-text border-t border-primary/30 pt-3 terminal-conversation" onClick={focusInput}>
+              <span className="mr-2 opacity-50">&gt;</span>
+              <span>{input}</span>
+              <span className="animate-blink">▋</span>
               <input
                 ref={inputRef}
                 type="text"
