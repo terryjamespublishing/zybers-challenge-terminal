@@ -90,7 +90,7 @@ git push -u origin main
 
 4. **Add Environment Variables**
    - Click "Environment Variables"
-   - Add: `GEMINI_API_KEY` = `your_api_key_here`
+   - Add: `VITE_GEMINI_API_KEY` = `your_api_key_here`
    - Apply to: Production, Preview, and Development
 
 5. **Deploy**
@@ -119,7 +119,7 @@ vercel
 # - Override settings? No
 
 # Add environment variable
-vercel env add GEMINI_API_KEY
+vercel env add VITE_GEMINI_API_KEY
 
 # Deploy to production
 vercel --prod
@@ -137,7 +137,7 @@ vercel --prod
 
 | Name | Value | Environments |
 |------|-------|--------------|
-| `GEMINI_API_KEY` | Your API key | Production, Preview, Development |
+| `VITE_GEMINI_API_KEY` | Your API key | Production, Preview, Development |
 
 4. **Important**: Redeploy after adding variables
    - Go to "Deployments"
@@ -180,11 +180,11 @@ git push origin feature/new-challenge
 ## 🐛 Troubleshooting
 
 ### Build Fails with "API_KEY not set"
-**Solution**: Add `GEMINI_API_KEY` to Vercel environment variables
+**Solution**: Add `VITE_GEMINI_API_KEY` to Vercel environment variables
 
 ```bash
 # Via CLI
-vercel env add GEMINI_API_KEY
+vercel env add VITE_GEMINI_API_KEY
 ```
 
 ### AudioWorklet Not Loading
@@ -341,8 +341,8 @@ Share your app URL and start teaching! 📚
 **Q: Build succeeds but app shows blank page?**  
 A: Check browser console for errors, verify all files are committed
 
-**Q: API calls failing in production?**  
-A: Verify `GEMINI_API_KEY` is set in Vercel environment variables
+**Q: API calls failing in production?**
+A: Verify `VITE_GEMINI_API_KEY` is set in Vercel environment variables
 
 **Q: App works locally but not on Vercel?**  
 A: Check Vercel deployment logs, ensure all dependencies are in `package.json`
