@@ -139,7 +139,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto" onClick={onClose}>
             <div className="w-full max-w-2xl my-auto" onClick={e => e.stopPropagation()}>
                 <TerminalWindow title="VOICE_SYNTH_CONFIG" onExit={onClose} solidBackground>
-                    <div className="p-4 md:p-6 text-xl md:text-2xl space-y-4">
+                    <div className="p-4 md:p-6 text-2xl md:text-3xl space-y-4">
                         {/* Language */}
                         <div className="flex items-center justify-between">
                             <label htmlFor="language-select">:: LANGUAGE ::</label>

@@ -47,19 +47,19 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, duration = 5000 }
     };
 
     return (
-        <div 
+        <div
             className={`fixed bottom-4 right-4 max-w-md p-4 border-2 ${getColors()} shadow-lg animate-slide-in z-50`}
             role="alert"
             aria-live="assertive"
         >
             <div className="flex items-start gap-3">
-                <span className="text-2xl">{getIcon()}</span>
+                <span className="text-3xl md:text-4xl">{getIcon()}</span>
                 <div className="flex-1">
-                    <p className="text-xl md:text-2xl whitespace-pre-wrap">{message}</p>
+                    <p className="text-2xl md:text-4xl whitespace-pre-wrap">{message}</p>
                 </div>
-                <button 
+                <button
                     onClick={onClose}
-                    className="text-xl md:text-2xl hover:opacity-70 focus:outline-none"
+                    className="text-3xl md:text-4xl hover:opacity-70 focus:outline-none"
                     aria-label="Close notification"
                 >
                     ×

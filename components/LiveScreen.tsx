@@ -174,7 +174,7 @@ const LiveScreen: React.FC<LiveScreenProps> = ({ onExit, voiceSettings }) => {
 
     return (
         <TerminalWindow title="VOICE INTERFACE SESSION" onExit={handleExitClick}>
-            <div className="flex flex-col text-xl md:text-2xl h-full">
+            <div className="flex flex-col text-2xl md:text-4xl h-full">
                 <div className="flex-grow overflow-y-auto">
                     {isConnecting && (
                         <div className="flex items-center justify-center h-full">

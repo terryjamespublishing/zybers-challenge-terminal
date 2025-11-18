@@ -82,7 +82,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
       </button>
 
       {/* Main Terminal View */}
-      <div className="font-mono text-xl leading-relaxed">
+      <div className="font-mono text-2xl md:text-4xl leading-relaxed px-6">
         {/* Boot Messages */}
         {bootMessages.map((msg, index) => (
           <div key={index} className={`${msg.includes('ROOT ACCESS') ? 'text-accent' : ''} ${msg === '' ? 'h-4' : ''}`}>
@@ -92,7 +92,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
 
         {/* Blinking Cursor */}
         {bootComplete && (
-          <div className="mt-4 text-2xl">
+          <div className="mt-4 text-2xl md:text-4xl">
             <span className="opacity-70">&gt; </span>
             <span className={`${cursorVisible ? 'opacity-100' : 'opacity-0'} transition-opacity`}>_</span>
           </div>
@@ -115,20 +115,20 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
       >
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
-            <div className="text-lg opacity-70">&gt; SYSTEM COMMANDS</div>
+            <div className="text-2xl md:text-3xl opacity-70">&gt; SYSTEM COMMANDS</div>
             <button
               onClick={() => {
                 if (voiceSettings.uiSoundsEnabled) playBeep(400, 0.05);
                 setShowMenu(false);
               }}
-              className="text-2xl opacity-50 hover:opacity-100"
+              className="text-3xl md:text-4xl opacity-50 hover:opacity-100"
               aria-label="Close menu"
             >
               [X]
             </button>
           </div>
 
-          <div className="space-y-2 text-lg" role="list" aria-label="Available operations">
+          <div className="space-y-2 text-2xl md:text-3xl" role="list" aria-label="Available operations">
             {categories.map((cat, index) => (
               <button
                 key={cat.title}
@@ -172,7 +172,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
           </div>
 
           {/* Compact Stats in Menu */}
-          <div className="mt-6 pt-4 border-t border-primary/20 text-sm opacity-60">
+          <div className="mt-6 pt-4 border-t border-primary/20 text-xl md:text-2xl opacity-60">
             <div>OPERATOR: {user.username.toUpperCase()}</div>
             <div>CLEARANCE: LEVEL {user.level}</div>
             <div>XP: {user.xp}/{xpForNextLevel}</div>

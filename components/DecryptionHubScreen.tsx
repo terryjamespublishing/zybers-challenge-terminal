@@ -18,7 +18,7 @@ const DecryptionHubScreen: React.FC<DecryptionHubScreenProps> = ({
         <TerminalWindow title="DECRYPTION HUB" onExit={onExit}>
             <div>
                 <TypingEffect text="> Accessing system marketplace..." playSound={voiceSettings.uiSoundsEnabled} />
-                <div className="my-6 text-xl">
+                <div className="my-6 text-2xl md:text-4xl">
                     <div className="flex justify-between">
                         <span className="opacity-70">AVAILABLE_FUNDS:</span>
                         <span>{user.dataBits} DATA_BITS</span>
@@ -26,11 +26,11 @@ const DecryptionHubScreen: React.FC<DecryptionHubScreenProps> = ({
                 </div>
 
                 <div className="border-t border-primary/30 pt-4 mt-6">
-                    <div className="text-xl mb-4 opacity-70">&gt; AVAILABLE MODULES:</div>
-                    <div className="text-xl space-y-2">
+                    <div className="text-2xl md:text-4xl mb-4 opacity-70">&gt; AVAILABLE MODULES:</div>
+                    <div className="text-2xl md:text-4xl space-y-2">
                         <p className="opacity-50">&gt; System scanning for upgrades...</p>
                         <p className="opacity-50 animate-pulse">&gt; No modules currently available.</p>
-                        <p className="opacity-40 text-base mt-4">&gt; Check back soon for new terminal enhancements.</p>
+                        <p className="opacity-40 text-xl md:text-2xl mt-4">&gt; Check back soon for new terminal enhancements.</p>
                     </div>
                 </div>
             </div>
