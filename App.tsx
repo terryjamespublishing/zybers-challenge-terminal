@@ -159,7 +159,7 @@ const App: React.FC = () => {
     <>
       {showBoot && <BootScreen onComplete={handleBootComplete} />}
       
-      <div className="crt-screen min-h-screen selection:bg-primary selection:text-bg flex flex-col" style={{ padding: '2vh 3vw' }}>
+      <div className="crt-screen h-screen selection:bg-primary selection:text-bg flex flex-col" style={{ padding: '2vh 3vw' }}>
         <div className="crt-vignette"></div>
         <div className="w-full flex-grow relative">
           {screen === Screen.Dashboard && <SettingsIcon onClick={() => setIsSettingsOpen(true)} />}
