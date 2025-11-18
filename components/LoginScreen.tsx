@@ -4,7 +4,7 @@ import { VoiceSettings, User } from '../types';
 import { playKeyPressSound, playSubmitSound } from '../utils/uiSfx';
 import * as userService from '../services/userService';
 
-type EnrollmentStep = 'INITIAL' | 'ASK_NAME' | 'CONFIRM_NAME' | 'COMPLETE';
+type EnrollmentStep = 'INITIAL' | 'ASK_NAME' | 'CONFIRM_NAME' | 'ASK_PASSWORD' | 'CONFIRM_PASSWORD' | 'LOGIN_PASSWORD' | 'COMPLETE';
 
 interface Message {
   text: string;
@@ -21,6 +21,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [proposedName, setProposedName] = useState('');
+  const [password, setPassword] = useState('');
+  const [isReturningUser, setIsReturningUser] = useState(false);
   const [showInput, setShowInput] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -79,34 +81,107 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
         break;
 
       case 'ASK_NAME':
-        // User provided their name
+        // User provided their name - check if they're a returning user
         setProposedName(userInput);
-        setTimeout(() => {
-          addMessage('');
-          addMessage(`> ZYBER: ${userInput.toUpperCase()}... interesting.`);
-        }, 500);
-        setTimeout(() => {
-          addMessage(`> ZYBER: Let me taste that name on my circuits... ${userInput.toUpperCase()}.`);
-        }, 2000);
-        setTimeout(() => {
-          addMessage(`> ZYBER: Yes, I can work with that.`);
-        }, 3500);
-        setTimeout(() => {
-          addMessage(`> ZYBER: Just to confirm - shall I register you as "${userInput.toUpperCase()}"?`);
-        }, 5000);
-        setTimeout(() => {
-          addMessage('> ZYBER: (Type YES to confirm, or provide a different name)');
-          setStep('CONFIRM_NAME');
-        }, 6500);
+        const userExists = userService.doesUserExist(userInput);
+
+        if (userExists) {
+          // Returning user
+          setIsReturningUser(true);
+          setTimeout(() => {
+            addMessage('');
+            addMessage(`> ZYBER: Ah, ${userInput.toUpperCase()}... I remember you.`);
+          }, 500);
+          setTimeout(() => {
+            addMessage('> ZYBER: Your neural signature is already in my database.');
+          }, 2000);
+          setTimeout(() => {
+            addMessage('> ZYBER: To access your profile, I need your security credentials.');
+          }, 3500);
+          setTimeout(() => {
+            addMessage('> ZYBER: Enter your password:');
+            setStep('LOGIN_PASSWORD');
+          }, 5000);
+        } else {
+          // New user
+          setIsReturningUser(false);
+          setTimeout(() => {
+            addMessage('');
+            addMessage(`> ZYBER: ${userInput.toUpperCase()}... interesting.`);
+          }, 500);
+          setTimeout(() => {
+            addMessage(`> ZYBER: Let me taste that name on my circuits... ${userInput.toUpperCase()}.`);
+          }, 2000);
+          setTimeout(() => {
+            addMessage(`> ZYBER: Yes, I can work with that.`);
+          }, 3500);
+          setTimeout(() => {
+            addMessage(`> ZYBER: Just to confirm - shall I register you as "${userInput.toUpperCase()}"?`);
+          }, 5000);
+          setTimeout(() => {
+            addMessage('> ZYBER: (Type YES to confirm, or provide a different name)');
+            setStep('CONFIRM_NAME');
+          }, 6500);
+        }
         break;
 
       case 'CONFIRM_NAME':
         const response = userInput.toUpperCase();
         if (response === 'YES' || response === 'Y') {
-          // Confirmed - create user
+          // Confirmed - now ask for password
           setTimeout(() => {
             addMessage('');
-            addMessage('> ZYBER: Excellent. Initiating enrollment sequence...');
+            addMessage('> ZYBER: Excellent. Now I need to secure your profile.');
+          }, 500);
+          setTimeout(() => {
+            addMessage('> ZYBER: Create a password to protect your neural signature.');
+          }, 2000);
+          setTimeout(() => {
+            addMessage('> ZYBER: Choose wisely - this will guard your access to the network.');
+          }, 3500);
+          setTimeout(() => {
+            addMessage('> ZYBER: Enter your new password:');
+            setStep('ASK_PASSWORD');
+          }, 5000);
+        } else {
+          // User wants to change name
+          setProposedName(userInput);
+          setTimeout(() => {
+            addMessage('');
+            addMessage(`> ZYBER: Ah, ${userInput.toUpperCase()} it is then.`);
+          }, 500);
+          setTimeout(() => {
+            addMessage(`> ZYBER: Shall I register you as "${userInput.toUpperCase()}"?`);
+          }, 2000);
+          setTimeout(() => {
+            addMessage('> ZYBER: (Type YES to confirm, or provide a different name)');
+          }, 3500);
+        }
+        break;
+
+      case 'ASK_PASSWORD':
+        // User entered a password for new account
+        setPassword(userInput);
+        setTimeout(() => {
+          addMessage('');
+          addMessage('> ZYBER: Password recorded. Encrypting...');
+        }, 500);
+        setTimeout(() => {
+          addMessage('> ZYBER: To ensure the integrity of your neural link...');
+        }, 2000);
+        setTimeout(() => {
+          addMessage('> ZYBER: Please confirm your password:');
+          setStep('CONFIRM_PASSWORD');
+        }, 3500);
+        break;
+
+      case 'CONFIRM_PASSWORD':
+        // User confirmed password
+        if (userInput === password) {
+          // Passwords match - create user
+          setTimeout(() => {
+            addMessage('');
+            addMessage('> ZYBER: Password verified. Initiating enrollment sequence...');
           }, 500);
           setTimeout(() => {
             addMessage('> CREATING NEURAL PROFILE...');
@@ -125,23 +200,64 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
             addMessage('> ZYBER: Your journey into the depths begins now...');
           }, 6500);
           setTimeout(() => {
-            // Register user and login
-            const newUser = userService.registerUser(proposedName, 'temp_password');
+            // Register user with actual password and login
+            const newUser = userService.registerUser(proposedName, password);
             setStep('COMPLETE');
             onLogin(newUser);
           }, 8000);
         } else {
-          // User wants to change name
-          setProposedName(userInput);
+          // Passwords don't match
           setTimeout(() => {
             addMessage('');
-            addMessage(`> ZYBER: Ah, ${userInput.toUpperCase()} it is then.`);
+            addMessage('> ZYBER: ERROR: Password mismatch detected.');
           }, 500);
           setTimeout(() => {
-            addMessage(`> ZYBER: Shall I register you as "${userInput.toUpperCase()}"?`);
+            addMessage('> ZYBER: The neural patterns do not align.');
           }, 2000);
           setTimeout(() => {
-            addMessage('> ZYBER: (Type YES to confirm, or provide a different name)');
+            addMessage('> ZYBER: Let\'s try again. Enter your new password:');
+            setStep('ASK_PASSWORD');
+          }, 3500);
+        }
+        break;
+
+      case 'LOGIN_PASSWORD':
+        // Returning user entering password
+        const authenticatedUser = userService.authenticateUser(proposedName, userInput);
+        if (authenticatedUser) {
+          // Password correct
+          setTimeout(() => {
+            addMessage('');
+            addMessage('> ZYBER: Password accepted. Verifying neural signature...');
+          }, 500);
+          setTimeout(() => {
+            addMessage('> ESTABLISHING QUANTUM LINK...');
+          }, 1500);
+          setTimeout(() => {
+            addMessage('> DECRYPTING IDENTITY MATRIX...');
+          }, 2500);
+          setTimeout(() => {
+            addMessage('');
+            addMessage(`> ZYBER: Welcome back, ${proposedName.toUpperCase()}.`);
+          }, 4000);
+          setTimeout(() => {
+            addMessage('> ZYBER: The network has missed your presence...');
+          }, 5500);
+          setTimeout(() => {
+            setStep('COMPLETE');
+            onLogin(authenticatedUser);
+          }, 7000);
+        } else {
+          // Wrong password
+          setTimeout(() => {
+            addMessage('');
+            addMessage('> ZYBER: ACCESS DENIED.');
+          }, 500);
+          setTimeout(() => {
+            addMessage('> ZYBER: Invalid credentials. The neural signature does not match.');
+          }, 2000);
+          setTimeout(() => {
+            addMessage('> ZYBER: Try again. Enter your password:');
           }, 3500);
         }
         break;
@@ -190,11 +306,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
           <form onSubmit={handleSubmit} className="mt-auto">
             <div className="flex items-center cursor-text border-t border-primary/30 pt-3" onClick={focusInput}>
               <span className="mr-2 opacity-50 text-lg">&gt;</span>
-              <span className="text-lg">{input}</span>
+              <span className="text-lg">
+                {step === 'ASK_PASSWORD' || step === 'CONFIRM_PASSWORD' || step === 'LOGIN_PASSWORD'
+                  ? '•'.repeat(input.length)
+                  : input}
+              </span>
               <span className="animate-blink text-lg">▋</span>
               <input
                 ref={inputRef}
-                type="text"
+                type={step === 'ASK_PASSWORD' || step === 'CONFIRM_PASSWORD' || step === 'LOGIN_PASSWORD' ? 'password' : 'text'}
                 value={input}
                 onChange={handleInputChange}
                 className="absolute -left-[9999px] opacity-0 bg-transparent"
