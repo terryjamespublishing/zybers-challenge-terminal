@@ -6,7 +6,6 @@ interface BootScreenProps {
 
 const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
   const [stage, setStage] = useState(0);
-  const [visible, setVisible] = useState(true);
 
   const bootMessages = [
     'ZYBER SYSTEMS v1.0',
@@ -19,22 +18,19 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
 
   useEffect(() => {
     const timings = [500, 1000, 1500, 2000, 2500, 3000];
-    
+
     const timer = setTimeout(() => {
       if (stage < bootMessages.length - 1) {
         setStage(stage + 1);
       } else {
         setTimeout(() => {
-          setVisible(false);
-          setTimeout(onComplete, 200);
+          onComplete();
         }, 500);
       }
     }, timings[stage] || 500);
 
     return () => clearTimeout(timer);
   }, [stage, onComplete]);
-
-  if (!visible) return null;
 
   return (
     <div className="boot-screen">
