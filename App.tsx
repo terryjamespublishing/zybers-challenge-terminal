@@ -19,7 +19,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [screen, setScreen] = useState<Screen>(Screen.Login);
   const [currentChallenge, setCurrentChallenge] = useState<ChallengeCategory | null>(null);
-  const [showBoot, setShowBoot] = useState(false);
+  const [showBoot, setShowBoot] = useState(true);
   
   // Settings State - Load from localStorage on mount
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
