@@ -43,6 +43,7 @@ export interface VoiceSettings {
     vocoderEnabled: boolean;
     vocoderFrequency: number;
     uiSoundsEnabled: boolean;
+    voiceOutputEnabled: boolean;
 }
 
 export interface RewardData {

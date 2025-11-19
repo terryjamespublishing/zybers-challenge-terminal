@@ -134,6 +134,7 @@ const App: React.FC = () => {
             onExit={handleExit}
             addRewards={addRewards}
             voiceSettings={voiceSettings}
+            onVoiceSettingsChange={setVoiceSettings}
           />
         );
       case Screen.Live:

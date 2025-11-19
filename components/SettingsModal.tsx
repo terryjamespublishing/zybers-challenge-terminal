@@ -205,6 +205,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
                             />
                         </div>
                         <hr className="border-primary/50" />
+                        {/* Voice Output */}
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="voice-output-toggle">:: ZYBER VOICE OUTPUT ::</label>
+                            <div className="flex items-center gap-2">
+                                <span>OFF</span>
+                                <button
+                                    id="voice-output-toggle"
+                                    onClick={() => handleSettingChange('voiceOutputEnabled', !settings.voiceOutputEnabled)}
+                                    className={`w-14 h-7 rounded-full p-1 transition-colors ${settings.voiceOutputEnabled ? 'bg-primary' : 'bg-gray-600'}`}
+                                >
+                                    <div className={`w-5 h-5 bg-background rounded-full transition-transform ${settings.voiceOutputEnabled ? 'translate-x-7' : ''}`} />
+                                </button>
+                                <span>ON</span>
+                            </div>
+                        </div>
+
                         {/* UI Sounds */}
                         <div className="flex items-center justify-between">
                             <label htmlFor="ui-sounds-toggle">:: UI SOUNDS ::</label>

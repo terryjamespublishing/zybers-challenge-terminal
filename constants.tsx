@@ -80,7 +80,7 @@ export const VOICES: Voice[] = [
 ];
 
 
-export const DEFAULT_VOICE_SETTINGS: Omit<VoiceSettings, 'uiSoundsEnabled'> = {
+export const DEFAULT_VOICE_SETTINGS: Omit<VoiceSettings, 'uiSoundsEnabled' | 'voiceOutputEnabled'> = {
     gender: 'male',
     language: 'en',
     vocoderEnabled: true,

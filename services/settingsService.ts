@@ -15,17 +15,19 @@ export const loadVoiceSettings = (): VoiceSettings => {
             return {
                 ...DEFAULT_VOICE_SETTINGS,
                 uiSoundsEnabled: true,
+                voiceOutputEnabled: true,
                 ...parsed,
             };
         }
     } catch (error) {
         console.error('Failed to load voice settings:', error);
     }
-    
+
     // Return defaults if nothing stored or error occurred
     return {
         ...DEFAULT_VOICE_SETTINGS,
         uiSoundsEnabled: true,
+        voiceOutputEnabled: true,
     };
 };
 
@@ -47,6 +49,7 @@ export const resetVoiceSettings = (): VoiceSettings => {
     const defaults = {
         ...DEFAULT_VOICE_SETTINGS,
         uiSoundsEnabled: true,
+        voiceOutputEnabled: true,
     };
     saveVoiceSettings(defaults);
     return defaults;

@@ -10,6 +10,7 @@ interface ChallengeScreenProps {
   onExit: () => void;
   addRewards: (rewards: { xp: number; dataBits: number; accessKeys?: number }) => void;
   voiceSettings: VoiceSettings;
+  onVoiceSettingsChange: (settings: VoiceSettings) => void;
 }
 
 const SoundIcon: React.FC<{ isPlaying: boolean }> = ({ isPlaying }) => (
@@ -23,7 +24,7 @@ const SoundIcon: React.FC<{ isPlaying: boolean }> = ({ isPlaying }) => (
 );
 
 
-const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, addRewards, voiceSettings }) => {
+const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, addRewards, voiceSettings, onVoiceSettingsChange }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -108,7 +109,7 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
     let audio: AudioBuffer | undefined = undefined;
     const textToSpeak = spokenText || text;
 
-    if (sender === 'Zyber' && audioContext) {
+    if (sender === 'Zyber' && audioContext && voiceSettings.voiceOutputEnabled) {
         try {
             const audioBuffer = await geminiService.textToSpeech(textToSpeak, audioContext, voiceSettings);
             audio = audioBuffer;
@@ -160,6 +161,20 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
     }
 
     const currentInput = userInput;
+
+    // Check for QUIET command
+    if (currentInput.toUpperCase() === 'QUIET') {
+      const newVoiceEnabled = !voiceSettings.voiceOutputEnabled;
+      onVoiceSettingsChange({ ...voiceSettings, voiceOutputEnabled: newVoiceEnabled });
+      addMessage('user', currentInput);
+      setUserInput('');
+      const statusMsg = newVoiceEnabled
+        ? '> VOICE OUTPUT ENABLED.▋'
+        : '> VOICE OUTPUT DISABLED.▋';
+      await addMessage('Zyber', statusMsg);
+      return;
+    }
+
     addMessage('user', currentInput);
     setUserInput('');
     setIsLoading(true);
@@ -169,16 +184,16 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
         role: m.sender === 'user' ? 'user' : 'model',
         parts: [{ text: m.text }],
       }));
-      
+
       const response = await geminiService.getChatResponse(history, currentInput, voiceSettings.language);
 
       // Use structured reward data from AI response
       if (response.reward.isCorrect && response.reward.xp > 0) {
           const accessKeys = isFirstAttempt ? 1 : 0;
-          addRewards({ 
-            xp: response.reward.xp, 
-            dataBits: response.reward.dataBits, 
-            accessKeys 
+          addRewards({
+            xp: response.reward.xp,
+            dataBits: response.reward.dataBits,
+            accessKeys
           });
           setIsFirstAttempt(false);
       }
