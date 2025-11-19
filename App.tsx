@@ -110,8 +110,7 @@ const App: React.FC = () => {
         return <LoginScreen onLogin={handleLogin} voiceSettings={voiceSettings} />;
       case Screen.Dashboard:
         if (!user) {
-            setScreen(Screen.Login);
-            return null;
+            return <LoginScreen onLogin={handleLogin} voiceSettings={voiceSettings} />;
         }
         return (
           <DashboardScreen
@@ -124,9 +123,15 @@ const App: React.FC = () => {
           />
         );
       case Screen.Challenge:
-        if (!currentChallenge) {
-            setScreen(Screen.Dashboard);
-            return null;
+        if (!currentChallenge || !user) {
+            return <DashboardScreen
+              user={user!}
+              categories={CHALLENGE_CATEGORIES}
+              onSelectChallenge={handleSelectChallenge}
+              onStartLiveChat={handleStartLiveChat}
+              onOpenDecryptionHub={handleOpenDecryptionHub}
+              voiceSettings={voiceSettings}
+            />;
         }
         return (
           <ChallengeScreen
@@ -140,11 +145,10 @@ const App: React.FC = () => {
         return <LiveScreen onExit={handleExit} voiceSettings={voiceSettings} />;
       case Screen.DecryptionHub:
         if (!user) {
-            setScreen(Screen.Login);
-            return null;
+            return <LoginScreen onLogin={handleLogin} voiceSettings={voiceSettings} />;
         }
         return (
-          <DecryptionHubScreen 
+          <DecryptionHubScreen
             onExit={handleExit}
             user={user}
             voiceSettings={voiceSettings}
