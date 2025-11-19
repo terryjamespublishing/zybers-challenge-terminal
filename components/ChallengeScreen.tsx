@@ -232,7 +232,7 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
           )}
           <div ref={messagesEndRef} />
         </div>
-        <form onSubmit={handleSubmit} className="mt-4 pt-3 border-t border-primary/20 flex-shrink-0">
+        <form onSubmit={handleSubmit} className="mt-4 pt-3 flex-shrink-0">
           <div className="flex items-center cursor-text text-2xl" onClick={focusInput}>
             <span className="mr-2 text-primary opacity-70">$</span>
             <span>{userInput}</span>

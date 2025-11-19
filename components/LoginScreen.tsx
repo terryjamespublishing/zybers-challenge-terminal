@@ -304,7 +304,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
         {/* Input prompt */}
         {showInput && (
           <form onSubmit={handleSubmit} className="mt-auto">
-            <div className="flex items-center cursor-text border-t border-primary/30 pt-3" onClick={focusInput}>
+            <div className="flex items-center cursor-text pt-3" onClick={focusInput}>
               <span className="mr-2 opacity-50 text-xl">&gt;</span>
               <span className="text-xl">
                 {step === 'ASK_PASSWORD' || step === 'CONFIRM_PASSWORD' || step === 'LOGIN_PASSWORD'
