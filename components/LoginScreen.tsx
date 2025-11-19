@@ -27,13 +27,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Show input after initial typing animations
+  // Show input immediately
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowInput(true);
-      inputRef.current?.focus();
-    }, 4000);
-    return () => clearTimeout(timer);
+    setShowInput(true);
+    inputRef.current?.focus();
   }, []);
 
   // Auto-scroll to bottom when new messages arrive
@@ -276,18 +273,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
   return (
     <div className="flex flex-col h-full px-4 py-8">
       <div className="w-full max-w-4xl flex-grow flex flex-col">
-        <div className="mb-6 opacity-80">
-          <div className="text-2xl opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
-          <div className="text-lg opacity-60">Copyright (C) 1985 Zyber Corp.</div>
-        </div>
-
-        {/* Initial boot messages */}
-        <div className="text-xl mb-4">
-          <TypingEffect text="> Initializing system..." playSound={voiceSettings.uiSoundsEnabled} />
-          <TypingEffect text="> Loading neural network..." delay={1500} playSound={voiceSettings.uiSoundsEnabled} />
-          <TypingEffect text="> Connection established." delay={2500} playSound={voiceSettings.uiSoundsEnabled} />
-        </div>
-
         {/* Conversation messages */}
         <div className="flex-grow overflow-y-auto mb-4 text-xl space-y-2">
           {messages.map((msg, index) => (
@@ -304,8 +289,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
         {/* Input prompt */}
         {showInput && (
           <form onSubmit={handleSubmit} className="mt-auto">
-            <div className="flex items-center cursor-text border-t border-primary/30 pt-3" onClick={focusInput}>
-              <span className="mr-2 opacity-50 text-xl">&gt;</span>
+            <div className="flex items-center cursor-text" onClick={focusInput}>
               <span className="text-xl">
                 {step === 'ASK_PASSWORD' || step === 'CONFIRM_PASSWORD' || step === 'LOGIN_PASSWORD'
                   ? '•'.repeat(input.length)
