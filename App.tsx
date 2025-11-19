@@ -157,35 +157,37 @@ const App: React.FC = () => {
 
   return (
     <>
-      {showBoot && <BootScreen onComplete={handleBootComplete} />}
-      
-      <div className="crt-screen w-screen h-screen selection:bg-primary selection:text-bg flex flex-col">
-        <div className="crt-vignette"></div>
-        <div className="crt-scanbeam"></div>
-        <div className="w-full h-full flex-grow relative">
-          {screen === Screen.Dashboard && <SettingsIcon onClick={() => setIsSettingsOpen(true)} />}
-          <SettingsModal 
-              isOpen={isSettingsOpen}
-              onClose={() => setIsSettingsOpen(false)}
-              settings={voiceSettings}
-              onSettingsChange={setVoiceSettings}
-              onLogout={handleLogout}
-          />
-          <main className="relative z-10 terminal-text h-full">
-            {renderScreen()}
-          </main>
+      {showBoot ? (
+        <BootScreen onComplete={handleBootComplete} />
+      ) : (
+        <div className="crt-screen w-screen h-screen selection:bg-primary selection:text-bg flex flex-col">
+          <div className="crt-vignette"></div>
+          <div className="crt-scanbeam"></div>
+          <div className="w-full h-full flex-grow relative">
+            {screen === Screen.Dashboard && <SettingsIcon onClick={() => setIsSettingsOpen(true)} />}
+            <SettingsModal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                settings={voiceSettings}
+                onSettingsChange={setVoiceSettings}
+                onLogout={handleLogout}
+            />
+            <main className="relative z-10 terminal-text h-full">
+              {renderScreen()}
+            </main>
+          </div>
+
+          {/* Toast notifications */}
+          {toasts.map(toast => (
+            <Toast
+              key={toast.id}
+              message={toast.message}
+              type={toast.type}
+              onClose={() => hideToast(toast.id)}
+            />
+          ))}
         </div>
-        
-        {/* Toast notifications */}
-        {toasts.map(toast => (
-          <Toast
-            key={toast.id}
-            message={toast.message}
-            type={toast.type}
-            onClose={() => hideToast(toast.id)}
-          />
-        ))}
-      </div>
+      )}
     </>
   );
 };
