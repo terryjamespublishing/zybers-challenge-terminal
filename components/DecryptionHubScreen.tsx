@@ -30,7 +30,7 @@ const DecryptionHubScreen: React.FC<DecryptionHubScreenProps> = ({
                     <div className="text-xl space-y-2">
                         <p className="opacity-50">&gt; System scanning for upgrades...</p>
                         <p className="opacity-50 animate-pulse">&gt; No modules currently available.</p>
-                        <p className="opacity-40 text-base mt-4">&gt; Check back soon for new terminal enhancements.</p>
+                        <p className="opacity-40 text-lg mt-4">&gt; Check back soon for new terminal enhancements.</p>
                     </div>
                 </div>
             </div>

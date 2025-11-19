@@ -101,7 +101,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
 
       {/* Hidden Stats - Small and Subtle */}
       {bootComplete && (
-        <div className="absolute bottom-0 left-0 text-xs opacity-30 space-y-1">
+        <div className="absolute bottom-0 left-0 text-sm opacity-30 space-y-1">
           <div>LVL:{user.level} | XP:{user.xp}/{xpForNextLevel} | BITS:{user.dataBits} | KEYS:{user.accessKeys}</div>
         </div>
       )}
@@ -115,7 +115,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
       >
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
-            <div className="text-lg opacity-70">&gt; SYSTEM COMMANDS</div>
+            <div className="text-xl opacity-70">&gt; SYSTEM COMMANDS</div>
             <button
               onClick={() => {
                 if (voiceSettings.uiSoundsEnabled) playBeep(400, 0.05);
@@ -128,7 +128,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
             </button>
           </div>
 
-          <div className="space-y-2 text-lg" role="list" aria-label="Available operations">
+          <div className="space-y-2 text-xl" role="list" aria-label="Available operations">
             {categories.map((cat, index) => (
               <button
                 key={cat.title}
@@ -172,7 +172,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
           </div>
 
           {/* Compact Stats in Menu */}
-          <div className="mt-6 pt-4 border-t border-primary/20 text-sm opacity-60">
+          <div className="mt-6 pt-4 border-t border-primary/20 text-base opacity-60">
             <div>OPERATOR: {user.username.toUpperCase()}</div>
             <div>CLEARANCE: LEVEL {user.level}</div>
             <div>XP: {user.xp}/{xpForNextLevel}</div>
