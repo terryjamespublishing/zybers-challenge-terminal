@@ -144,8 +144,6 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
               </button>
             ))}
 
-            <div className="border-t border-primary/20 my-2"></div>
-
             <button
               onClick={() => {
                 if (voiceSettings.uiSoundsEnabled) playNavigationSound();
@@ -172,7 +170,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
           </div>
 
           {/* Compact Stats in Menu */}
-          <div className="mt-6 pt-4 border-t border-primary/20 text-sm opacity-60">
+          <div className="mt-6 pt-4 text-sm opacity-60">
             <div>OPERATOR: {user.username.toUpperCase()}</div>
             <div>CLEARANCE: LEVEL {user.level}</div>
             <div>XP: {user.xp}/{xpForNextLevel}</div>

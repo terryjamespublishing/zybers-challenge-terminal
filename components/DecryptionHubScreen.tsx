@@ -25,7 +25,7 @@ const DecryptionHubScreen: React.FC<DecryptionHubScreenProps> = ({
                     </div>
                 </div>
 
-                <div className="border-t border-primary/30 pt-4 mt-6">
+                <div className="pt-4 mt-6">
                     <div className="text-xl mb-4 opacity-70">&gt; AVAILABLE MODULES:</div>
                     <div className="text-xl space-y-2">
                         <p className="opacity-50">&gt; System scanning for upgrades...</p>

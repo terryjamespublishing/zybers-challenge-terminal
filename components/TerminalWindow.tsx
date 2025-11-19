@@ -11,7 +11,7 @@ const TerminalWindow: React.FC<TerminalWindowProps> = ({ title, children, onExit
   return (
     <div className="terminal-window h-full flex flex-col">
       {title && (
-        <div className="flex justify-between items-center mb-2 pb-1 border-b border-primary/30 flex-shrink-0">
+        <div className="flex justify-between items-center mb-2 pb-1 flex-shrink-0">
           <h2 className="text-xl md:text-2xl uppercase tracking-wider opacity-70">{title}</h2>
           {onExit && (
             <button

@@ -366,10 +366,21 @@ input.opacity-0:focus-visible {
   .p-4 {
     padding: 0.5rem !important;
   }
-  
+
   .my-4 {
     margin-top: 0.5rem !important;
     margin-bottom: 0.5rem !important;
   }
+}
+
+/* Prevent white/light borders that ruin the hacker aesthetic */
+* {
+  border-color: transparent !important;
+}
+
+/* Allow green/primary colored borders only for intentional UI elements */
+.border-primary,
+[class*="border-primary"] {
+  border-color: var(--color-primary) !important;
 }
 
