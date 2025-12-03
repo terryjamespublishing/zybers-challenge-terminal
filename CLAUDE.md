@@ -100,29 +100,29 @@ if (currentChallenge.id === 1) {
 **Challenge ID: 1** - Baking Soda & Vinegar Balloon Inflation
 
 Multi-phase challenge:
-1. **Intro Phase**: Zyber announces gas leak in Sector 7, explains the situation with voice synthesis
-2. **Puzzle Phase**: CircuitPuzzle - connect power to valve by rotating wire segments
+1. **Intro Phase**: Zyber announces gas leak in Sector 7 with speech-synced text display
+2. **Puzzle Phase**: CircuitPuzzle (Medium difficulty 9x9) - clean UI focused on puzzle
 3. **Valve Closing Phase**: Animated valve rotation, gas level dropping
 4. **Physical Challenge Phase**: Instructions for real-world balloon experiment
 
-Visual effects: Floating gas particles, warning banners, valve animation
+Visual effects: Floating gas particles, warning banners, electrical crackling on powered wires
 
 #### CircuitPuzzle (`puzzles/CircuitPuzzle.tsx`)
 
 Interactive wire-routing puzzle with significant difficulty:
 - Grid of rotatable wire pieces (straight, corner, T-junction, cross)
 - Click to rotate pieces 90 degrees
-- **PWR source**: Single exit point (right only) - clearly shows where power starts
-- **VALVE target**: Single entry point (left only) - clearly shows where power must reach
-- **Real-time power illumination**: Connected wires glow green as you solve
-- Power flows visibly from PWR through connected wires toward VALVE
-- Difficulty adjusts grid size: Easy 6x6 / Medium 8x8 / Hard 10x10
-- **Full-width display**: Grid uses 90-98% viewport width for maximum visibility
-- Blocked cells (red X) act as obstacles, more on harder difficulties
-- Winding paths: Algorithm forces long, meandering routes (45%+ of grid)
+- **PWR source**: Single exit point (right only) with crackling spark effects
+- **VALVE target**: Single entry point (left only) - sparks when power reaches it
+- **Real-time power illumination**: Connected wires glow green with electrical crackling
+- **Electrical effects**: Flickering glow, traveling sparks along powered wires
+- Difficulty adjusts grid size: **Easy 7x7 / Medium 9x9 / Hard 11x11**
+- Blocked cells (red X): **5 / 10 / 16** based on difficulty
+- Winding paths: Algorithm forces long routes (**55%+ of grid cells**)
+- Decoy paths: **2 / 4 / 6** false routes based on difficulty
 - Path must exit source going RIGHT and enter target from LEFT
-- Decoy paths: Partial false routes that look like valid solutions
-- Heavy use of T-junctions and crosses to create multiple false connection points
+- Heavy use of T-junctions and crosses to create false connection points
+- **Anti-cheat**: Re-scrambles if randomly solved on generation
 - Guaranteed solvable: generates winding path first, avoids blocked cells, then scrambles
 
 ### Adding New Puzzle Challenges
@@ -145,9 +145,21 @@ Interactive wire-routing puzzle with significant difficulty:
 
 Challenges are presented sequentially, sorted by difficulty.
 
-### Admin Panel
+## Keyboard Shortcuts
 
+### Boot Screen
+- `SPACE` - Skip boot sequence
+
+### Admin Panel
 Access via `?admin=true` URL parameter or `Ctrl+Shift+A`. Password: `zyber2029`
+
+**Dashboard shortcuts:**
+- `1` - Challenge Manager
+- `2` - Story Planner
+- `3` - User Management
+- `4` - Puzzle Tester
+- `N` - New Challenge
+- `ESC` - Go back / Exit to game
 
 Located in `components/admin/`:
 - **ChallengeManager.tsx**: View/filter/edit/delete challenges

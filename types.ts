@@ -130,6 +130,7 @@ export enum AdminScreen {
     ChallengeEdit = 'admin-challenge-edit',
     StoryPlanner = 'admin-story-planner',
     Users = 'admin-users',
+    PuzzleTester = 'admin-puzzle-tester',
 }
 
 // Admin User (for managing players/children)

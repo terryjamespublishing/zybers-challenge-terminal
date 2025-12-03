@@ -1,10 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User, QuestChallenge, VoiceSettings } from '../types';
 import ZyberEye from './ZyberEye';
 import StatsIcon from './StatsIcon';
 import StatsScreen from './StatsScreen';
 import { getCurrentChallenge, getProgressStats } from '../services/progressService';
 import { playNavigationSound } from '../utils/terminalSounds';
+import { speakAIResponse } from '../utils/lowTechVoice';
+
+// Zyber's random vocalizations - laughs, noises, and creepy sounds
+const ZYBER_VOCALIZATIONS = [
+  "[SINISTER] Heh heh heh heh...",
+  "[MOCKING] Ha! Ha ha ha ha!",
+  "[CALCULATING] Mmmmm... interesting...",
+  "[SINISTER] Hehehehe... yesss...",
+  "[CREEPY] *mechanical whirring* Watching... always watching...",
+  "[MOCKING] Ah ha ha ha ha ha!",
+  "[CALCULATING] Processing... processing... hmmm...",
+  "[SINISTER] Tick tock, little human... tick tock...",
+  "[CREEPY] *static crackle* ...I see you...",
+  "[MOCKING] Oh ho ho! This will be fun...",
+  "[SINISTER] Mwa ha ha ha ha!",
+  "[CALCULATING] Beep... boop... analyzing prey...",
+  "[CREEPY] *low hum* ...waiting...",
+  "[MOCKING] Hee hee hee! Fresh meat!",
+  "[SINISTER] Excellent... excellent...",
+  "[CALCULATING] Zzzzzt... target acquired...",
+  "[CREEPY] *digital growl* Grrrrrr...",
+  "[MOCKING] Ohhh, you're still here? How brave... how foolish...",
+  "[SINISTER] Sssssoon... very soon...",
+  "[CALCULATING] *beeping intensifies* ...ready...",
+];
 
 interface DashboardScreenProps {
   user: User;
@@ -21,11 +46,47 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [currentChallenge, setCurrentChallenge] = useState<QuestChallenge | null>(null);
   const [stats, setStats] = useState(() => getProgressStats());
   const [glitchText, setGlitchText] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const vocalizationTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setCurrentChallenge(getCurrentChallenge());
     setStats(getProgressStats());
   }, []);
+
+  // Random Zyber vocalizations - laughs and strange noises
+  useEffect(() => {
+    const scheduleNextVocalization = () => {
+      // Random delay between 8-25 seconds
+      const delay = 8000 + Math.random() * 17000;
+
+      vocalizationTimerRef.current = setTimeout(async () => {
+        if (!isSpeaking) {
+          setIsSpeaking(true);
+          const vocalization = ZYBER_VOCALIZATIONS[Math.floor(Math.random() * ZYBER_VOCALIZATIONS.length)];
+          try {
+            await speakAIResponse(vocalization, voiceSettings.language);
+          } catch (e) {
+            console.error('Vocalization error:', e);
+          }
+          setIsSpeaking(false);
+        }
+        scheduleNextVocalization();
+      }, delay);
+    };
+
+    // Start the vocalization cycle after initial delay
+    const initialDelay = setTimeout(() => {
+      scheduleNextVocalization();
+    }, 5000); // Wait 5 seconds before first vocalization
+
+    return () => {
+      clearTimeout(initialDelay);
+      if (vocalizationTimerRef.current) {
+        clearTimeout(vocalizationTimerRef.current);
+      }
+    };
+  }, [voiceSettings.language, isSpeaking]);
 
   // Random glitch effect on text
   useEffect(() => {
@@ -107,27 +168,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
       {/* Main content - Eye */}
       <div className="flex flex-col items-center justify-center flex-grow py-8">
-        {/* Zyber message */}
-        <div
-          className="text-center mb-8 max-w-xl px-4"
-          style={{
-            filter: glitchText ? 'hue-rotate(20deg)' : 'none',
-          }}
-        >
-          <div className="text-primary/70 text-lg tracking-wide mb-2">
-            {stats.isAllComplete ? (
-              'ALL CHALLENGES COMPLETE. YOU HAVE PROVEN WORTHY.'
-            ) : (
-              '> I SEE YOU, HUMAN. READY TO PROVE YOURSELF?'
-            )}
-          </div>
-        </div>
-
         {/* The Eye */}
         <ZyberEye
           onClick={handleStartChallenge}
           isWatching={!stats.isAllComplete}
-          size={500}
+          size={Math.min(1000, window.innerWidth * 0.9)}
         />
 
 

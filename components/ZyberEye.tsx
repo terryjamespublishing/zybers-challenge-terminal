@@ -243,15 +243,27 @@ const ZyberEye: React.FC<ZyberEyeProps> = ({ onClick, isWatching = true, size = 
       </div>
 
       {/* Text prompt below eye */}
-      <div className="mt-8 text-center">
+      <div className="mt-20 text-center">
         <div
-          className="text-primary text-2xl tracking-widest animate-pulse cursor-pointer"
+          className="text-primary text-4xl md:text-5xl lg:text-6xl tracking-widest animate-pulse cursor-pointer font-bold"
           onClick={onClick}
           style={{
-            textShadow: `0 0 10px rgba(0, 255, 65, ${pulseIntensity * 0.8})`,
+            textShadow: `
+              0 0 20px rgba(0, 255, 65, ${pulseIntensity * 0.8}),
+              0 0 40px rgba(0, 255, 65, ${pulseIntensity * 0.4}),
+              0 0 60px rgba(0, 255, 65, ${pulseIntensity * 0.2})
+            `,
           }}
         >
           [ INITIATE CHALLENGE ]
+        </div>
+        <div
+          className="text-primary/50 text-sm mt-4 tracking-wider"
+          style={{
+            textShadow: `0 0 5px rgba(0, 255, 65, 0.3)`,
+          }}
+        >
+          CLICK THE EYE TO BEGIN
         </div>
       </div>
 

@@ -88,11 +88,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate, onLogout, o
                 )}
 
                 {/* Main Navigation Cards */}
-                <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <button
                         onClick={() => onNavigate(AdminScreen.Challenges)}
-                        className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all text-left group"
+                        className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all text-left group relative"
                     >
+                        <kbd className="absolute top-3 right-3 px-2 py-1 bg-slate-100 rounded text-slate-400 text-xs font-mono">1</kbd>
                         <div className="flex items-start gap-5">
                             <div className="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center text-3xl">
                                 📋
@@ -118,8 +119,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate, onLogout, o
 
                     <button
                         onClick={() => onNavigate(AdminScreen.StoryPlanner)}
-                        className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 hover:border-emerald-300 hover:shadow-md transition-all text-left group"
+                        className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 hover:border-emerald-300 hover:shadow-md transition-all text-left group relative"
                     >
+                        <kbd className="absolute top-3 right-3 px-2 py-1 bg-slate-100 rounded text-slate-400 text-xs font-mono">2</kbd>
                         <div className="flex items-start gap-5">
                             <div className="w-14 h-14 bg-emerald-100 rounded-lg flex items-center justify-center text-3xl">
                                 🗺️
@@ -145,8 +147,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate, onLogout, o
 
                     <button
                         onClick={() => onNavigate(AdminScreen.Users)}
-                        className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 hover:border-purple-300 hover:shadow-md transition-all text-left group"
+                        className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 hover:border-purple-300 hover:shadow-md transition-all text-left group relative"
                     >
+                        <kbd className="absolute top-3 right-3 px-2 py-1 bg-slate-100 rounded text-slate-400 text-xs font-mono">3</kbd>
                         <div className="flex items-start gap-5">
                             <div className="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center text-3xl">
                                 👥
@@ -165,6 +168,32 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate, onLogout, o
                                 )}
                             </div>
                             <span className="text-slate-300 text-3xl group-hover:text-purple-400 transition-colors">
+                                &rarr;
+                            </span>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => onNavigate(AdminScreen.PuzzleTester)}
+                        className="bg-white rounded-xl p-8 shadow-sm border border-slate-200 hover:border-cyan-300 hover:shadow-md transition-all text-left group relative"
+                    >
+                        <kbd className="absolute top-3 right-3 px-2 py-1 bg-slate-100 rounded text-slate-400 text-xs font-mono">4</kbd>
+                        <div className="flex items-start gap-5">
+                            <div className="w-14 h-14 bg-cyan-100 rounded-lg flex items-center justify-center text-3xl">
+                                🎮
+                            </div>
+                            <div className="flex-1">
+                                <h2 className="text-2xl font-semibold text-slate-800 group-hover:text-cyan-600 transition-colors">
+                                    Puzzle Tester
+                                </h2>
+                                <p className="text-slate-500 mt-2 text-lg">
+                                    Test terminal-based challenges
+                                </p>
+                                <p className="text-cyan-600 text-base mt-4 font-medium">
+                                    Dev Tools
+                                </p>
+                            </div>
+                            <span className="text-slate-300 text-3xl group-hover:text-cyan-400 transition-colors">
                                 &rarr;
                             </span>
                         </div>
@@ -214,6 +243,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate, onLogout, o
                             + New User
                         </button>
                     </div>
+                </div>
+
+                {/* Keyboard Shortcuts */}
+                <div className="mt-6 text-center text-slate-400 text-sm">
+                    <span className="inline-flex items-center gap-4">
+                        <span><kbd className="px-2 py-1 bg-slate-100 rounded text-slate-600 font-mono">1-4</kbd> Navigate</span>
+                        <span><kbd className="px-2 py-1 bg-slate-100 rounded text-slate-600 font-mono">N</kbd> New Challenge</span>
+                        <span><kbd className="px-2 py-1 bg-slate-100 rounded text-slate-600 font-mono">ESC</kbd> Exit</span>
+                    </span>
                 </div>
             </main>
         </div>

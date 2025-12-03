@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { AdminScreen } from '../../types';
 import { isAdminLoggedIn } from '../../services/questDataService';
 import AdminLoginScreen from './AdminLoginScreen';
@@ -7,6 +7,7 @@ import ChallengeManager from './ChallengeManager';
 import ChallengeEditor from './ChallengeEditor';
 import StoryPlanner from './StoryPlanner';
 import UserManager from './UserManager';
+import PuzzleTester from './PuzzleTester';
 
 interface AdminAppProps {
     onExit: () => void;
@@ -21,6 +22,62 @@ const AdminApp: React.FC<AdminAppProps> = ({ onExit }) => {
         isAdminLoggedIn() ? AdminScreen.Dashboard : AdminScreen.Login
     );
     const [navData, setNavData] = useState<NavigationData>({});
+
+    // Keyboard shortcuts handler
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        // Don't trigger if typing in an input
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+            // Only allow ESC in inputs
+            if (e.key !== 'Escape') return;
+        }
+
+        // ESC - Go back or exit
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            if (currentScreen === AdminScreen.Dashboard) {
+                onExit();
+            } else if (currentScreen === AdminScreen.ChallengeEdit) {
+                setCurrentScreen(AdminScreen.Challenges);
+            } else if (currentScreen !== AdminScreen.Login) {
+                setCurrentScreen(AdminScreen.Dashboard);
+            }
+            return;
+        }
+
+        // Dashboard shortcuts (only when on dashboard)
+        if (currentScreen === AdminScreen.Dashboard) {
+            switch (e.key) {
+                case '1':
+                    e.preventDefault();
+                    setCurrentScreen(AdminScreen.Challenges);
+                    break;
+                case '2':
+                    e.preventDefault();
+                    setCurrentScreen(AdminScreen.StoryPlanner);
+                    break;
+                case '3':
+                    e.preventDefault();
+                    setCurrentScreen(AdminScreen.Users);
+                    break;
+                case '4':
+                    e.preventDefault();
+                    setCurrentScreen(AdminScreen.PuzzleTester);
+                    break;
+                case 'n':
+                case 'N':
+                    e.preventDefault();
+                    setCurrentScreen(AdminScreen.ChallengeEdit);
+                    setNavData({});
+                    break;
+            }
+        }
+    }, [currentScreen, onExit]);
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
 
     const handleNavigate = (screen: AdminScreen, data?: NavigationData) => {
         setCurrentScreen(screen);
@@ -87,6 +144,12 @@ const AdminApp: React.FC<AdminAppProps> = ({ onExit }) => {
                 return (
                     <UserManager
                         onNavigate={handleNavigate}
+                        onBack={() => handleNavigate(AdminScreen.Dashboard)}
+                    />
+                );
+            case AdminScreen.PuzzleTester:
+                return (
+                    <PuzzleTester
                         onBack={() => handleNavigate(AdminScreen.Dashboard)}
                     />
                 );

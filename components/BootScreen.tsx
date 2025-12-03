@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 interface BootScreenProps {
   onComplete: () => void;
@@ -54,6 +54,7 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
   const typeLine = useCallback((text: string, delay: number = 30): Promise<void> => {
     return new Promise((resolve) => {
       let index = 0;
+
       const typeChar = () => {
         if (index <= text.length) {
           setBootLines(prev => {
@@ -67,13 +68,36 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
           resolve();
         }
       };
+
       setBootLines(prev => [...prev, '']);
-      typeChar();
+      // Small delay to ensure state update completes before typing starts
+      setTimeout(typeChar, 16);
     });
   }, []);
 
+  // Prevent StrictMode from running boot sequence twice
+  const hasStartedRef = useRef(false);
+  const hasSkippedRef = useRef(false);
+
+  // Skip boot sequence with SPACE key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && !hasSkippedRef.current) {
+        e.preventDefault();
+        hasSkippedRef.current = true;
+        onComplete();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onComplete]);
+
   // Main boot sequence
   useEffect(() => {
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
+
     const runBootSequence = async () => {
       // Phase 1: Power On (CRT warm-up) - let the line glow sink in
       await new Promise(r => setTimeout(r, 1400));
@@ -119,12 +143,12 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
 
       // Phase 3: Logo reveal - let users admire the ASCII art
       setPhase('logo');
-      await new Promise(r => setTimeout(r, 3000));
+      await new Promise(r => setTimeout(r, 2000));
 
-      // Phase 4: System initialization
+      // Phase 4: System initialization (text appears below logo)
       setPhase('init');
       setBootLines([]);
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 300));
 
       await typeLine('Initializing ZYBER Core Systems...', 45);
       await new Promise(r => setTimeout(r, 400));
@@ -163,7 +187,7 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
 
       // Phase 5: Ready - let the message land
       setPhase('ready');
-      await new Promise(r => setTimeout(r, 2200));
+      await new Promise(r => setTimeout(r, 4000));
 
       // Phase 6: Fade out
       setPhase('fadeOut');
@@ -199,8 +223,8 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
       {/* Main content */}
       <div className={`boot-content ${phase === 'powerOn' ? 'hidden' : ''}`}>
 
-        {/* POST and Init phases - terminal text */}
-        {(phase === 'post' || phase === 'init') && (
+        {/* POST phase - terminal text only */}
+        {phase === 'post' && (
           <div className="boot-terminal">
             {bootLines.map((line, i) => (
               <div key={i} className="boot-line">
@@ -219,6 +243,23 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
             <pre className="ascii-logo">{ZYBER_LOGO}</pre>
             <div className="logo-subtitle">NEURAL ADVERSARIAL SYSTEM</div>
             <div className="logo-version">v6.66</div>
+          </div>
+        )}
+
+        {/* Init phase - logo with terminal text below */}
+        {phase === 'init' && (
+          <div className="logo-init-container">
+            <pre className="ascii-logo">{ZYBER_LOGO}</pre>
+            <div className="boot-terminal boot-terminal-under-logo">
+              {bootLines.map((line, i) => (
+                <div key={i} className="boot-line">
+                  {line}
+                  {i === bootLines.length - 1 && showCursor && (
+                    <span className="cursor">█</span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
