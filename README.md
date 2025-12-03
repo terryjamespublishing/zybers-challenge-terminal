@@ -81,7 +81,7 @@ BootScreen → IntroScreen → LoginScreen → Dashboard → [Challenge/Live/Dec
 1. **Boot Screen** - CRT warm-up, memory test, system diagnostics
 2. **Intro Screen** - Zyber confrontation and entry riddle
 3. **Login Screen** - Create account (stored locally)
-4. **Dashboard** - Select challenge category, view stats
+4. **Dashboard** - ZyberEye interface, click to initiate challenge
 5. **Challenge Screen** - AI-generated educational challenges
 6. **Live Screen** - Real-time voice conversation
 7. **Admin Panel** - Manage challenges and story arcs

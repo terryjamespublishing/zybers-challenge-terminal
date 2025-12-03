@@ -35,7 +35,7 @@ BootScreen → IntroScreen → LoginScreen → DashboardScreen → [Challenge/Li
 - **BootScreen** (`components/BootScreen.tsx`): CRT power-on animation with ZYBER ASCII logo, memory test, system diagnostics. Duration ~20 seconds.
 - **IntroScreen** (`components/IntroScreen.tsx`): Interactive confrontation where Zyber challenges users with random riddles before granting access. Uses emotion-tagged TTS.
 - **LoginScreen**: Simple username/password creation (stored in localStorage)
-- **DashboardScreen**: Challenge category selection, stats display, settings access
+- **DashboardScreen**: Central hub with ZyberEye (large interactive eye that follows cursor), mission progress, stats icon. Click eye to initiate current challenge.
 - **ChallengeScreen**: AI-powered educational challenges with structured rewards
 - **LiveScreen**: Real-time voice chat with Zyber using Gemini Live API
 - **DecryptionHubScreen**: Shop interface (partially implemented)
