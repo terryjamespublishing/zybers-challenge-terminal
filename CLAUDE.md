@@ -32,7 +32,7 @@ BootScreen → IntroScreen → LoginScreen → DashboardScreen → [Challenge/Li
                                          Admin Panel (via ?admin=true or Ctrl+Shift+A)
 ```
 
-- **BootScreen** (`components/BootScreen.tsx`): CRT power-on animation with ZYBER ASCII logo, memory test, system diagnostics. Duration ~10 seconds.
+- **BootScreen** (`components/BootScreen.tsx`): CRT power-on animation with ZYBER ASCII logo, memory test, system diagnostics. Duration ~20 seconds.
 - **IntroScreen** (`components/IntroScreen.tsx`): Interactive confrontation where Zyber challenges users with random riddles before granting access. Uses emotion-tagged TTS.
 - **LoginScreen**: Simple username/password creation (stored in localStorage)
 - **DashboardScreen**: Challenge category selection, stats display, settings access

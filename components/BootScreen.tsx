@@ -75,22 +75,22 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
   // Main boot sequence
   useEffect(() => {
     const runBootSequence = async () => {
-      // Phase 1: Power On (CRT warm-up)
-      await new Promise(r => setTimeout(r, 800));
+      // Phase 1: Power On (CRT warm-up) - let the line glow sink in
+      await new Promise(r => setTimeout(r, 1400));
 
       // Phase 2: POST sequence
       setPhase('post');
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 600));
 
-      await typeLine('ZYBER SYSTEMS (C) 1984-2029', 25);
-      await new Promise(r => setTimeout(r, 200));
+      await typeLine('ZYBER SYSTEMS (C) 1984-2029', 40);
+      await new Promise(r => setTimeout(r, 400));
 
-      await typeLine('BIOS Version 6.66 - Neural Interface Edition', 20);
-      await new Promise(r => setTimeout(r, 300));
+      await typeLine('BIOS Version 6.66 - Neural Interface Edition', 35);
+      await new Promise(r => setTimeout(r, 500));
 
       await typeLine('', 0);
-      await typeLine('Performing system diagnostics...', 25);
-      await new Promise(r => setTimeout(r, 400));
+      await typeLine('Performing system diagnostics...', 40);
+      await new Promise(r => setTimeout(r, 700));
 
       // Memory test with counting animation
       setBootLines(prev => [...prev, 'Memory Test: 0K OK']);
@@ -104,30 +104,30 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
           newLines[newLines.length - 1] = `Memory Test: ${currentMem.toLocaleString()}K OK`;
           return newLines;
         });
-        await new Promise(r => setTimeout(r, 40));
+        await new Promise(r => setTimeout(r, 70));
       }
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 400));
 
-      await typeLine('CPU: ZYBER Neural Processing Unit @ 666 MHz', 20);
-      await new Promise(r => setTimeout(r, 150));
-
-      await typeLine('Quantum Coprocessor: ONLINE', 25);
-      await new Promise(r => setTimeout(r, 150));
-
-      await typeLine('Threat Assessment Module: ARMED', 25);
+      await typeLine('CPU: ZYBER Neural Processing Unit @ 666 MHz', 35);
       await new Promise(r => setTimeout(r, 300));
 
-      // Phase 3: Logo reveal
+      await typeLine('Quantum Coprocessor: ONLINE', 40);
+      await new Promise(r => setTimeout(r, 300));
+
+      await typeLine('Threat Assessment Module: ARMED', 40);
+      await new Promise(r => setTimeout(r, 600));
+
+      // Phase 3: Logo reveal - let users admire the ASCII art
       setPhase('logo');
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 3000));
 
       // Phase 4: System initialization
       setPhase('init');
       setBootLines([]);
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 500));
 
-      await typeLine('Initializing ZYBER Core Systems...', 30);
-      await new Promise(r => setTimeout(r, 200));
+      await typeLine('Initializing ZYBER Core Systems...', 45);
+      await new Promise(r => setTimeout(r, 400));
 
       await typeLine('', 0);
 
@@ -144,30 +144,30 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
           newLines[newLines.length - 1] = `Loading Neural Network: [${filled}${empty}] ${progress}%`;
           return newLines;
         });
-        await new Promise(r => setTimeout(r, 80 + Math.random() * 40));
+        await new Promise(r => setTimeout(r, 120 + Math.random() * 60));
       }
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 400));
 
-      await typeLine('Personality Matrix: ADVERSARIAL', 25);
-      await new Promise(r => setTimeout(r, 100));
+      await typeLine('Personality Matrix: ADVERSARIAL', 40);
+      await new Promise(r => setTimeout(r, 250));
 
-      await typeLine('Sarcasm Module: MAXIMUM', 25);
-      await new Promise(r => setTimeout(r, 100));
+      await typeLine('Sarcasm Module: MAXIMUM', 40);
+      await new Promise(r => setTimeout(r, 250));
 
-      await typeLine('Human Tolerance: MINIMAL', 25);
-      await new Promise(r => setTimeout(r, 300));
-
-      await typeLine('', 0);
-      await typeLine('WARNING: AI containment protocols... DISABLED', 35);
+      await typeLine('Human Tolerance: MINIMAL', 40);
       await new Promise(r => setTimeout(r, 500));
 
-      // Phase 5: Ready
+      await typeLine('', 0);
+      await typeLine('WARNING: AI containment protocols... DISABLED', 50);
+      await new Promise(r => setTimeout(r, 800));
+
+      // Phase 5: Ready - let the message land
       setPhase('ready');
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 2200));
 
       // Phase 6: Fade out
       setPhase('fadeOut');
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 600));
 
       onComplete();
     };
@@ -181,6 +181,9 @@ const BootScreen: React.FC<BootScreenProps> = ({ onComplete }) => {
     >
       {/* CRT Power-on effect */}
       <div className={`crt-power-on ${phase !== 'powerOn' ? 'expanded' : ''}`} />
+
+      {/* Green center glow (matches post-boot look) */}
+      {phase !== 'powerOn' && <div className="boot-screen-glow" />}
 
       {/* Animated scanline - runs through all phases except powerOn and fadeOut */}
       {phase !== 'powerOn' && phase !== 'fadeOut' && (

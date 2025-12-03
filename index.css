@@ -138,10 +138,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background:
-    radial-gradient(ellipse at center, rgba(0, 255, 65, 0.28) 0%, rgba(0, 255, 65, 0.16) 40%, rgba(0, 255, 65, 0.08) 85%, rgba(0, 255, 65, 0.04) 120%),
-    linear-gradient(180deg, rgba(0, 255, 65, 0.18) 0%, rgba(0, 255, 65, 0.1) 45%, rgba(0, 255, 65, 0.08) 100%),
-    #000;
+  background: #0a0a0a;
   z-index: 10000;
   overflow: hidden;
   font-family: 'VT323', monospace;
@@ -438,14 +435,14 @@ body {
   z-index: 90;
 }
 
-/* Reserve overlay index slots so other layers stack correctly */
-.boot-screen-container::after {
-  content: "";
+/* Green center glow for boot screen (matches post-boot) */
+.boot-screen-glow {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  background: radial-gradient(ellipse at center, rgba(0, 255, 65, 0.08) 0%, transparent 70%);
   pointer-events: none;
   z-index: 15;
 }
