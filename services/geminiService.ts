@@ -2,12 +2,19 @@ import { GoogleGenAI, Content, LiveServerMessage, Blob, Modality, Type } from "@
 import { ZYBER_PERSONALITY_PROMPT } from '../constants';
 import { decode, encode } from '../utils/audioUtils';
 import { VoiceSettings, AiResponse } from "../types";
+import { createVoiceEffectChain, VOICE_PRESETS, applyPitchShift, VoiceEffectChain } from '../utils/voiceEffects';
 
-const API_KEY = process.env.API_KEY;
-if (!API_KEY) {
-    throw new Error("API_KEY environment variable not set");
+// In Vite, environment variables need VITE_ prefix to be exposed to browser
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!API_KEY || API_KEY === 'PLACEHOLDER_API_KEY') {
+    console.error("❌ GEMINI API KEY NOT SET!");
+    console.error("Please add your API key to .env.local");
+    console.error("Get your key from: https://aistudio.google.com/apikey");
+    throw new Error("VITE_GEMINI_API_KEY not configured in .env.local");
 }
 
+console.log("✅ Gemini API Key loaded successfully");
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 const generationConfig = {
@@ -220,9 +227,21 @@ export const connectLive = async (systemInstruction: string, onMessage: (message
     outputNode.connect(outputAudioContext.destination);
     
     let carrierOscillator: OscillatorNode | null = null;
+    let effectChain: VoiceEffectChain | null = null;
     let finalAudioNode: AudioNode = outputNode; // Default to direct output
 
-    if (settings.vocoderEnabled) {
+    // Use advanced voice effects if enabled
+    if (settings.useAdvancedEffects) {
+        const presetSettings = settings.voicePreset === 'custom' && settings.customEffects
+            ? settings.customEffects
+            : VOICE_PRESETS[settings.voicePreset];
+        
+        effectChain = createVoiceEffectChain(outputAudioContext, presetSettings);
+        effectChain.output.connect(outputNode);
+        finalAudioNode = effectChain.input;
+        
+    } else if (settings.vocoderEnabled) {
+        // Fall back to simple vocoder
         const modulatorGain = outputAudioContext.createGain();
         modulatorGain.connect(outputNode);
 
@@ -231,16 +250,19 @@ export const connectLive = async (systemInstruction: string, onMessage: (message
         carrierOscillator.frequency.value = settings.vocoderFrequency;
 
         const carrierGain = outputAudioContext.createGain();
-        carrierGain.gain.value = 0.7; // Modulation depth
+        carrierGain.gain.value = 0.7;
 
         carrierOscillator.connect(carrierGain);
         carrierGain.connect(modulatorGain.gain);
         carrierOscillator.start();
         
-        finalAudioNode = modulatorGain; // Route audio through the effect
+        finalAudioNode = modulatorGain;
     }
 
     const sources = new Set<AudioBufferSourceNode>();
+    const presetSettings = settings.useAdvancedEffects && (settings.voicePreset === 'custom' && settings.customEffects
+        ? settings.customEffects
+        : VOICE_PRESETS[settings.voicePreset]);
     
     let langInstruction = '';
     let accentInstruction = '';
@@ -282,6 +304,12 @@ export const connectLive = async (systemInstruction: string, onMessage: (message
                     const audioBuffer = await decodeAudioData(decode(base64Audio), outputAudioContext, 24000, 1);
                     const source = outputAudioContext.createBufferSource();
                     source.buffer = audioBuffer;
+                    
+                    // Apply pitch shift if using advanced effects
+                    if (settings.useAdvancedEffects && presetSettings) {
+                        applyPitchShift(source, presetSettings.pitchShift);
+                    }
+                    
                     source.connect(finalAudioNode);
                     source.addEventListener('ended', () => sources.delete(source));
                     source.start(nextStartTime);
@@ -301,6 +329,9 @@ export const connectLive = async (systemInstruction: string, onMessage: (message
                 console.log('Live connection closed.');
                 if (carrierOscillator) {
                     carrierOscillator.stop();
+                }
+                if (effectChain) {
+                    effectChain.cleanup();
                 }
             },
         },

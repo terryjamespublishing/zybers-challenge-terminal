@@ -23,7 +23,7 @@ body {
   background: #0a0a0a;
 }
 
-/* Scanlines effect */
+/* Scanlines effect - visible horizontal lines */
 .crt-screen::before {
   content: "";
   position: fixed;
@@ -31,14 +31,15 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.25) 50%
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
   );
-  background-size: 100% 4px;
   z-index: 9999;
   pointer-events: none;
-  animation: scanline 8s linear infinite;
 }
 
 /* Screen glow effect */
@@ -49,27 +50,40 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(ellipse at center, rgba(0, 255, 65, 0.05) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(0, 255, 65, 0.08) 0%, transparent 70%);
   pointer-events: none;
   z-index: 9998;
 }
 
-@keyframes scanline {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 0 4px;
-  }
+/* Moving scanline bar - the "refresh" line */
+.crt-scanline-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(
+    transparent,
+    rgba(0, 255, 65, 0.08),
+    transparent
+  );
+  animation: scanlineMove 6s linear infinite;
+  pointer-events: none;
+  z-index: 9997;
 }
 
-/* Text glow for terminal authenticity */
+@keyframes scanlineMove {
+  0% { top: -10px; }
+  100% { top: 100%; }
+}
+
+/* Text glow for terminal authenticity - REDUCED for better readability */
 .terminal-text {
   text-shadow: 
-    0 0 5px rgba(0, 255, 65, 0.7),
-    0 0 10px rgba(0, 255, 65, 0.4),
-    0 0 15px rgba(0, 255, 65, 0.2);
-  line-height: 1.5;
+    0 0 3px rgba(0, 255, 65, 0.4),
+    0 0 6px rgba(0, 255, 65, 0.2);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
 }
 
 /* CRT Screen curvature and effects */
@@ -113,37 +127,361 @@ body {
   pointer-events: none;
 }
 
-/* Boot screen animation */
-@keyframes bootFlicker {
+/* ========================================
+   BOOT SCREEN - Immersive CRT Experience
+   ======================================== */
+
+/* Main container */
+.boot-screen-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(ellipse at center, rgba(0, 255, 65, 0.28) 0%, rgba(0, 255, 65, 0.16) 40%, rgba(0, 255, 65, 0.08) 85%, rgba(0, 255, 65, 0.04) 120%),
+    linear-gradient(180deg, rgba(0, 255, 65, 0.18) 0%, rgba(0, 255, 65, 0.1) 45%, rgba(0, 255, 65, 0.08) 100%),
+    #000;
+  z-index: 10000;
+  overflow: hidden;
+  font-family: 'VT323', monospace;
+}
+
+.boot-screen-container.fade-out {
+  animation: fadeToBlack 0.5s ease-out forwards;
+}
+
+@keyframes fadeToBlack {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* CRT Power-on effect - starts as horizontal line, expands */
+.crt-power-on {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #00ff41;
+  box-shadow:
+    0 0 10px #00ff41,
+    0 0 20px #00ff41,
+    0 0 40px #00ff41;
+  transform: translateY(-50%);
+  transition: height 0.6s ease-out, top 0.6s ease-out;
+  z-index: 10;
+}
+
+.crt-power-on.expanded {
+  top: 0;
+  height: 100vh;
+  background: #0a0a0a;
+  box-shadow: none;
+}
+
+/* Animated scanline sweep - slower, more subtle */
+.boot-scanline-sweep {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(
+    transparent,
+    rgba(0, 255, 65, 0.15),
+    rgba(0, 255, 65, 0.25),
+    rgba(0, 255, 65, 0.15),
+    transparent
+  );
+  box-shadow:
+    0 0 15px rgba(0, 255, 65, 0.3),
+    0 0 30px rgba(0, 255, 65, 0.15);
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Static noise overlay */
+.static-noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 50;
+  animation: staticFlicker 0.1s infinite;
+}
+
+@keyframes staticFlicker {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.05; }
+}
+
+/* Glitch effect */
+.boot-screen-container.glitch {
+  animation: glitchShake 0.1s ease-in-out;
+}
+
+.boot-screen-container.glitch .boot-content {
+  animation: glitchText 0.1s ease-in-out;
+}
+
+@keyframes glitchShake {
+  0%, 100% { transform: translate(0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, 2px); }
+}
+
+@keyframes glitchText {
+  0%, 100% {
+    text-shadow: 0 0 5px #00ff41;
+    filter: none;
+  }
+  25% {
+    text-shadow: -2px 0 #ff0000, 2px 0 #00ffff;
+    filter: brightness(1.5);
+  }
+  50% {
+    text-shadow: 2px 0 #ff0000, -2px 0 #00ffff;
+    filter: brightness(0.8);
+  }
+  75% {
+    text-shadow: -1px 0 #ff0000, 1px 0 #00ffff;
+    filter: brightness(1.2);
+  }
+}
+
+/* Boot content container */
+.boot-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.boot-content.hidden {
+  opacity: 0;
+}
+
+/* Terminal text during POST */
+.boot-terminal {
+  width: 90%;
+  max-width: 800px;
+  padding: 2rem;
+  text-align: left;
+}
+
+.boot-line {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: #00ff41;
+  margin-bottom: 0.3em;
+  text-shadow: 0 0 5px rgba(0, 255, 65, 0.7);
+  line-height: 1.4;
+  min-height: 1.4em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.boot-line .cursor {
+  animation: cursorBlink 1s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ASCII Logo */
+.logo-container {
+  text-align: center;
+  animation: logoReveal 0.8s ease-out;
+}
+
+@keyframes logoReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(10px);
+  }
+  50% {
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+.ascii-logo {
+  font-size: clamp(0.4rem, 1.8vw, 1rem);
+  color: #00ff41;
+  text-shadow:
+    0 0 5px #00ff41,
+    0 0 10px #00ff41,
+    0 0 20px #00ff41,
+    0 0 40px #00ff41;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 5px #00ff41,
+      0 0 10px #00ff41,
+      0 0 20px #00ff41,
+      0 0 40px #00ff41;
+  }
+  50% {
+    text-shadow:
+      0 0 10px #00ff41,
+      0 0 20px #00ff41,
+      0 0 40px #00ff41,
+      0 0 80px #00ff41;
+  }
+}
+
+.logo-subtitle {
+  font-size: clamp(1rem, 3vw, 1.8rem);
+  color: #00ff41;
+  margin-top: 1.5rem;
+  letter-spacing: 0.3em;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+  animation: subtitleFade 0.5s ease-out 0.3s both;
+}
+
+.logo-version {
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
+  color: #00ff41;
+  margin-top: 0.5rem;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
+  animation: subtitleFade 0.5s ease-out 0.5s both;
+}
+
+@keyframes subtitleFade {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Ready screen */
+.ready-container {
+  text-align: center;
+  animation: readyPulse 0.5s ease-out;
+}
+
+@keyframes readyPulse {
+  0% { transform: scale(0.9); opacity: 0; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.ready-text {
+  font-size: clamp(2rem, 8vw, 5rem);
+  color: #00ff41;
+  text-shadow:
+    0 0 10px #00ff41,
+    0 0 20px #00ff41,
+    0 0 40px #00ff41;
+  animation: readyGlow 1s ease-in-out infinite;
+}
+
+@keyframes readyGlow {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.8; }
 }
 
-@keyframes bootScan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+.ready-bracket {
+  color: #00ffff;
 }
 
-.boot-screen {
+.ready-status {
+  margin: 0 0.2em;
+}
+
+.ready-warning {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  color: #ff6600;
+  margin-top: 1rem;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
+  animation: warningBlink 0.5s ease-in-out infinite;
+}
+
+@keyframes warningBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Boot vignette */
+.boot-vignette {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: bootFlicker 0.1s infinite;
+  width: 100vw;
+  height: 100vh;
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+  z-index: 90;
 }
 
-.boot-scanline {
-  position: absolute;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(transparent, rgba(0, 255, 65, 0.8), transparent);
-  animation: bootScan 2s ease-in-out;
+/* Reserve overlay index slots so other layers stack correctly */
+.boot-screen-container::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 15;
+}
+
+/* Persistent scanlines overlay for boot screen (matches post-boot) */
+.boot-screen-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 80;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .boot-terminal {
+    padding: 1rem;
+  }
+
+  .boot-line {
+    font-size: clamp(0.8rem, 3vw, 1.2rem);
+  }
+
+  .ascii-logo {
+    font-size: clamp(0.25rem, 1.5vw, 0.6rem);
+  }
 }
 
 /* Larger, more readable text sizes for kids */

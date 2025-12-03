@@ -1,13 +1,63 @@
-# Changelog - Deep Dive Improvements
+# Changelog
+
+## Version 3.0 - Admin Panel & Documentation Overhaul
+
+**Date**: December 2025
+**Status**: ✅ Complete
+
+### New Features
+
+#### Admin Panel
+- **Challenge Manager** - Full CRUD for 40 STEM challenges
+- **Story Planner** - Visual node-based quest flow designer
+- **Import/Export** - JSON data backup and restore
+- Access via `?admin=true` or `Ctrl+Shift+A` (password: `zyber2029`)
+
+#### Boot Sequence
+- **BootScreen** - CRT power-on animation with ZYBER ASCII logo
+- Memory test animation, system diagnostics
+- Phase-based transitions with scanline effects
+
+#### Entry Challenge
+- **IntroScreen** - Zyber confrontation before login
+- Random riddles with hint system
+- Emotion-tagged voice responses
+
+### New Files
+- `components/admin/AdminApp.tsx` - Admin routing
+- `components/admin/AdminLoginScreen.tsx` - Password auth
+- `components/admin/AdminDashboard.tsx` - Stats overview
+- `components/admin/ChallengeManager.tsx` - Challenge list/filter
+- `components/admin/ChallengeEditor.tsx` - Create/edit forms
+- `components/admin/StoryPlanner.tsx` - Node-based editor
+- `services/questDataService.ts` - Challenge & story CRUD
+- `components/BootScreen.tsx` - CRT boot animation
+- `components/IntroScreen.tsx` - Entry riddle system
+
+### Documentation Cleanup
+Consolidated 28 markdown files down to 9:
+- `README.md` - Updated with all current features
+- `CLAUDE.md` - Updated development guide
+- `docs/VOICE_SYSTEM.md` - Consolidated voice documentation
+- `docs/DEPLOYMENT.md` - Consolidated deployment guide
+- `CHANGELOG.md` - Version history
+- `API_KEY_SETUP.md` - API key configuration
+- `CHALLENGE_FRAMEWORK.md` - Advanced challenge design
+- `IMPROVEMENTS_SUMMARY.md` - Historical reference
+
+### Timeline
+- All references updated from 2024 to 2029
+
+---
 
 ## Version 2.0 - Comprehensive Improvements
 
-**Date**: October 28, 2025  
+**Date**: October 28, 2025
 **Status**: ✅ All Critical & High Priority Issues Resolved
 
 ---
 
-## 🆕 New Files Created
+## New Files Created (v2.0)
 
 ### Configuration & Setup
 - **`.env.example`** - Environment variable template with API key instructions

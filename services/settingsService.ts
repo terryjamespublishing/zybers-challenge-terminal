@@ -11,11 +11,20 @@ export const loadVoiceSettings = (): VoiceSettings => {
         const stored = localStorage.getItem(SETTINGS_KEY);
         if (stored) {
             const parsed = JSON.parse(stored);
-            // Merge with defaults to ensure all properties exist
+            // Smart merge: use saved values only if they exist, otherwise use defaults
+            // This ensures new properties get their default values even with old saved settings
             return {
                 ...DEFAULT_VOICE_SETTINGS,
                 uiSoundsEnabled: true,
-                ...parsed,
+                // Only override with saved values that actually exist
+                ...(parsed.gender !== undefined && { gender: parsed.gender }),
+                ...(parsed.language !== undefined && { language: parsed.language }),
+                ...(parsed.vocoderEnabled !== undefined && { vocoderEnabled: parsed.vocoderEnabled }),
+                ...(parsed.vocoderFrequency !== undefined && { vocoderFrequency: parsed.vocoderFrequency }),
+                ...(parsed.uiSoundsEnabled !== undefined && { uiSoundsEnabled: parsed.uiSoundsEnabled }),
+                ...(parsed.useAdvancedEffects !== undefined && { useAdvancedEffects: parsed.useAdvancedEffects }),
+                ...(parsed.voicePreset !== undefined && { voicePreset: parsed.voicePreset }),
+                ...(parsed.customEffects !== undefined && { customEffects: parsed.customEffects }),
             };
         }
     } catch (error) {

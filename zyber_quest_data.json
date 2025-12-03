@@ -1,0 +1,711 @@
+{
+  "challenges": [
+    {
+      "id": 1,
+      "name": "Baking Soda & Vinegar Balloon Inflation",
+      "category": "Chemistry",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Baking soda",
+        "Vinegar",
+        "Balloon",
+        "Small bottle",
+        "Funnel"
+      ],
+      "description": "Students place baking soda in a balloon, attach it to a bottle with vinegar, and watch CO2 gas inflate the balloon to reveal a hidden clue written inside.",
+      "learning_objectives": "Acid-base reactions, gas production, pressure, chemical reactions produce new substances.",
+      "safety_notes": "Use in well-ventilated area, ensure balloon is properly secured to bottle.",
+      "story_ideas": "The balloon reveals coordinates, a code number, or map fragment when inflated."
+    },
+    {
+      "id": 2,
+      "name": "Magnet Retrieval from Sealed Jar",
+      "category": "Physics",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 8,
+      "materials": [
+        "Clear jar",
+        "Water",
+        "Metal key/token",
+        "Decorative beads",
+        "Strong magnet",
+        "String"
+      ],
+      "description": "Metal object sits at bottom of sealed jar. Students must use magnet on string to retrieve it without opening the jar.",
+      "learning_objectives": "Magnetic force, attraction through materials, careful manipulation, problem-solving.",
+      "safety_notes": "Ensure jar is sealed properly, supervise to prevent spills.",
+      "story_ideas": "Key opens next box, token has number engraved on it, metal piece fits into a puzzle."
+    },
+    {
+      "id": 3,
+      "name": "Magnifying Glass Observation",
+      "category": "Observation",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 5,
+      "materials": [
+        "Magnifying glass",
+        "Paper with extremely small print"
+      ],
+      "description": "Critical information is printed in tiny text that requires magnification to read.",
+      "learning_objectives": "Attention to detail, scientific observation, use of tools to enhance perception.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Hidden message in book margins, microscopic clue on artifact, tiny writing on old document."
+    },
+    {
+      "id": 4,
+      "name": "Cup Pyramid Building",
+      "category": "Engineering",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 12,
+      "materials": [
+        "20 plastic cups",
+        "Blueprint diagram"
+      ],
+      "description": "Students must build an exact pyramid structure following a blueprint. The total number of cups or mathematical operation on them reveals a code.",
+      "learning_objectives": "Spatial reasoning, structural stability, following technical diagrams, applied mathematics.",
+      "safety_notes": "Ensure work surface is stable.",
+      "story_ideas": "Pyramid shape mirrors ancient structure, cup count equals vault combination."
+    },
+    {
+      "id": 5,
+      "name": "Magnetic Grabber Tool Design",
+      "category": "Engineering",
+      "difficulty": 3,
+      "age_range": "12-16",
+      "time_minutes": 15,
+      "materials": [
+        "Pipe cleaners",
+        "String",
+        "Cardboard",
+        "Tape",
+        "Scissors",
+        "Magnet"
+      ],
+      "description": "Students design and build a tool to retrieve an object from a hard-to-reach location using provided materials.",
+      "learning_objectives": "Simple machines, leverage, creative problem-solving, iterative design process.",
+      "safety_notes": "Supervise use of scissors, ensure retrieval location is safe.",
+      "story_ideas": "Object hidden in narrow tube, item behind grate, piece fallen into crevice."
+    },
+    {
+      "id": 6,
+      "name": "Pattern Recognition Sequence",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 8,
+      "materials": [
+        "Colored objects or number cards",
+        "Pattern reference sheet"
+      ],
+      "description": "Students identify mathematical or color patterns (Fibonacci, arithmetic sequences, etc.) and predict the next value to unlock a code.",
+      "learning_objectives": "Pattern recognition, mathematical thinking, logical reasoning, prediction.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Pattern matches ancient puzzle, sequence reveals safe combination."
+    },
+    {
+      "id": 7,
+      "name": "Cipher & Code-Breaking",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Encoded message",
+        "Decoder key",
+        "Paper",
+        "Pencil"
+      ],
+      "description": "Students use provided decoder to translate encrypted messages into readable text containing clues or numbers.",
+      "learning_objectives": "Pattern recognition, systematic thinking, cryptography basics, persistence.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Scientist's encrypted notes, secret agent communication, ancient rune translation."
+    },
+    {
+      "id": 8,
+      "name": "The Clock Hand Cipher",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Printed symbols sheet",
+        "Wall clock (optional reference)",
+        "4-digit combination lock"
+      ],
+      "description": "Students encounter a series of mysterious geometric angles (e.g., a right angle, a straight line). They must realize these shapes correspond to the positions of clock hands at specific hours to decode a hidden numeric sequence.",
+      "learning_objectives": "Lateral thinking, abstraction, analog time literacy, symbol decoding.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The 'Time Keeper' villain left his logout code hidden in the frozen clocks on the wall."
+    },
+    {
+      "id": 9,
+      "name": "Columnar Transposition Decode",
+      "category": "Logic",
+      "difficulty": 3,
+      "age_range": "12-16",
+      "time_minutes": 15,
+      "materials": [
+        "Encoded message string",
+        "Grid paper",
+        "Pencil",
+        "Scissors (optional for cutting strips)"
+      ],
+      "description": "Students receive a scrambled message (e.g., 'NOTS ANRU TAER ILAE'). They must write the text into a grid by filling columns vertically, then read the message horizontally across the rows to reveal the secret instruction. Example: 'NOTS ANRU TAER ILAE' written in 4 columns reads across as 'NATIONAL TREASURE'.",
+      "learning_objectives": "Cryptography, matrices, algorithmic thinking, pattern reconstruction.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber has fragmented the data stream. Realign the data columns to reconstruct the corrupted file."
+    },
+    {
+      "id": 10,
+      "name": "A1Z26 Cipher Decode",
+      "category": "Logic",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 5,
+      "materials": [
+        "Encoded numeric sequence",
+        "Paper",
+        "Pencil"
+      ],
+      "description": "Each letter is replaced by its position number in the alphabet (A=1, B=2... Z=26). Students must decode a sequence of numbers (e.g., '8 5 12 16' -> 'HELP') back into words. Spaces between numbers separate letters.",
+      "learning_objectives": "Alphabet sequencing, number-letter mapping, simple pattern recognition.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber is speaking in raw data index numbers. Translate the stream."
+    },
+    {
+      "id": 11,
+      "name": "Polybius Square Cipher",
+      "category": "Logic",
+      "difficulty": 3,
+      "age_range": "12-16",
+      "time_minutes": 12,
+      "materials": [
+        "Polybius Grid Key (5x5)",
+        "Long numeric string"
+      ],
+      "description": "Using a 5x5 grid, letters are represented by coordinates (Row, Column). A=11, B=12, etc. Students must parse a continuous string of digits into pairs to decode the message. I and J often share a cell (usually 24). Solid blocks of numbers increase difficulty.",
+      "learning_objectives": "Coordinate systems, grid referencing, structured data decoding, concentration.",
+      "safety_notes": "None specific.",
+      "story_ideas": "An ancient transmission protocol is being used. Align the grid matrix to decipher the message."
+    },
+    {
+      "id": 12,
+      "name": "Pigpen Cipher Decode",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Pigpen Key Reference",
+        "Encoded message"
+      ],
+      "description": "Students use a geometric key where letters are arranged in grids and crosses. Each letter is replaced by the lines bordering it (e.g., A is a right-angle corner). Dots distinguish the second set of grids. Students must translate the symbols back into text.",
+      "learning_objectives": "Symbolic representation, pattern recognition, attention to detail.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Ancient alien runes found on the ship's hull need translation."
+    },
+    {
+      "id": 13,
+      "name": "Emoji Object Count",
+      "category": "Observation",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Printed emoji strip (e.g., 🧮 🦋 🔒 🧰)",
+        "Scattered paper butterflies (or other matching object)",
+        "Locked toolbox"
+      ],
+      "description": "A locked box is accompanied by a mysterious emoji sequence (e.g., Abacus, Butterfly, Lock, Toolbox). Students must look around the room, notice the scattered paper butterflies, and count them. The total count corresponds to the code (or part of the code) to open the lock.",
+      "learning_objectives": "Visual association, counting, lateral thinking, environmental observation.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The AI speaks in symbols. Find the physical manifestation of the glitch (the butterflies) to reset the node."
+    },
+    {
+      "id": 14,
+      "name": "Book Cipher Decode",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 15,
+      "materials": [
+        "Classroom Book (e.g., Dictionary or Textbook)",
+        "Cipher sheet with coordinates (Chapter/Word)"
+      ],
+      "description": "Students receive a list of coordinates (e.g., 'Chapter 1, Word 4', 'Chapter 6, Word 3'). They must locate specific words within a provided book to construct a hidden message or instruction.",
+      "learning_objectives": "Information retrieval, referencing skills, attention to detail, patience.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber mocks the students: 'The answer is in the history books... literally.' Students must decode the legacy data."
+    },
+    {
+      "id": 15,
+      "name": "Ambigram Decode",
+      "category": "Observation",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 5,
+      "materials": [
+        "Printed Ambigram text (e.g., 'promised')",
+        "Paper"
+      ],
+      "description": "Students find a word written in a strange, artistic font. It seems indecipherable or says one thing, but when the paper (or book) is flipped upside-down (rotated 180 degrees), it clearly spells out the password. Example: The word 'promised' can be designed to read the same way up and down.",
+      "learning_objectives": "Visual perception, symmetry, lateral thinking, artistic design.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber's code looks like gibberish until you change your perspective."
+    },
+    {
+      "id": 16,
+      "name": "Mirror Writing Decode",
+      "category": "Observation",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 8,
+      "materials": [
+        "Small handheld mirror",
+        "Message printed in reverse text"
+      ],
+      "description": "Students find a clue written in 'Mirror Script' (text reversed horizontally). Alternatively, use words composed of symmetrical letters.\n\nHorizontal Reflection (Mirror held below): B, C, D, E, H, I, K, O, X. \nWords: ICEBOX, CODE, HIDED, CHECKBOOK, BLOCKED, EXCEEDED.\n\nVertical Reflection (Mirror held at side): A, H, I, M, O, T, U, V, W, X, Y.\nWords: AUTOMATA, TOOT, WAY, MOM.",
+      "learning_objectives": "Optics, reflection, symmetry, visual decoding.",
+      "safety_notes": "Be careful with glass mirrors to avoid breakage.",
+      "story_ideas": "The system display polarity has been inverted. Use the reflective surface to normalize the readout."
+    },
+    {
+      "id": 17,
+      "name": "Nonogram Pixel Decode",
+      "category": "Logic",
+      "difficulty": 3,
+      "age_range": "12-16",
+      "time_minutes": 15,
+      "materials": [
+        "Printed Nonogram puzzle grid",
+        "Pencil",
+        "Eraser"
+      ],
+      "description": "A nonogram (or Hanjie) uses logic to fill in a grid. Numbers on the top and side tell players how many shaded squares are in each row/column (e.g., '3 1' means three shaded, a gap, then one shaded). Solving it reveals a pixel-art image that acts as the next clue.",
+      "learning_objectives": "Deductive reasoning, binary logic, spatial visualization, persistence.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber's memory bank is fragmented. Reconstruct the bitmap image to recover the corrupted file."
+    },
+    {
+      "id": 18,
+      "name": "The Rhyming Vault Code",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 8,
+      "materials": [
+        "Printed Rhyme Sheet",
+        "4-Digit Lock"
+      ],
+      "description": "Students must interpret a four-line poem where each line provides a logic puzzle to find a single digit. Example: 'The first looks like a snowman standing there (8) / The second is half of the digit before (4) / The third is the square root of number four (2) / The last is the sum of the middle pair (6)'. Code: 8426.",
+      "learning_objectives": "Deductive reasoning, reading comprehension, mental math, lateral thinking.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The old system administrator left a poetic password reminder. Zyber thinks it's sentimental garbage, but it's the only way in."
+    },
+    {
+      "id": 19,
+      "name": "The Elemental Word Riddle",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 8,
+      "materials": [
+        "Riddle Sheet",
+        "Paper",
+        "Pencil",
+        "5-Letter Word Lock (optional)"
+      ],
+      "description": "A riddle asks students to assemble a specific word based on clues about letters found in other words. Example: 'My first is in STAR but not in JAR (S) / My second is in TIME and also TAR (T) / My third is in ENERGY, pure and bright (E) / My fourth starts ATOM with all its might (A) / My last is in MASS, but never in gas (M)'. Answer: STEAM.",
+      "learning_objectives": "Vocabulary, spelling, logical deduction, set theory concepts (inclusion/exclusion).",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber demands the 'Element of Power'. Solve the riddle to identify the chemical or concept required."
+    },
+    {
+      "id": 20,
+      "name": "Book Stack Code",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Set of books (e.g., encyclopedias)",
+        "Black marker",
+        "Camera/Phone (for setup)"
+      ],
+      "description": "A large number or letter is written across the pages (fore-edge) of a stack of books. When the books are mixed up, it looks like random marks. Students must stack the books in the correct order (e.g., alphabetical by title, volume number, or color gradient) to reveal the symbol on the side.",
+      "learning_objectives": "Sorting algorithms, sequential ordering, pattern recognition, visual synthesis.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The archive database is corrupted (disordered). Re-index the physical storage units (books) to reconstruct the access key."
+    },
+    {
+      "id": 21,
+      "name": "Liquid Volume Code",
+      "category": "Physics",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Graduated cylinder or tall vase",
+        "Permanent marker",
+        "Water",
+        "Food coloring (Red, Green, Blue)",
+        "3 smaller cups"
+      ],
+      "description": "Create a custom measuring device (a vase or cylinder) marked with letters instead of standard units. Students pour specific amounts of colored water (Red, Green, Blue) into the container. By reading the letter that aligns with the water level for each color, they decode a word (e.g., Red=A, Green=C, Blue=E spells ACE).",
+      "learning_objectives": "Volume measurement, reading meniscus/levels, precision, observational skills.",
+      "safety_notes": "Water spill hazard - have paper towels ready. Ensure dye doesn't stain clothes.",
+      "story_ideas": "Zyber's coolant system is low. Refill the primary tanks to the correct levels to unlock the maintenance hatch."
+    },
+    {
+      "id": 22,
+      "name": "Shredded Message Reassembly",
+      "category": "Logic",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Printed puzzle sheet (scrambled)",
+        "Scissors",
+        "Tape"
+      ],
+      "description": "A message (e.g., 'RESTRICT ACCESS TO POWER') is printed on a page that is divided into a grid of squares or strips. The pieces are scrambled on the page. Students must cut out the segments and rearrange them physically to form the coherent sentence.",
+      "learning_objectives": "Spatial reasoning, pattern matching, fine motor skills, patience.",
+      "safety_notes": "Supervise use of scissors.",
+      "story_ideas": "The confidential document was shredded. Reassemble the strips to read the classified directive."
+    },
+    {
+      "id": 23,
+      "name": "3D Cup Puzzle Reconstruction",
+      "category": "Engineering",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 15,
+      "materials": [
+        "Durable paper cup",
+        "Permanent marker",
+        "Scissors",
+        "Clear tape"
+      ],
+      "description": "Write a secret message or code on a paper cup. Cut the cup into several pieces (shards). Students must physically tape the 3D object back together to read the message written across the curved surface.",
+      "learning_objectives": "3D spatial reasoning, fine motor skills, structural reassembly, patience.",
+      "safety_notes": "Be careful with sharp scissor edges and cup edges.",
+      "story_ideas": "An ancient artifact (the cup) was shattered. Restore it to read the inscription."
+    },
+    {
+      "id": 24,
+      "name": "Keyboard Overlay Decryption",
+      "category": "Observation",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Transparent plastic sheet (acetate)",
+        "Permanent marker",
+        "Physical Keyboard (or printout)"
+      ],
+      "description": "A piece of transparent plastic has circles or boxes drawn on it in specific locations. When placed over a standard QWERTY keyboard and aligned correctly (e.g., matching the corners or the spacebar), the markings circle specific letters that spell out the password.",
+      "learning_objectives": "Spatial alignment, coordinate mapping, observational skills, lateral thinking.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The terminal is locked. Place Zyber's 'vision filter' over the input device to reveal the keystrokes required for access."
+    },
+    {
+      "id": 25,
+      "name": "Room Map Location",
+      "category": "Observation",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 5,
+      "materials": [
+        "Printed map of the room",
+        "Red marker"
+      ],
+      "description": "Students are given a bird's-eye view map of the classroom. An 'X' marks a specific location (e.g., under a desk, behind a bookshelf). They must orient the map using room landmarks (doors, windows) to locate the hidden item.",
+      "learning_objectives": "Spatial awareness, map reading, orientation, translating 2D diagrams to 3D space.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The navigation system has pinpointed the target. Proceed to the marked coordinates."
+    },
+    {
+      "id": 26,
+      "name": "The Disconnected Data Display",
+      "category": "Engineering",
+      "difficulty": 2,
+      "age_range": "12-16",
+      "time_minutes": 12,
+      "materials": [
+        "Digital display (LED/LCD)",
+        "Battery pack",
+        "Connecting wires",
+        "Tape"
+      ],
+      "description": "Students find a digital display that should show the code, but it is unpowered. The power source (batteries) and the connecting wires are hidden in separate locations in the room. Students must find all parts and correctly wire the circuit (Positive to Positive) to power the screen and read the code.",
+      "learning_objectives": "Circuit basics, component assembly, polarity awareness, teamwork.",
+      "safety_notes": "Use low voltage batteries (AA/AAA). Do not short circuit.",
+      "story_ideas": "The main console has lost power. Locate the auxiliary power cell and bridge the connection to read the override code."
+    },
+    {
+      "id": 27,
+      "name": "Scytale Cipher Decode",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 12,
+      "materials": [
+        "Cylindrical rod/tube (dowel, rolling pin, or Pringles can)",
+        "Long strip of paper or ribbon",
+        "Tape"
+      ],
+      "description": "An ancient Greek cryptography method. A long strip of paper contains a string of letters that look like gibberish. Students must find the correct cylinder (the scytale) in the room and wrap the paper around it spirally. When wrapped on the cylinder of the correct diameter, the letters align vertically to form the message.",
+      "learning_objectives": "History of cryptography, cylindrical geometry, spatial relationship, lateral thinking.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The data ribbon is corrupted. Wrap it around the 'Processing Core' to align the bitstream."
+    },
+    {
+      "id": 28,
+      "name": "PVC Pipe Magnet Rescue",
+      "category": "Physics",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Long PVC pipe",
+        "Tape/Zip ties (to secure pipe)",
+        "Key or clue on ring",
+        "Strong magnet",
+        "String"
+      ],
+      "description": "A long PVC pipe is taped vertically to a table leg or wall. The key (or a clue attached to a metal washer) is at the bottom, far out of reach. Players must use a provided magnet and string to 'fish' the object out of the pipe.",
+      "learning_objectives": "Magnetism, problem solving, steady hand coordination, tool usage.",
+      "safety_notes": "Ensure the pipe is securely fastened so it doesn't fall over.",
+      "story_ideas": "The reactor start key has fallen into the coolant shaft. Retrieve it before the core melts down."
+    },
+    {
+      "id": 29,
+      "name": "The Plank Walk Crossing",
+      "category": "Engineering",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 15,
+      "materials": [
+        "Two sturdy wooden planks",
+        "Masking tape (to mark zone)"
+      ],
+      "description": "Mark a 'danger zone' on the floor that players cannot touch. The entire team must cross from one side to the other using only two wooden planks. They must stand on the planks, shuffle them forward, and pass them along without stepping off. If a player touches the floor, the team resets.",
+      "learning_objectives": "Teamwork, communication, physical coordination, strategy.",
+      "safety_notes": "Ensure planks are strong enough to hold weight. Keep planks close to the ground to prevent falls.",
+      "story_ideas": "The floor is electrified/lava/toxic. Use the mobile platforms to cross the hazard zone."
+    },
+    {
+      "id": 30,
+      "name": "The Harmonic Resonance Key",
+      "category": "Physics",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Piano or Keyboard",
+        "Cryptic Riddle/Frequency Sheet"
+      ],
+      "description": "Zyber's audio receptor only responds to specific frequencies. Students receive a riddle about a musical note (e.g., 'I vibrate at 440 cycles per second, the standard of tuning'). They must calculate or identify the note (A4) and play it clearly on the piano to 'resonate' with the lock mechanism.",
+      "learning_objectives": "Sound waves, frequency (Hertz), musical pitch, acoustic physics.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber: 'My vocal processors are calibrated to A440. Speak my language or remain silent forever.'"
+    },
+    {
+      "id": 31,
+      "name": "Balloon Pop Reveal",
+      "category": "Physics",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 5,
+      "materials": [
+        "Balloons",
+        "Paper strips with clues",
+        "Pin or sharp object (optional)"
+      ],
+      "description": "Clues or parts of a code are hidden inside inflated balloons. Students must pop the balloons—either with a pin, a pencil, or by sitting on them—to retrieve the paper strips inside.",
+      "learning_objectives": "Air pressure, material elasticity, overcoming hesitation (loud noise), retrieving physical data.",
+      "safety_notes": "Latex allergy warning. Loud noises can be startling. Supervise use of sharp objects.",
+      "story_ideas": "Zyber has encapsulated the passwords in these pressure spheres. Burst them to access the data."
+    },
+    {
+      "id": 32,
+      "name": "The Hollow Pen Concealment",
+      "category": "Engineering",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 5,
+      "materials": [
+        "Ballpoint pen",
+        "Small paper strip"
+      ],
+      "description": "A standard ballpoint pen is left on a desk. It doesn't write. Students must disassemble the pen to find a tightly rolled paper strip hidden inside the barrel where the ink tube usually goes.",
+      "learning_objectives": "Reverse engineering, curiosity, investigating anomalies, fine motor skills.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber's stylus is broken. Fix it to find the data core."
+    },
+    {
+      "id": 33,
+      "name": "The Jar Lid Secret",
+      "category": "Observation",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 3,
+      "materials": [
+        "Jar with opaque lid",
+        "Tape",
+        "Clue"
+      ],
+      "description": "A jar containing irrelevant items (or empty) sits on a shelf. The clue is taped to the *inside* of the lid, only visible when the jar is opened and the lid is flipped over.",
+      "learning_objectives": "Thorough investigation, looking beyond the obvious, perspective taking.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The containment vessel holds the password, but not in the way you think."
+    },
+    {
+      "id": 34,
+      "name": "The Underside Discovery",
+      "category": "Observation",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 5,
+      "materials": [
+        "Tape",
+        "Clue",
+        "Table, Keyboard, or Laptop"
+      ],
+      "description": "A clue is taped to the underside of a common object (keyboard, laptop, or student desk). It is not visible from a standing or sitting position; students must tactilely search or look underneath.",
+      "learning_objectives": "Spatial awareness, environmental search patterns, tactile investigation.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber hides his secrets in the shadows. Look beneath the surface."
+    },
+    {
+      "id": 35,
+      "name": "Shredded Document Recovery",
+      "category": "Logic",
+      "difficulty": 3,
+      "age_range": "10-16",
+      "time_minutes": 15,
+      "materials": [
+        "Bin of shredded paper (decoys)",
+        "Document cut into 1-inch strips",
+        "Clear tape"
+      ],
+      "description": "Students find a recycling bin full of paper shreds. Among the chaos are specific strips that form a critical document or code. They must sift through the decoys, find the matching pieces (identified by texture, color, or content), and tape them back together.",
+      "learning_objectives": "Data filtering, pattern recognition, patience, fine motor skills, information reconstruction.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The spy tried to destroy the evidence before escaping. You must recover the deleted files from the physical recycle bin."
+    },
+    {
+      "id": 36,
+      "name": "Zyber's Morse Code Signal",
+      "category": "Logic",
+      "difficulty": 3,
+      "age_range": "12-16",
+      "time_minutes": 15,
+      "materials": [
+        "Audio speaker/Computer",
+        "Morse Code Reference Sheet",
+        "Paper"
+      ],
+      "description": "Zyber plays a looping audio sequence of short and long tones. Students must recognize the auditory pattern as Morse Code. They need to listen carefully, transcribe the 'dits' and 'dahs', and use a reference key to translate the audio into the alphanumeric code.",
+      "learning_objectives": "Auditory pattern recognition, concentration, decoding, history of telecommunication.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber: 'I'm broadcasting the solution on the old emergency frequency. It goes... beep, beep, beeeeep. Good luck with your primitive ears.'"
+    },
+    {
+      "id": 37,
+      "name": "NATO Phonetic Code",
+      "category": "Logic",
+      "difficulty": 1,
+      "age_range": "10-16",
+      "time_minutes": 5,
+      "materials": [
+        "NATO Alphabet Key",
+        "Encoded Message (Text or Audio)"
+      ],
+      "description": "Students receive a message spelled out using the NATO phonetic alphabet (e.g., 'Sierra-Echo-Charlie-Romeo-Echo-Tango'). They must use the standard reference key to translate the words back into single letters to reveal the password (SECRET).",
+      "learning_objectives": "Communication protocols, spelling, attention to detail, standard operating procedures.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber is using military-grade encryption protocols. Decode the transmission to authorize the system override."
+    },
+    {
+      "id": 38,
+      "name": "The Binary Byte Lock",
+      "category": "Logic",
+      "difficulty": 3,
+      "age_range": "12-16",
+      "time_minutes": 10,
+      "materials": [
+        "8 Toggle Switches (or drawings)",
+        "Binary Reference Card",
+        "Target Number"
+      ],
+      "description": "Zyber's core processor accepts only machine language. Students are given a target decimal number (e.g., 170) and must flip a set of 8 switches to the correct On/Off (1/0) configuration to represent that number in binary (10101010).",
+      "learning_objectives": "Binary number system, base-2 conversion, digital logic, powers of two.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The AI is refusing human input. Speak to it in its own native binary tongue."
+    },
+    {
+      "id": 39,
+      "name": "The Algebraic Symbol System",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 8,
+      "materials": [
+        "Printed equation sheet",
+        "Physical tokens (optional)"
+      ],
+      "description": "A series of equations uses symbols instead of variables (e.g., 🍎 + 🍎 = 10; 🍎 * 🍌 = 20). Students must deduce the value of each symbol to solve the final complex equation. To make it 'Zyber' themed, use tech icons: 💾 + 💾 = 16, 💾 - 🔋 = 2.",
+      "learning_objectives": "Algebraic substitution, systems of linear equations, critical thinking.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber's variable definitions are corrupted. Recalculate the values to balance the equation."
+    },
+    {
+      "id": 40,
+      "name": "The Magic Square Repair",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "10-16",
+      "time_minutes": 10,
+      "materials": [
+        "Grid drawn on whiteboard/paper",
+        "Number magnets or tiles"
+      ],
+      "description": "A 3x3 or 4x4 grid is partially filled. Students must place the remaining numbers so that every row, column, and diagonal adds up to the same 'Magic Constant'. The numbers in specific highlighted cells form the combination.",
+      "learning_objectives": "Addition, mental math, logical deduction, patterns.",
+      "safety_notes": "None specific.",
+      "story_ideas": "The data matrix has destabilized. Rebalance the energy grid to prevent a system crash."
+    },
+    {
+      "id": 41,
+      "name": "The Coordinate Geometry Map",
+      "category": "Logic",
+      "difficulty": 2,
+      "age_range": "12-16",
+      "time_minutes": 12,
+      "materials": [
+        "Large graph paper overlay",
+        "Map of room/area",
+        "List of coordinate pairs (x,y)"
+      ],
+      "description": "A transparent grid is placed over a map. Students are given a function (e.g., y = 2x + 1) or a set of coordinates. They must plot the points or the line. The line passes through specific letters or locations on the map that spell out the password.",
+      "learning_objectives": "Coordinate geometry, linear functions, graphing, plotting points.",
+      "safety_notes": "None specific.",
+      "story_ideas": "Zyber has encrypted the location using a vector path. Plot the trajectory to find the target."
+    }
+  ],
+  "stories": [
+    {
+      "id": "default-story",
+      "name": "Main Scenario",
+      "nodes": [],
+      "createdAt": 1764749780626,
+      "lastEdited": 1764749780626
+    }
+  ]
+}

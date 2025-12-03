@@ -3,7 +3,8 @@ import { ChallengeCategory, Message, VoiceSettings } from '../types';
 import * as geminiService from '../services/geminiService';
 import TerminalWindow from './TerminalWindow';
 import TypingEffect from './TypingEffect';
-import { playKeyPressSound, playSubmitSound } from '../utils/uiSfx';
+import { playKeyPressSound, playSubmitSound, playSpacebarSound, playEnterSound } from '../utils/uiSfx';
+import { speakAIResponse, stopSpeaking } from '../utils/lowTechVoice';
 
 interface ChallengeScreenProps {
   challenge: ChallengeCategory;
@@ -28,100 +29,60 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isFirstAttempt, setIsFirstAttempt] = useState(true);
-  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
-  const [playingMessage, setPlayingMessage] = useState<Message | null>(null);
-  const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const audioFxNodesRef = useRef<{ oscillator: OscillatorNode } | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(1800); // 30 minutes in seconds
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const isEscapeProtocol = challenge.title === 'Escape Protocol';
 
   const focusInput = useCallback(() => {
     inputRef.current?.focus();
   }, []);
 
+  // Countdown timer for Escape Protocol
   useEffect(() => {
-    // Safari requires a user gesture to create an AudioContext
-    const initAudio = () => {
-        if (!audioContext) {
-            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
-            setAudioContext(context);
+    if (!isEscapeProtocol) return;
+    
+    const timer = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev <= 0) {
+          clearInterval(timer);
+          return 0;
         }
-        document.removeEventListener('click', initAudio);
+        return prev - 1;
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, [isEscapeProtocol]);
+
+  // Cleanup: Stop speech when component unmounts
+  useEffect(() => {
+    return () => {
+      stopSpeaking();
     };
-    document.addEventListener('click', initAudio);
-    return () => document.removeEventListener('click', initAudio);
-  }, [audioContext]);
-
-
-  const playAudio = useCallback((message: Message) => {
-    if (!audioContext || !message.audio) return;
-    
-    if (audioContext.state === 'suspended') {
-      audioContext.resume();
-    }
-    
-    if (audioSourceRef.current) {
-        audioSourceRef.current.stop();
-        if (audioFxNodesRef.current) {
-            audioFxNodesRef.current.oscillator.stop();
-        }
-    }
-    
-    let finalNode: AudioNode = audioContext.destination;
-    let carrierOscillator: OscillatorNode | null = null;
-    
-    if (voiceSettings.vocoderEnabled) {
-        const modulatorGain = audioContext.createGain();
-        modulatorGain.connect(audioContext.destination);
-    
-        carrierOscillator = audioContext.createOscillator();
-        carrierOscillator.type = 'sawtooth';
-        carrierOscillator.frequency.value = voiceSettings.vocoderFrequency;
-    
-        const carrierGain = audioContext.createGain();
-        carrierGain.gain.value = 0.7;
-    
-        carrierOscillator.connect(carrierGain);
-        carrierGain.connect(modulatorGain.gain);
-        carrierOscillator.start();
-        
-        finalNode = modulatorGain;
-    }
-
-    audioFxNodesRef.current = carrierOscillator ? { oscillator: carrierOscillator } : null;
-    
-    const source = audioContext.createBufferSource();
-    source.buffer = message.audio;
-    source.connect(finalNode);
-    source.onended = () => {
-        setPlayingMessage(null);
-        audioSourceRef.current = null;
-        if (carrierOscillator) carrierOscillator.stop();
-        audioFxNodesRef.current = null;
-    }
-    source.start(0);
-    audioSourceRef.current = source;
-    setPlayingMessage(message);
-  }, [audioContext, voiceSettings]);
+  }, []);
 
   const addMessage = useCallback(async (sender: 'user' | 'Zyber', text: string, spokenText?: string) => {
-    let audio: AudioBuffer | undefined = undefined;
     const textToSpeak = spokenText || text;
-
-    if (sender === 'Zyber' && audioContext) {
+    const newMessage: Message = { sender, text, spokenText };
+    
+    setMessages(prev => [...prev, newMessage]);
+    
+    // Speak Zyber's messages using the new low-tech voice with emotions
+    if (sender === 'Zyber') {
         try {
-            const audioBuffer = await geminiService.textToSpeech(textToSpeak, audioContext, voiceSettings);
-            audio = audioBuffer;
+            setIsSpeaking(true);
+            console.log('[ChallengeScreen] 🤖 Speaking with Dalek voice:', textToSpeak);
+            await speakAIResponse(textToSpeak, voiceSettings.language);
+            setIsSpeaking(false);
         } catch (error) {
-            console.error("TTS Error:", error);
+            console.error("[ChallengeScreen] TTS Error:", error);
+            setIsSpeaking(false);
         }
     }
-    const newMessage: Message = { sender, text, spokenText, audio };
-    setMessages(prev => [...prev, newMessage]);
-    if (audio) {
-        playAudio(newMessage);
-    }
-  }, [audioContext, playAudio, voiceSettings]);
+  }, [voiceSettings.language]);
 
   const fetchInitialChallenge = useCallback(async () => {
     setIsLoading(true);
@@ -192,16 +153,168 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (voiceSettings.uiSoundsEnabled) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!voiceSettings.uiSoundsEnabled) return;
+
+    // Play different sounds for different keys
+    if (e.key === ' ') {
+      playSpacebarSound();
+    } else if (e.key === 'Enter') {
+      playEnterSound();
+    } else if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete') {
       playKeyPressSound();
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value);
   };
 
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getASCIIDigit = (digit: string): string[] => {
+    const digits: { [key: string]: string[] } = {
+      '0': [
+        '  ██████  ',
+        ' ██    ██ ',
+        '██      ██',
+        '██      ██',
+        '██      ██',
+        ' ██    ██ ',
+        '  ██████  '
+      ],
+      '1': [
+        '    ██    ',
+        '  ████    ',
+        '    ██    ',
+        '    ██    ',
+        '    ██    ',
+        '    ██    ',
+        '  ██████  '
+      ],
+      '2': [
+        '  ██████  ',
+        ' ██    ██ ',
+        '       ██ ',
+        '     ██   ',
+        '   ██     ',
+        ' ██       ',
+        ' █████████'
+      ],
+      '3': [
+        '  ██████  ',
+        ' ██    ██ ',
+        '       ██ ',
+        '   █████  ',
+        '       ██ ',
+        ' ██    ██ ',
+        '  ██████  '
+      ],
+      '4': [
+        '      ██  ',
+        '     ███  ',
+        '    ████  ',
+        '   ██ ██  ',
+        '  ████████',
+        '      ██  ',
+        '      ██  '
+      ],
+      '5': [
+        ' █████████',
+        ' ██       ',
+        ' ██       ',
+        ' ███████  ',
+        '       ██ ',
+        ' ██    ██ ',
+        '  ██████  '
+      ],
+      '6': [
+        '  ██████  ',
+        ' ██    ██ ',
+        '██        ',
+        '███████   ',
+        '██     ██ ',
+        '██     ██ ',
+        ' ███████  '
+      ],
+      '7': [
+        ' █████████',
+        '       ██ ',
+        '      ██  ',
+        '     ██   ',
+        '    ██    ',
+        '   ██     ',
+        '  ██      '
+      ],
+      '8': [
+        '  ██████  ',
+        ' ██    ██ ',
+        ' ██    ██ ',
+        '  ██████  ',
+        ' ██    ██ ',
+        ' ██    ██ ',
+        '  ██████  '
+      ],
+      '9': [
+        '  ██████  ',
+        ' ██    ██ ',
+        ' ██    ██ ',
+        '  ███████ ',
+        '       ██ ',
+        ' ██    ██ ',
+        '  ██████  '
+      ],
+      ':': [
+        '          ',
+        '   ████   ',
+        '   ████   ',
+        '          ',
+        '   ████   ',
+        '   ████   ',
+        '          '
+      ]
+    };
+    return digits[digit] || digits['0'];
+  };
+
+  const renderASCIITime = (timeStr: string): string[] => {
+    const chars = timeStr.split('');
+    const digitArrays = chars.map(c => getASCIIDigit(c));
+    
+    const lines: string[] = [];
+    for (let i = 0; i < 7; i++) {
+      let line = '';
+      for (const digitArray of digitArrays) {
+        line += digitArray[i] + '  ';
+      }
+      lines.push(line);
+    }
+    return lines;
+  };
+
+  const timeColor = timeRemaining < 300 ? 'text-red-500' : timeRemaining < 600 ? 'text-yellow-500' : 'text-primary';
+
   return (
     <TerminalWindow title={`SESSION: ${challenge.title.toUpperCase()}`} onExit={onExit}>
-      <div className="flex flex-col text-xl sm:text-2xl md:text-3xl" style={{ height: 'calc(100vh - 12rem)', minHeight: '400px' }}>
+      {isEscapeProtocol && (
+        <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
+          <div className={`font-mono font-bold text-center ${timeColor} opacity-30 select-none`} 
+               style={{ 
+                 fontSize: 'clamp(8rem, 18vw, 16rem)',
+                 textShadow: `0 0 20px currentColor, 0 0 40px currentColor`,
+                 lineHeight: '1',
+                 letterSpacing: '0.3em',
+                 fontVariantNumeric: 'tabular-nums'
+               }}>
+            [{formatTime(timeRemaining)}]
+          </div>
+        </div>
+      )}
+      <div className="flex flex-col text-2xl sm:text-3xl md:text-4xl" style={{ height: 'calc(100vh - 12rem)', minHeight: '400px' }}>
         <div className="flex-grow overflow-y-auto">
           {messages.map((msg, index) => (
             <div key={index} className="mb-3">
@@ -210,10 +323,10 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
                   {msg.sender === 'user' ? '>' : '>>'}
                 </span>
                 <div className="flex-1">
-                  {msg.sender === 'Zyber' && msg.audio && (
-                    <button onClick={() => playAudio(msg)} className="focus:outline-none inline-block mr-2 opacity-70 hover:opacity-100">
-                      <SoundIcon isPlaying={playingMessage === msg} />
-                    </button>
+                  {msg.sender === 'Zyber' && isSpeaking && index === messages.length - 1 && (
+                    <span className="inline-block mr-2 opacity-70">
+                      <SoundIcon isPlaying={true} />
+                    </span>
                   )}
                   <span className={`${msg.sender === 'user' ? 'text-accent' : ''} whitespace-pre-wrap leading-relaxed`}>
                     {msg.sender === 'Zyber' ? <TypingEffect text={msg.text} key={index} instant={index < messages.length - 1} playSound={voiceSettings.uiSoundsEnabled}/> : msg.text}
@@ -233,7 +346,7 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
           <div ref={messagesEndRef} />
         </div>
         <form onSubmit={handleSubmit} className="mt-4 pt-3 border-t border-primary/20 flex-shrink-0">
-          <div className="flex items-center cursor-text text-2xl" onClick={focusInput}>
+          <div className="flex items-center cursor-text text-3xl" onClick={focusInput}>
             <span className="mr-2 text-primary opacity-70">$</span>
             <span>{userInput}</span>
             {!userInput && (
@@ -247,6 +360,7 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
               type="text"
               value={userInput}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               className="absolute -left-[9999px] opacity-0"
               disabled={isLoading}
             />

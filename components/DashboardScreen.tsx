@@ -19,11 +19,11 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
 
   return (
     <div>
-      <div className="mb-6 text-2xl">
+      <div className="mb-6 text-3xl">
         <TypingEffect text={`> TERMINAL SESSION ACTIVE - USER: ${user.username.toUpperCase()}`} playSound={voiceSettings.uiSoundsEnabled} />
       </div>
       
-      <div className="mb-6 text-2xl space-y-2" role="region" aria-label="User statistics">
+      <div className="mb-6 text-3xl space-y-3" role="region" aria-label="User statistics">
         <div className="flex justify-between" aria-label={`Level ${user.level}`}>
           <span className="opacity-70">LEVEL:</span>
           <span>{user.level}</span>
@@ -46,9 +46,31 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
       </div>
       
       <div className="border-t border-primary/30 pt-4 mt-6">
-        <div className="text-2xl mb-4 opacity-70">&gt; SELECT OPERATION:</div>
-        <div className="space-y-3 text-2xl" role="list" aria-label="Available operations">
-          {categories.map((cat, index) => (
+        <div className="text-3xl mb-4 opacity-70">&gt; SELECT OPERATION:</div>
+        <div className="space-y-4 text-3xl" role="list" aria-label="Available operations">
+          
+          <button
+            onClick={() => {
+              if (voiceSettings.uiSoundsEnabled) playNavigationSound();
+              onStartLiveChat();
+            }}
+            onMouseEnter={() => { if (voiceSettings.uiSoundsEnabled) playBeep(400, 0.03); }}
+            className="block w-full text-left hover:bg-primary/10 hover:text-accent focus:bg-primary/10 focus:text-accent focus:outline-none transition-colors py-2 px-3"
+            role="listitem"
+            aria-label="Start live voice chat"
+          >
+            <div className="flex items-start gap-3">
+              <span className="opacity-50">[1]</span>
+              <div className="flex-1">
+                <div className="uppercase tracking-wide text-3xl">ZYBER AWAITS</div>
+                <div className="text-2xl opacity-60 mt-1">Real-time voice communication</div>
+              </div>
+            </div>
+          </button>
+
+          <div className="border-t border-primary/20 my-4"></div>
+
+          {categories.slice(0, 6).map((cat, index) => (
             <button
               key={cat.title}
               onClick={() => {
@@ -61,10 +83,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
               aria-label={`Start ${cat.title} challenge: ${cat.description}`}
             >
               <div className="flex items-start gap-3">
-                <span className="opacity-50">[{index + 1}]</span>
+                <span className="opacity-50">[{index + 2}]</span>
                 <div className="flex-1">
-                  <div className="uppercase tracking-wide text-2xl">{cat.title}</div>
-                  <div className="text-xl opacity-60 mt-1">{cat.description}</div>
+                  <div className="uppercase tracking-wide text-3xl">{cat.title}</div>
+                  <div className="text-2xl opacity-60 mt-1">{cat.description}</div>
                 </div>
               </div>
             </button>
@@ -83,29 +105,10 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, categories, onS
             aria-label={`Open ${DECRYPTION_HUB_ITEM.title}`}
           >
             <div className="flex items-start gap-3">
-              <span className="opacity-50">[{categories.length + 1}]</span>
+              <span className="opacity-50">[8]</span>
               <div className="flex-1">
-                <div className="uppercase tracking-wide text-2xl">{DECRYPTION_HUB_ITEM.title}</div>
-                <div className="text-xl opacity-60 mt-1">{DECRYPTION_HUB_ITEM.description}</div>
-              </div>
-            </div>
-          </button>
-          
-          <button
-            onClick={() => {
-              if (voiceSettings.uiSoundsEnabled) playNavigationSound();
-              onStartLiveChat();
-            }}
-            onMouseEnter={() => { if (voiceSettings.uiSoundsEnabled) playBeep(400, 0.03); }}
-            className="block w-full text-left hover:bg-primary/10 hover:text-accent focus:bg-primary/10 focus:text-accent focus:outline-none transition-colors py-2 px-3"
-            role="listitem"
-            aria-label="Start live voice chat"
-          >
-            <div className="flex items-start gap-3">
-              <span className="opacity-50">[{categories.length + 2}]</span>
-              <div className="flex-1">
-                <div className="uppercase tracking-wide text-2xl">LIVE VOICE INTERFACE</div>
-                <div className="text-xl opacity-60 mt-1">Engage in real-time voice communication</div>
+                <div className="uppercase tracking-wide text-3xl">{DECRYPTION_HUB_ITEM.title}</div>
+                <div className="text-2xl opacity-60 mt-1">{DECRYPTION_HUB_ITEM.description}</div>
               </div>
             </div>
           </button>

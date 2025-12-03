@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dalek Voice Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        button {
+            background: #0f0;
+            color: #000;
+            border: 2px solid #0f0;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #000;
+            color: #0f0;
+        }
+        .output {
+            background: #111;
+            border: 1px solid #0f0;
+            padding: 10px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+        h1 {
+            color: #0f0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤖 DALEK VOICE TEST 🤖</h1>
+    
+    <div class="output" id="output">Ready to test voices...</div>
+    
+    <h2>Test Individual Emotions:</h2>
+    <button onclick="testAngry()">😠 ANGRY</button>
+    <button onclick="testThreatening()">😈 THREATENING</button>
+    <button onclick="testNeutral()">🤖 NEUTRAL</button>
+    <button onclick="testExcited()">⚡ EXCITED</button>
+    
+    <h2>Extreme Range Test:</h2>
+    <button onclick="testExtremeRange()">🔥 FULL RANGE</button>
+    
+    <h2>Voice Info:</h2>
+    <button onclick="listVoices()">📋 List Available Voices</button>
+
+    <script>
+        const log = (msg) => {
+            const output = document.getElementById('output');
+            output.textContent += '\n' + msg;
+            console.log(msg);
+        };
+
+        const speak = (text, pitch, rate, volume) => {
+            return new Promise((resolve) => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.pitch = pitch;
+                utterance.rate = rate;
+                utterance.volume = volume;
+                
+                // Try to use a male voice
+                const voices = window.speechSynthesis.getVoices();
+                const maleVoice = voices.find(v => 
+                    v.name.includes('Male') || 
+                    v.name.includes('Google UK English Male')
+                );
+                if (maleVoice) {
+                    utterance.voice = maleVoice;
+                    log(`Using voice: ${maleVoice.name}`);
+                }
+                
+                log(`Speaking: "${text}" (pitch: ${pitch}, rate: ${rate}, vol: ${volume})`);
+                
+                utterance.onend = resolve;
+                utterance.onerror = (e) => {
+                    log(`ERROR: ${e.error}`);
+                    resolve();
+                };
+                
+                window.speechSynthesis.speak(utterance);
+            });
+        };
+
+        const testAngry = async () => {
+            log('\n🔴 TESTING ANGRY (pitch 1.2, rate 1.8)');
+            await speak('WRONG! INCORRECT!', 1.2, 1.8, 1.0);
+        };
+
+        const testThreatening = async () => {
+            log('\n😈 TESTING THREATENING (pitch 0.1, rate 0.4)');
+            await speak('YOU. WILL. O. BEY.', 0.1, 0.4, 1.0);
+        };
+
+        const testNeutral = async () => {
+            log('\n🤖 TESTING NEUTRAL/DEFAULT (pitch 0.1, rate 0.5)');
+            log('   This is Zyber\'s normal speaking voice now!');
+            log('   (Threatening voice + 25% faster)');
+            await speak('I am Zyber', 0.1, 0.5, 1.0);
+        };
+
+        const testExcited = async () => {
+            log('\n⚡ TESTING EXCITED (pitch 1.5, rate 2.0)');
+            await speak('CHALLENGE INCOMING!', 1.5, 2.0, 1.0);
+        };
+
+        const testExtremeRange = async () => {
+            log('\n🔥 TESTING EXTREME RANGE...\n');
+            
+            log('1. BASS (pitch 0.1, rate 0.3)');
+            await speak('This is extremely low and slow', 0.1, 0.3, 1.0);
+            await new Promise(r => setTimeout(r, 500));
+            
+            log('2. NORMAL (pitch 1.0, rate 1.0)');
+            await speak('This is normal pitch and speed', 1.0, 1.0, 1.0);
+            await new Promise(r => setTimeout(r, 500));
+            
+            log('3. HIGH (pitch 1.5, rate 2.0)');
+            await speak('This is extremely high and fast', 1.5, 2.0, 1.0);
+            await new Promise(r => setTimeout(r, 500));
+            
+            log('\n✅ Test complete!');
+        };
+
+        const listVoices = () => {
+            log('\n📋 AVAILABLE VOICES:');
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) {
+                log('No voices loaded yet. Try clicking again in a moment.');
+                return;
+            }
+            voices.forEach((voice, i) => {
+                log(`${i+1}. ${voice.name} (${voice.lang}) ${voice.default ? '[DEFAULT]' : ''}`);
+            });
+        };
+
+        // Load voices
+        window.speechSynthesis.onvoiceschanged = () => {
+            log('Voices loaded!');
+        };
+        
+        // Try loading voices immediately
+        if (window.speechSynthesis.getVoices().length > 0) {
+            log('Voices already loaded!');
+        }
+    </script>
+</body>
+</html>
+

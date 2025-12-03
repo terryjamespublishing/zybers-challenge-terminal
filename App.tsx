@@ -5,6 +5,8 @@ import ChallengeScreen from './components/ChallengeScreen';
 import LiveScreen from './components/LiveScreen';
 import DecryptionHubScreen from './components/DecryptionHubScreen';
 import BootScreen from './components/BootScreen';
+import IntroScreen from './components/IntroScreen';
+import AdminApp from './components/admin/AdminApp';
 import { Screen, User, ChallengeCategory, VoiceSettings } from './types';
 import { CHALLENGE_CATEGORIES } from './constants';
 import SettingsIcon from './components/SettingsIcon';
@@ -20,34 +22,64 @@ const App: React.FC = () => {
   const [screen, setScreen] = useState<Screen>(Screen.Login);
   const [currentChallenge, setCurrentChallenge] = useState<ChallengeCategory | null>(null);
   const [showBoot, setShowBoot] = useState(true);
+  const [showIntro, setShowIntro] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
   
   // Settings State - Load from localStorage on mount
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(loadVoiceSettings);
+  const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(() => {
+    const loaded = loadVoiceSettings();
+    console.log('[App] Initial voice settings loaded:', loaded);
+    return loaded;
+  });
 
   // Toast notifications
   const { toasts, hideToast, showSuccess } = useToast();
 
   // Persist voice settings whenever they change
   useEffect(() => {
+    console.log('[App] Saving voice settings:', voiceSettings);
     saveVoiceSettings(voiceSettings);
   }, [voiceSettings]);
 
-  // Play startup sound on mount
+  // Play startup sound when boot screen starts
   useEffect(() => {
-    const hasBooted = sessionStorage.getItem('hasBooted');
-    if (hasBooted) {
-      setShowBoot(false);
-    } else {
-      if (voiceSettings.uiSoundsEnabled) {
-        setTimeout(() => playStartupSound(), 100);
-      }
+    if (showBoot && voiceSettings.uiSoundsEnabled) {
+      setTimeout(() => playStartupSound(), 100);
     }
-  }, [voiceSettings.uiSoundsEnabled]);
+  }, [showBoot, voiceSettings.uiSoundsEnabled]);
+
+  // Admin mode activation via keyboard (Ctrl+Shift+A) or URL parameter
+  useEffect(() => {
+    // Check URL for admin mode
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true') {
+      setShowAdmin(true);
+      setShowBoot(false);
+      setShowIntro(false);
+    }
+
+    // Keyboard shortcut handler
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        setShowAdmin(true);
+        setShowBoot(false);
+        setShowIntro(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleBootComplete = () => {
-    sessionStorage.setItem('hasBooted', 'true');
     setShowBoot(false);
+    setShowIntro(true);
+  };
+
+  const handleIntroComplete = () => {
+    setShowIntro(false);
   };
 
   const handleLogin = (loggedInUser: User) => {
@@ -155,15 +187,32 @@ const App: React.FC = () => {
     }
   };
 
+  // Handle admin exit
+  const handleAdminExit = () => {
+    setShowAdmin(false);
+    // Clear URL parameter if present
+    const url = new URL(window.location.href);
+    url.searchParams.delete('admin');
+    window.history.replaceState({}, '', url.toString());
+  };
+
+  // Render admin mode
+  if (showAdmin) {
+    return <AdminApp onExit={handleAdminExit} />;
+  }
+
   return (
     <>
       {showBoot && <BootScreen onComplete={handleBootComplete} />}
-      
+      {showIntro && <IntroScreen onComplete={handleIntroComplete} voiceSettings={voiceSettings} />}
+
+      {!showBoot && !showIntro && (
       <div className="crt-screen min-h-screen selection:bg-primary selection:text-bg flex flex-col" style={{ padding: '2vh 3vw' }}>
         <div className="crt-vignette"></div>
+        <div className="crt-scanline-bar"></div>
         <div className="w-full flex-grow relative">
           {screen === Screen.Dashboard && <SettingsIcon onClick={() => setIsSettingsOpen(true)} />}
-          <SettingsModal 
+          <SettingsModal
               isOpen={isSettingsOpen}
               onClose={() => setIsSettingsOpen(false)}
               settings={voiceSettings}
@@ -174,7 +223,7 @@ const App: React.FC = () => {
             {renderScreen()}
           </main>
         </div>
-        
+
         {/* Toast notifications */}
         {toasts.map(toast => (
           <Toast
@@ -185,6 +234,7 @@ const App: React.FC = () => {
           />
         ))}
       </div>
+      )}
     </>
   );
 };

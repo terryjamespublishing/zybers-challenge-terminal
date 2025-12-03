@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { playKeyPressSound } from '../utils/uiSfx';
 import { playTypingSound } from '../utils/terminalSounds';
+import { stripEmotionTags } from '../utils/lowTechVoice';
 
 interface TypingEffectProps {
   text: string;
@@ -11,12 +12,15 @@ interface TypingEffectProps {
 }
 
 const TypingEffect: React.FC<TypingEffectProps> = ({ text, speed = 50, delay = 0, instant = false, playSound = false }) => {
+  // Strip emotion tags from text for display (e.g., "[MOCKING] Hello" -> "Hello")
+  const cleanText = useMemo(() => stripEmotionTags(text), [text]);
+
   const [displayedText, setDisplayedText] = useState('');
   const [isStarted, setIsStarted] = useState(false);
 
   useEffect(() => {
     if (instant) {
-      setDisplayedText(text);
+      setDisplayedText(cleanText);
       return;
     }
 
@@ -25,21 +29,21 @@ const TypingEffect: React.FC<TypingEffectProps> = ({ text, speed = 50, delay = 0
     }, delay);
 
     return () => clearTimeout(delayTimeout);
-  }, [delay, instant, text]);
+  }, [delay, instant, cleanText]);
 
   useEffect(() => {
     if (!isStarted || instant) return;
 
-    if (displayedText.length < text.length) {
+    if (displayedText.length < cleanText.length) {
       const timeoutId = setTimeout(() => {
         if (playSound) {
           playTypingSound();
         }
-        setDisplayedText(text.slice(0, displayedText.length + 1));
+        setDisplayedText(cleanText.slice(0, displayedText.length + 1));
       }, speed);
       return () => clearTimeout(timeoutId);
     }
-  }, [displayedText, text, speed, isStarted, instant, playSound]);
+  }, [displayedText, cleanText, speed, isStarted, instant, playSound]);
 
   return <p className="whitespace-pre-wrap">{displayedText}</p>;
 };

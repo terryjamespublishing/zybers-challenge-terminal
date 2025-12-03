@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as geminiService from '../services/geminiService';
 import { VoiceSettings } from '../types';
-import { LiveServerMessage, LiveSession } from '@google/genai';
+import { LiveServerMessage } from '@google/genai';
 import { ZYBER_LIVE_CHAT_PROMPT } from '../constants';
 import TerminalWindow from './TerminalWindow';
+
+// Type for the live session returned by connectLive
+type LiveSession = Awaited<ReturnType<typeof geminiService.connectLive>>;
 
 interface Transcription {
     user: string;
@@ -98,13 +101,17 @@ const LiveScreen: React.FC<LiveScreenProps> = ({ onExit, voiceSettings }) => {
             setIsConnecting(true);
             
             try {
+                console.log('[LiveScreen] Requesting microphone access...');
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 audioStreamRef.current = stream;
+                console.log('[LiveScreen] Microphone access granted');
                 
                 const systemInstruction = ZYBER_LIVE_CHAT_PROMPT;
+                console.log('[LiveScreen] Connecting to Gemini Live API...');
                 sessionPromiseRef.current = geminiService.connectLive(systemInstruction, handleMessage, voiceSettings);
 
                 await sessionPromiseRef.current;
+                console.log('[LiveScreen] Live API connected');
 
                 const inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
                 audioContextRef.current = inputAudioContext;
@@ -115,15 +122,22 @@ const LiveScreen: React.FC<LiveScreenProps> = ({ onExit, voiceSettings }) => {
 
                 // Load AudioWorklet module (modern replacement for deprecated ScriptProcessorNode)
                 try {
+                    console.log('[LiveScreen] Loading AudioWorklet processor...');
                     await inputAudioContext.audioWorklet.addModule('/utils/audioWorkletProcessor.js');
+                    console.log('[LiveScreen] AudioWorklet loaded successfully');
                 } catch (workletError) {
-                    console.warn('AudioWorklet not supported, falling back to ScriptProcessorNode');
+                    console.warn('[LiveScreen] AudioWorklet not supported, falling back to ScriptProcessorNode', workletError);
                     // Fallback to ScriptProcessorNode for older browsers
                     const source = inputAudioContext.createMediaStreamSource(stream);
                     const scriptProcessor = inputAudioContext.createScriptProcessor(4096, 1, 1);
                     
+                    let audioChunkCount = 0;
                     scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
                         const inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
+                        audioChunkCount++;
+                        if (audioChunkCount % 100 === 0) {
+                            console.log(`[LiveScreen] Sending audio chunk #${audioChunkCount} (ScriptProcessor)`);
+                        }
                         sessionPromiseRef.current?.then((session) => {
                             session.sendRealtimeInput({ media: geminiService.createAudioBlob(inputData) });
                         });
@@ -131,18 +145,25 @@ const LiveScreen: React.FC<LiveScreenProps> = ({ onExit, voiceSettings }) => {
 
                     source.connect(scriptProcessor);
                     scriptProcessor.connect(inputAudioContext.destination);
+                    console.log('[LiveScreen] Audio processing started (ScriptProcessor)');
                     setIsConnecting(false);
                     return;
                 }
 
                 // Use modern AudioWorklet
+                console.log('[LiveScreen] Creating AudioWorklet node...');
                 const source = inputAudioContext.createMediaStreamSource(stream);
                 const workletNode = new AudioWorkletNode(inputAudioContext, 'audio-capture-processor');
                 audioWorkletNodeRef.current = workletNode;
 
+                let audioChunkCount = 0;
                 workletNode.port.onmessage = (event) => {
                     const audioData = event.data.audioData;
                     if (audioData) {
+                        audioChunkCount++;
+                        if (audioChunkCount % 100 === 0) {
+                            console.log(`[LiveScreen] Sending audio chunk #${audioChunkCount} (AudioWorklet)`);
+                        }
                         sessionPromiseRef.current?.then((session) => {
                             session.sendRealtimeInput({ media: geminiService.createAudioBlob(audioData) });
                         });
@@ -151,11 +172,22 @@ const LiveScreen: React.FC<LiveScreenProps> = ({ onExit, voiceSettings }) => {
 
                 source.connect(workletNode);
                 workletNode.connect(inputAudioContext.destination);
+                console.log('[LiveScreen] Audio processing started (AudioWorklet)');
                 setIsConnecting(false);
 
-            } catch (err) {
-                console.error("Error starting live session:", err);
-                setError('FAILED TO INITIALIZE LIVE CONNECTION. ACCESS DENIED.');
+            } catch (err: any) {
+                console.error("[LiveScreen] Error starting live session:", err);
+                let errorMessage = 'FAILED TO INITIALIZE LIVE CONNECTION.';
+                
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    errorMessage = 'MICROPHONE ACCESS DENIED. PLEASE GRANT PERMISSIONS.';
+                } else if (err.name === 'NotFoundError') {
+                    errorMessage = 'NO MICROPHONE DETECTED. CHECK HARDWARE.';
+                } else if (err.message) {
+                    errorMessage = `ERROR: ${err.message.toUpperCase()}`;
+                }
+                
+                setError(errorMessage);
                 setIsConnecting(false);
                 stopAudioProcessing();
             }
@@ -174,7 +206,7 @@ const LiveScreen: React.FC<LiveScreenProps> = ({ onExit, voiceSettings }) => {
 
     return (
         <TerminalWindow title="VOICE INTERFACE SESSION" onExit={handleExitClick}>
-            <div className="flex flex-col text-xl md:text-2xl" style={{ height: 'calc(100vh - 12rem)' }}>
+            <div className="flex flex-col text-2xl md:text-3xl" style={{ height: 'calc(100vh - 12rem)' }}>
                 <div className="flex-grow overflow-y-auto">
                     {isConnecting && (
                         <div className="flex items-center justify-center h-full">

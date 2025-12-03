@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import TypingEffect from './TypingEffect';
 import { VoiceSettings, User } from '../types';
-import { playKeyPressSound, playSubmitSound } from '../utils/uiSfx';
+import { playKeyPressSound, playSubmitSound, playSpacebarSound, playEnterSound } from '../utils/uiSfx';
 import * as userService from '../services/userService';
 
 type AuthStep = 'USERNAME' | 'PASSWORD_EXISTING' | 'PASSWORD_NEW';
@@ -55,10 +55,21 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
   }, [step]);
 
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (voiceSettings.uiSoundsEnabled) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!voiceSettings.uiSoundsEnabled) return;
+
+    // Play different sounds for different keys
+    if (e.key === ' ') {
+      playSpacebarSound();
+    } else if (e.key === 'Enter') {
+      playEnterSound();
+    } else if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete') {
+      // Only play for printable characters and backspace/delete
       playKeyPressSound();
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     if (step === 'USERNAME') {
         setUsername(value.toUpperCase());
@@ -84,11 +95,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
   const inputValue = step === 'USERNAME' ? username : password;
 
   return (
-    <div className="flex flex-col justify-center h-[90vh] text-2xl sm:text-3xl md:text-4xl px-4">
+    <div className="flex flex-col justify-center h-[90vh] text-3xl sm:text-4xl md:text-5xl px-4">
       <div className="w-full max-w-3xl">
         <div className="mb-8 opacity-80">
-          <div className="text-xl sm:text-2xl opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
-          <div className="text-lg sm:text-xl opacity-60">Copyright (C) 1985 Zyber Corp.</div>
+          <div className="text-2xl sm:text-3xl opacity-60 mb-2">ZYBER SYSTEMS NETWORK v1.0</div>
+          <div className="text-xl sm:text-2xl opacity-60">Copyright (C) 1985 Zyber Corp.</div>
         </div>
         
         <TypingEffect text="> Initializing system..." playSound={voiceSettings.uiSoundsEnabled} />
@@ -107,6 +118,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
               type={step === 'USERNAME' ? 'text' : 'password'}
               value={inputValue}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               className="absolute -left-[9999px] opacity-0"
               autoFocus
               maxLength={20}
@@ -114,7 +126,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, voiceSettings }) => 
               autoComplete="off"
             />
           </div>
-          {error && <p className="text-red-500 mt-4 text-lg opacity-80">{error}</p>}
+          {error && <p className="text-red-500 mt-4 text-xl sm:text-2xl opacity-80">{error}</p>}
         </form>
       </div>
     </div>

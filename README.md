@@ -1,246 +1,236 @@
-# 🖥️ Zyber's Challenge Terminal
+# Zyber's Challenge Terminal
 
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/zybers-challenge-terminal)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.2-61dafb.svg)](https://react.dev/)
 
-**An 80s hacker-themed educational app powered by Google Gemini AI**
+**An 80s retro hacker-themed educational terminal powered by Google Gemini AI**
 
-[🎮 Live Demo](#) • [📚 Documentation](#documentation) • [🚀 Quick Start](#quick-start) • [🤝 Contributing](#contributing)
+*Set in the year 2029*
 
 </div>
 
 ---
 
-## ✨ Features
+## About
 
-### 🧠 **Adaptive AI Tutor**
-- Powered by Google Gemini 2.5
-- Adjusts difficulty based on performance
-- Covers logic, math, science, literature, and geography
-- European-focused content (metric units, local references)
+Zyber's Challenge Terminal is an educational app for ages 10-16 where players interact with **Zyber**, a sarcastic adversarial AI that presents STEM challenges. Features an authentic 1980s CRT terminal aesthetic with voice synthesis, progression systems, and 40+ pre-built challenges.
 
-### 🎯 **Challenge Categories**
-- **Logic Puzzles** - Test your reasoning skills
-- **Creative Problems** - Think outside the box
-- **Code Riddles** - Solve programming challenges
+## Features
 
-### 🎤 **Live Voice Chat**
-- Real-time conversation with Zyber AI
-- Text-to-speech with vocoder effects
-- Multi-language support (EN, NO, PL, UK)
+### Immersive Experience
+- **CRT Boot Sequence** - Authentic power-on animation with ZYBER ASCII logo
+- **Entry Riddle** - Prove yourself to Zyber before gaining access
+- **Retro Terminal UI** - Phosphor glow, scanlines, VT323 font
+- **Robotic Voice** - Browser TTS with emotional variations
 
-### 🏆 **Progression System**
-- Earn XP and level up
-- Collect Data Bits currency
-- Unlock Access Keys
-- Track your progress
+### AI-Powered Challenges
+- **Adaptive Difficulty** - AI adjusts based on performance
+- **Multiple Categories** - Logic, Math, Code, Science, Ciphers
+- **Live Voice Chat** - Real-time conversation with Zyber
+- **Structured Rewards** - XP, Data Bits, Access Keys
 
-### 🎨 **Retro Terminal UI**
-- Authentic 80s hacker aesthetic
-- VT323 monospace font
-- Green phosphor screen effect
-- Blinking cursor animations
+### Admin Panel
+- **Challenge Manager** - Create, edit, delete challenges
+- **Story Planner** - Visual node-based quest designer
+- **40 Pre-built Challenges** - STEM activities with materials lists
+- Access via `?admin=true` or `Ctrl+Shift+A`
 
-### ♿ **Accessible & Responsive**
-- WCAG compliant
-- Mobile-friendly design
-- Keyboard navigation
-- Screen reader support
+### Technical
+- **Multi-language** - English, Norwegian, Polish, Ukrainian
+- **Mobile Responsive** - Works on all screen sizes
+- **Accessible** - WCAG compliant, keyboard navigation
+- **Offline Capable** - Challenge data stored locally
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### Prerequisites
-- Node.js 18+ installed
-- Gemini API key ([Get one here](https://aistudio.google.com/app/apikey))
+### 1. Get API Key (Free)
+Visit [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
 
-### Installation
-
+### 2. Setup
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/zybers-challenge-terminal.git
+git clone <repository-url>
 cd zybers-challenge-terminal
-
-# Install dependencies
 npm install
-
-# Set up environment variables
 cp .env.example .env.local
-# Edit .env.local and add your GEMINI_API_KEY
+# Add your API key to .env.local
+```
 
-# Start development server
+### 3. Run
+```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000` 🎉
+Visit `http://localhost:5173`
 
 ---
 
-## 📦 Deployment
+## Screen Flow
 
-### Deploy to Vercel (Recommended)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/zybers-challenge-terminal)
-
-Or manually:
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel --prod
+```
+BootScreen → IntroScreen → LoginScreen → Dashboard → [Challenge/Live/DecryptionHub]
+                                              ↓
+                                         Admin Panel (optional)
 ```
 
-**Don't forget to add `GEMINI_API_KEY` in Vercel environment variables!**
-
-See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for detailed instructions.
+1. **Boot Screen** - CRT warm-up, memory test, system diagnostics
+2. **Intro Screen** - Zyber confrontation and entry riddle
+3. **Login Screen** - Create account (stored locally)
+4. **Dashboard** - Select challenge category, view stats
+5. **Challenge Screen** - AI-generated educational challenges
+6. **Live Screen** - Real-time voice conversation
+7. **Admin Panel** - Manage challenges and story arcs
 
 ---
 
-## 🛠️ Tech Stack
+## Challenge Categories
+
+| Category | Description |
+|----------|-------------|
+| Logic Puzzles | Reasoning and deduction |
+| Creative Problems | Lateral thinking |
+| Code Riddles | Programming concepts |
+| Pattern Breaker | Number sequences |
+| Binary Decoder | Binary/ASCII conversion |
+| Cipher Challenges | Morse code, Roman numerals |
+| Digital Forensics | Simulated hacking scenarios |
+
+---
+
+## Voice System
+
+Zyber uses browser SpeechSynthesis with emotional variations:
+
+- **NEUTRAL** - Deep, menacing (default)
+- **ANGRY** - High-pitched, fast
+- **MOCKING** - Sarcastic tone
+- **SINISTER** - Extremely slow, evil
+- **TRIUMPHANT** - Victorious
+
+Emotion markers in AI responses: `[ANGRY] Wrong! [MOCKING] Try again.`
+
+---
+
+## Admin Panel
+
+Access: `?admin=true` URL parameter or `Ctrl+Shift+A`
+Password: `zyber2029`
+
+### Challenge Manager
+- View all 40 challenges with filtering
+- Edit challenge details, materials, objectives
+- Create new challenges
+- Delete challenges
+
+### Story Planner
+- Visual node-based editor
+- Drag-and-drop interface
+- Connect challenges into quest flows
+- Design branching storylines
+
+---
+
+## Tech Stack
 
 - **Framework**: React 19.2 + TypeScript
-- **Build Tool**: Vite 6.2
-- **AI**: Google Gemini 2.5 (Pro & Flash)
-- **Audio**: Web Audio API + AudioWorklet
-- **Styling**: Tailwind CSS (CDN)
+- **Build**: Vite 6.2
+- **AI**: Google Gemini 2.5 (Pro + Flash)
+- **Voice**: Web Speech API + Web Audio API
+- **Styling**: Tailwind CSS
 - **Font**: VT323 (Google Fonts)
 
 ---
 
-## 📚 Documentation
+## Project Structure
 
-- **[QUICK_START.md](./QUICK_START.md)** - Get started quickly
-- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Deploy to GitHub & Vercel
-- **[IMPROVEMENTS_ANALYSIS.md](./IMPROVEMENTS_ANALYSIS.md)** - Technical analysis
-- **[IMPROVEMENTS_SUMMARY.md](./IMPROVEMENTS_SUMMARY.md)** - What's been improved
-- **[CHANGELOG.md](./CHANGELOG.md)** - Version history
-
----
-
-## 🎮 How to Play
-
-1. **Create Account** - Choose a username and password
-2. **Configure Voice** - Adjust settings (language, gender, vocoder effect)
-3. **Select Challenge** - Pick from Logic, Creative, or Code challenges
-4. **Start Learning** - Answer questions to earn rewards
-5. **Level Up** - Gain XP and unlock new content
-
----
-
-## 🎨 Screenshots
-
-### Dashboard
-![Dashboard](https://via.placeholder.com/800x500?text=Dashboard+Screenshot)
-
-### Challenge Screen
-![Challenge](https://via.placeholder.com/800x500?text=Challenge+Screenshot)
-
-### Settings Modal
-![Settings](https://via.placeholder.com/800x500?text=Settings+Screenshot)
+```
+├── components/
+│   ├── admin/           # Admin panel components
+│   ├── BootScreen.tsx   # CRT boot animation
+│   ├── IntroScreen.tsx  # Zyber entry riddle
+│   ├── LoginScreen.tsx  # Account creation
+│   ├── DashboardScreen.tsx
+│   ├── ChallengeScreen.tsx
+│   ├── LiveScreen.tsx   # Voice chat
+│   └── SettingsModal.tsx
+├── services/
+│   ├── geminiService.ts     # AI integration
+│   ├── questDataService.ts  # Challenge CRUD
+│   ├── settingsService.ts   # Voice settings
+│   └── userService.ts       # User data
+├── utils/
+│   ├── lowTechVoice.ts      # TTS with emotions
+│   ├── voiceEffects.ts      # Audio effects
+│   └── uiSfx.ts             # UI sounds
+├── docs/                    # Documentation
+├── zyber_quest_data.json    # 40 challenges
+└── constants.tsx            # Zyber personality
+```
 
 ---
 
-## 🗺️ Roadmap
+## Documentation
 
-### ✅ Completed (v2.0)
-- [x] Voice settings persistence
-- [x] Toast notifications
-- [x] Modern AudioWorklet API
-- [x] Mobile responsive design
-- [x] Accessibility improvements
-- [x] Structured reward system
-
-### 🚧 In Progress
-- [ ] Decryption Hub shop implementation
-- [ ] More challenge categories
-- [ ] Achievement system
-
-### 📅 Planned
-- [ ] Leaderboard
-- [ ] Challenge history
-- [ ] Daily challenges
-- [ ] Profile customization
-- [ ] Offline mode
+| Document | Description |
+|----------|-------------|
+| [CLAUDE.md](./CLAUDE.md) | Development guide for Claude Code |
+| [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) | Deployment instructions |
+| [docs/VOICE_SYSTEM.md](./docs/VOICE_SYSTEM.md) | Voice system details |
+| [API_KEY_SETUP.md](./API_KEY_SETUP.md) | API key configuration |
+| [CHALLENGE_FRAMEWORK.md](./CHALLENGE_FRAMEWORK.md) | Advanced challenge design |
 
 ---
 
-## 🤝 Contributing
+## Environment Variables
 
-Contributions are welcome! Please follow these steps:
-
-1. **Fork the repository**
-2. **Create a feature branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. **Commit your changes**
-   ```bash
-   git commit -m 'Add amazing feature'
-   ```
-4. **Push to the branch**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-5. **Open a Pull Request**
-
-### Development Guidelines
-- Follow existing code style
-- Add TypeScript types
-- Test on mobile devices
-- Update documentation
-- Add accessibility features
+```bash
+# .env.local
+VITE_GEMINI_API_KEY=your_api_key_here
+```
 
 ---
 
-## 📄 License
+## Commands
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Google Gemini AI** - Powers the adaptive tutoring
-- **AI Studio** - Original project base
-- **VT323 Font** - Authentic terminal aesthetic
-- **Vercel** - Hosting and deployment
+```bash
+npm run dev      # Development server
+npm run build    # Production build
+npm run preview  # Preview production
+```
 
 ---
 
-## 📞 Support
+## Security Notes
 
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/zybers-challenge-terminal/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/zybers-challenge-terminal/discussions)
-- **Email**: your.email@example.com
-
----
-
-## ⚠️ Security Notice
-
-**API Key Warning**: The current implementation exposes the Gemini API key in the client-side code. For production use, consider implementing a backend API proxy to protect your API key.
+- API key is client-side exposed (use backend proxy for production)
+- User data stored in localStorage (no server)
+- Admin password is for demo purposes only
 
 ---
 
-## 🌟 Star History
+## License
 
-If you find this project useful, please consider giving it a star ⭐
+MIT License - See [LICENSE](LICENSE) file
 
-[![Star History Chart](https://api.star-history.com/svg?repos=YOUR_USERNAME/zybers-challenge-terminal&type=Date)](https://star-history.com/#YOUR_USERNAME/zybers-challenge-terminal&Date)
+---
+
+## Credits
+
+- **AI**: Google Gemini
+- **Font**: VT323 by Peter Hull
+- **Hosting**: Vercel
+- **Timeline**: Set in 2029
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for learning and education**
+**Built for education**
 
-[🔝 Back to Top](#-zybers-challenge-terminal)
+[Documentation](#documentation) | [Quick Start](#quick-start) | [Admin Panel](#admin-panel)
 
 </div>

@@ -1,16 +1,41 @@
 // Terminal sound effects for authentic retro feel
 
 let audioContext: AudioContext | null = null;
+let isInitialized = false;
 
 const getAudioContext = (): AudioContext | null => {
     if (typeof window !== 'undefined' && !audioContext) {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
+    // Only resume if context exists and user has interacted
+    if (audioContext && audioContext.state === 'suspended' && isInitialized) {
+        audioContext.resume().catch(() => {
+            // Silently fail - browser autoplay policy
+        });
+    }
+    // Don't play sounds if context is still suspended
     if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume();
+        return null;
     }
     return audioContext;
 };
+
+// Initialize audio context after user gesture
+if (typeof window !== 'undefined') {
+    const initAudio = () => {
+        isInitialized = true;
+        const ctx = getAudioContext();
+        if (ctx && ctx.state === 'suspended') {
+            ctx.resume().catch(() => {});
+        }
+        window.removeEventListener('click', initAudio);
+        window.removeEventListener('keydown', initAudio);
+        window.removeEventListener('touchstart', initAudio);
+    };
+    window.addEventListener('click', initAudio, { once: true });
+    window.addEventListener('keydown', initAudio, { once: true });
+    window.addEventListener('touchstart', initAudio, { once: true });
+}
 
 /**
  * Classic terminal beep - single tone
