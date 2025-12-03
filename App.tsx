@@ -86,7 +86,7 @@ const App: React.FC = () => {
   const handleLogin = (loggedInUser: User) => {
     setUser(loggedInUser);
     setScreen(Screen.Dashboard);
-    showSuccess(`ACCESS GRANTED. WELCOME, ${loggedInUser.username.toUpperCase()}.`);
+    showSuccess(`ACCESS GRANTED, ${loggedInUser.username.toUpperCase()}.`);
   };
 
   const handleLogout = () => {
@@ -170,6 +170,7 @@ const App: React.FC = () => {
           <ChallengeScreen
             challenge={currentChallenge}
             onExit={handleExit}
+            onStartVoiceChat={() => setScreen(Screen.Live)}
             addRewards={addRewards}
             voiceSettings={voiceSettings}
           />

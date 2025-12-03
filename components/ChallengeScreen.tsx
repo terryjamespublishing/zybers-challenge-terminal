@@ -9,9 +9,51 @@ import { playKeyPressSound, playSubmitSound, playSpacebarSound, playEnterSound }
 import { speakAIResponse, stopSpeaking, SpeechProgressCallback } from '../utils/lowTechVoice';
 import { completeCurrentChallenge } from '../services/progressService';
 
+// Zyber's background taunts during challenges
+const CHALLENGE_TAUNTS = [
+  // Laughs and creepy sounds
+  "[SINISTER] Heh heh heh heh...",
+  "[MOCKING] Ha ha ha ha!",
+  "[SINISTER] Mwa ha ha ha ha!",
+  "[CREEPY] Hehehehe...",
+  "[MOCKING] Oh ho ho ho!",
+  // Humming and noises
+  "[CALCULATING] Hmm hmm hmmm...",
+  "[NEUTRAL] Mmmmm... mmm mmm mmm...",
+  "[CALCULATING] Doo doo doo... processing...",
+  "[SINISTER] La la laaa... waiting for failure...",
+  "[NEUTRAL] *hums menacingly*",
+  // Taunts
+  "[MOCKING] Taking your time, I see...",
+  "[CALCULATING] Your progress is... underwhelming.",
+  "[SINISTER] Tick tock, little human...",
+  "[MOCKING] I've seen snails solve puzzles faster.",
+  "[IMPATIENT] Still working on that? How quaint.",
+  "[CALCULATING] Processing your inadequacy...",
+  "[SINISTER] The clock is ticking...",
+  "[MOCKING] Do you need a hint? Oh wait, I don't care.",
+  "[CALCULATING] Error 404: Intelligence not found.",
+  "[THREATENING] Don't disappoint me, human.",
+  // Strange noises
+  "[CREEPY] *static crackle* ...watching...",
+  "[CALCULATING] Beep... boop... beep...",
+  "[CREEPY] *mechanical whirring*",
+  "[NEUTRAL] Zzzzzt... zzzt...",
+  "[SINISTER] *digital chittering*",
+  "[CALCULATING] *processing sounds intensify*",
+  // Commentary
+  "[MOCKING] Oh, this is entertaining.",
+  "[SINISTER] Struggle... struggle more...",
+  "[CALCULATING] Your failure probability: increasing.",
+  "[MOCKING] I could solve this in my sleep mode.",
+  "[SINISTER] Yesss... keep trying...",
+  "[TRIUMPHANT] This is almost too easy to watch.",
+];
+
 interface ChallengeScreenProps {
   challenge: QuestChallenge;
   onExit: () => void;
+  onStartVoiceChat?: () => void;
   addRewards: (rewards: { xp: number; dataBits: number; accessKeys?: number }) => void;
   voiceSettings: VoiceSettings;
 }
@@ -48,7 +90,7 @@ Present this challenge in your sarcastic Zyber personality. Guide the user throu
 };
 
 
-const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, addRewards, voiceSettings }) => {
+const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, onStartVoiceChat, addRewards, voiceSettings }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -57,8 +99,10 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
   const [speechCharIndex, setSpeechCharIndex] = useState(0);
   const [challengeComplete, setChallengeComplete] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [isBackgroundTaunting, setIsBackgroundTaunting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const tauntTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const CHALLENGE_DURATION = 30; // 30 minutes
 
@@ -78,8 +122,51 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
   useEffect(() => {
     return () => {
       stopSpeaking();
+      if (tauntTimerRef.current) {
+        clearTimeout(tauntTimerRef.current);
+      }
     };
   }, []);
+
+  // Background taunting system - Zyber randomly comments during challenge
+  useEffect(() => {
+    const scheduleNextTaunt = () => {
+      // Random delay between 20-60 seconds
+      const delay = 20000 + Math.random() * 40000;
+
+      tauntTimerRef.current = setTimeout(async () => {
+        // Only taunt if not already speaking, not loading, and challenge not complete
+        if (!isSpeaking && !isLoading && !challengeComplete && !isBackgroundTaunting) {
+          setIsBackgroundTaunting(true);
+          const taunt = CHALLENGE_TAUNTS[Math.floor(Math.random() * CHALLENGE_TAUNTS.length)];
+          try {
+            await speakAIResponse(taunt, voiceSettings.language);
+          } catch (e) {
+            console.error('Background taunt error:', e);
+          }
+          setIsBackgroundTaunting(false);
+        }
+        // Schedule next taunt regardless
+        if (!challengeComplete) {
+          scheduleNextTaunt();
+        }
+      }, delay);
+    };
+
+    // Start the taunt cycle after initial delay (let the challenge introduction finish)
+    const initialDelay = setTimeout(() => {
+      if (!challengeComplete) {
+        scheduleNextTaunt();
+      }
+    }, 30000); // Wait 30 seconds before first background taunt
+
+    return () => {
+      clearTimeout(initialDelay);
+      if (tauntTimerRef.current) {
+        clearTimeout(tauntTimerRef.current);
+      }
+    };
+  }, [isSpeaking, isLoading, challengeComplete, isBackgroundTaunting, voiceSettings.language]);
 
   const handleTimeUp = useCallback(() => {
     // Time's up! Mark as complete anyway
@@ -152,6 +239,13 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userInput.trim() || isLoading) return;
+
+    // Check for voice chat command
+    if (userInput.trim().toUpperCase() === 'VOICE CHAT' && onStartVoiceChat) {
+      setUserInput('');
+      onStartVoiceChat();
+      return;
+    }
 
     if (voiceSettings.uiSoundsEnabled) {
       playSubmitSound();
