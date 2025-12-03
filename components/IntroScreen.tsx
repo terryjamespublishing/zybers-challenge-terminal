@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { VoiceSettings } from '../types';
 import { playKeyPressSound, playSpacebarSound, playEnterSound, playErrorSound, playSuccessSound } from '../utils/uiSfx';
-import { speakAIResponse, stripEmotionTags } from '../utils/lowTechVoice';
+import { speakAIResponse, stripEmotionTags, SpeechProgressCallback } from '../utils/lowTechVoice';
 
 interface IntroScreenProps {
   onComplete: () => void;
@@ -126,32 +126,58 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onComplete, voiceSettings }) 
     }
   }, [stage, currentRiddle, dialogueSet.riddle]);
 
-  // Type out Zyber's response
+  // Type out Zyber's response synchronized with speech
   const typeZyberResponse = useCallback(async (text: string): Promise<void> => {
     setIsTyping(true);
 
     // Strip emotion tags for display (but keep original for TTS)
     const displayText = stripEmotionTags(text);
 
-    // Add empty line that will be filled
+    // Add empty line that will be filled as speech progresses
     setDisplayedText(prev => [...prev, '']);
 
-    // Type character by character (display without emotion tags)
-    for (let i = 0; i <= displayText.length; i++) {
-      await new Promise(r => setTimeout(r, 20 + Math.random() * 15));
-      setDisplayedText(prev => {
-        const newText = [...prev];
-        newText[newText.length - 1] = displayText.slice(0, i);
-        return newText;
-      });
-    }
+    // Track current display position
+    let currentCharIndex = 0;
+
+    // Progress callback updates the displayed text as speech progresses
+    const onProgress: SpeechProgressCallback = (charIndex: number) => {
+      // Extend to word boundary for smoother display
+      let endIndex = Math.min(charIndex, displayText.length);
+      if (endIndex > currentCharIndex && endIndex < displayText.length) {
+        const nextSpace = displayText.indexOf(' ', endIndex);
+        const nextNewline = displayText.indexOf('\n', endIndex);
+        let nearestBoundary = displayText.length;
+        if (nextSpace >= 0 && nextSpace < nearestBoundary) nearestBoundary = nextSpace;
+        if (nextNewline >= 0 && nextNewline < nearestBoundary) nearestBoundary = nextNewline;
+        if (nearestBoundary - endIndex < 15) {
+          endIndex = nearestBoundary;
+        }
+      }
+
+      if (endIndex > currentCharIndex) {
+        currentCharIndex = endIndex;
+        setDisplayedText(prev => {
+          const newText = [...prev];
+          newText[newText.length - 1] = displayText.slice(0, currentCharIndex);
+          return newText;
+        });
+      }
+    };
 
     // Speak the response with emotion tags intact for TTS processing
+    // Text streams as speech progresses via the callback
     try {
-      await speakAIResponse(text, voiceSettings.language);
+      await speakAIResponse(text, voiceSettings.language, onProgress);
     } catch (e) {
       console.error('Speech error:', e);
     }
+
+    // Ensure full text is displayed after speech completes
+    setDisplayedText(prev => {
+      const newText = [...prev];
+      newText[newText.length - 1] = displayText;
+      return newText;
+    });
 
     setIsTyping(false);
   }, [voiceSettings.language]);

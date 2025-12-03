@@ -129,4 +129,27 @@ export enum AdminScreen {
     Challenges = 'admin-challenges',
     ChallengeEdit = 'admin-challenge-edit',
     StoryPlanner = 'admin-story-planner',
+    Users = 'admin-users',
+}
+
+// Admin User (for managing players/children)
+export type UserRole = 'player' | 'admin';
+export type UserStatus = 'active' | 'inactive' | 'banned';
+
+export interface AdminUser {
+    id: string;
+    username: string;
+    displayName: string;
+    email?: string;
+    role: UserRole;
+    status: UserStatus;
+    level: number;
+    xp: number;
+    dataBits: number;
+    accessKeys: number;
+    challengesCompleted: number;
+    totalPlayTime: number; // in minutes
+    lastActive: number; // timestamp
+    createdAt: number; // timestamp
+    notes?: string; // Admin notes about the user
 }

@@ -2,25 +2,26 @@ import React, { useState, useCallback, useEffect } from 'react';
 import LoginScreen from './components/LoginScreen';
 import DashboardScreen from './components/DashboardScreen';
 import ChallengeScreen from './components/ChallengeScreen';
+import GasLeakChallenge from './components/puzzles/GasLeakChallenge';
 import LiveScreen from './components/LiveScreen';
 import DecryptionHubScreen from './components/DecryptionHubScreen';
 import BootScreen from './components/BootScreen';
 import IntroScreen from './components/IntroScreen';
 import AdminApp from './components/admin/AdminApp';
-import { Screen, User, ChallengeCategory, VoiceSettings } from './types';
-import { CHALLENGE_CATEGORIES } from './constants';
+import { Screen, User, QuestChallenge, VoiceSettings } from './types';
 import SettingsIcon from './components/SettingsIcon';
 import SettingsModal from './components/SettingsModal';
 import Toast from './components/Toast';
 import { saveUserData } from './services/userService';
 import { loadVoiceSettings, saveVoiceSettings } from './services/settingsService';
+import { completeCurrentChallenge } from './services/progressService';
 import { useToast } from './hooks/useToast';
 import { playStartupSound } from './utils/terminalSounds';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [screen, setScreen] = useState<Screen>(Screen.Login);
-  const [currentChallenge, setCurrentChallenge] = useState<ChallengeCategory | null>(null);
+  const [currentChallenge, setCurrentChallenge] = useState<QuestChallenge | null>(null);
   const [showBoot, setShowBoot] = useState(true);
   const [showIntro, setShowIntro] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
@@ -93,17 +94,9 @@ const App: React.FC = () => {
     setScreen(Screen.Login);
   };
 
-  const handleSelectChallenge = (category: ChallengeCategory) => {
-    setCurrentChallenge(category);
+  const handleStartChallenge = (challenge: QuestChallenge) => {
+    setCurrentChallenge(challenge);
     setScreen(Screen.Challenge);
-  };
-
-  const handleOpenDecryptionHub = () => {
-    setScreen(Screen.DecryptionHub);
-  };
-
-  const handleStartLiveChat = () => {
-    setScreen(Screen.Live);
   };
 
   const handleExit = () => {
@@ -148,10 +141,7 @@ const App: React.FC = () => {
         return (
           <DashboardScreen
             user={user}
-            categories={CHALLENGE_CATEGORIES}
-            onSelectChallenge={handleSelectChallenge}
-            onStartLiveChat={handleStartLiveChat}
-            onOpenDecryptionHub={handleOpenDecryptionHub}
+            onStartChallenge={handleStartChallenge}
             voiceSettings={voiceSettings}
           />
         );
@@ -160,6 +150,22 @@ const App: React.FC = () => {
             setScreen(Screen.Dashboard);
             return null;
         }
+        // Route to specific puzzle components based on challenge ID
+        if (currentChallenge.id === 1) {
+          return (
+            <GasLeakChallenge
+              onComplete={() => {
+                // Award rewards for completing the challenge
+                addRewards({ xp: 50, dataBits: 25, accessKeys: 1 });
+                completeCurrentChallenge(1800); // Mark as complete
+                handleExit();
+              }}
+              onExit={handleExit}
+              voiceSettings={voiceSettings}
+            />
+          );
+        }
+        // Default to the generic ChallengeScreen for other challenges
         return (
           <ChallengeScreen
             challenge={currentChallenge}

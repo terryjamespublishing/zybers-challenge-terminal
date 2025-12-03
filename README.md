@@ -35,6 +35,7 @@ Zyber's Challenge Terminal is an educational app for ages 10-16 where players in
 ### Admin Panel
 - **Challenge Manager** - Create, edit, delete challenges
 - **Story Planner** - Visual node-based quest designer
+- **User Management** - Manage players, track progress, reset accounts
 - **40 Pre-built Challenges** - STEM activities with materials lists
 - Access via `?admin=true` or `Ctrl+Shift+A`
 
@@ -131,6 +132,13 @@ Password: `zyber2029`
 - Drag-and-drop interface
 - Connect challenges into quest flows
 - Design branching storylines
+
+### User Management
+- View all players and their progress
+- Search and filter by status/role
+- Edit user details and permissions
+- Reset player progress
+- Ban/suspend accounts
 
 ---
 

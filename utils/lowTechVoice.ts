@@ -11,32 +11,32 @@ export interface LowTechVoiceSettings {
 }
 
 export const RETRO_VOICE_PRESETS = {
-    // Zyber's default: Deep, menacing, deliberate (threatening + 25% speed)
+    // Zyber's default: Deep, menacing, deliberate - like a predator
     robot: {
-        pitch: 0.1,
-        rate: 0.5,
+        pitch: 0.05,         // Near-subsonic depth
+        rate: 0.4,           // Slow, deliberate - each word drips with menace
         volume: 1.0
     },
-    
-    // Even more robotic and threatening
+
+    // Maximum intimidation mode
     menacing: {
-        pitch: 0.2,
-        rate: 0.7,
+        pitch: 0.05,
+        rate: 0.35,          // Crawling pace - savoring every threat
         volume: 1.0
     },
-    
-    // Classic computer voice
+
+    // Classic computer voice (slightly less threatening)
     computer: {
-        pitch: 0.5,
-        rate: 0.9,
+        pitch: 0.3,
+        rate: 0.7,
         volume: 0.9
     },
-    
-    // Very fast and mechanical
+
+    // Fast and aggressive
     android: {
-        pitch: 0.4,
-        rate: 1.2,
-        volume: 0.9
+        pitch: 0.2,
+        rate: 1.0,
+        volume: 0.95
     }
 };
 
@@ -49,87 +49,87 @@ export const RETRO_VOICE_PRESETS = {
  * Emotion is conveyed through RATE and subtle pitch variations, not extreme pitch.
  */
 export const EMOTION_PRESETS = {
-    // Angry - Fast, clipped, intense (NOT squeaky high pitch)
+    // Angry - Controlled fury, seething menace
     angry: {
-        pitch: 0.3,      // Low but slightly raised (machine rage)
-        rate: 1.4,       // Fast, aggressive delivery
+        pitch: 0.1,      // Deep rumbling rage
+        rate: 1.1,       // Faster but still controlled - cold anger is scarier
         volume: 1.0      // Maximum volume
     },
 
-    // Threatening/Menacing - Very low, slow, deliberate
+    // Threatening/Menacing - Predator stalking prey
     threatening: {
-        pitch: 0.1,      // Deepest possible (demonic machine)
-        rate: 0.5,       // Slow, deliberate (each word a threat)
-        volume: 1.0      // Full volume (intimidating)
+        pitch: 0.05,     // Subterranean depth
+        rate: 0.35,      // Crawling - each syllable a death sentence
+        volume: 1.0      // Full volume (inescapable)
     },
 
-    // Excited/Eager - Slightly higher, faster (but still robotic)
+    // Excited/Eager - Predatory anticipation
     excited: {
-        pitch: 0.5,      // Mid-low (energized but mechanical)
-        rate: 1.3,       // Faster (enthusiasm)
+        pitch: 0.2,      // Still low (hungry machine)
+        rate: 0.9,       // Slightly faster (eager for the hunt)
         volume: 1.0      // Full volume
     },
 
-    // Sinister/Evil - Deepest, crawling slow, ominous
+    // Sinister/Evil - Pure malevolence incarnate
     sinister: {
-        pitch: 0.1,      // Deepest possible (pure malevolence)
-        rate: 0.4,       // Extremely slow (savoring evil)
-        volume: 0.85     // Slightly quieter (ominous)
+        pitch: 0.05,     // Abyssal depth
+        rate: 0.3,       // Glacially slow (savoring your fear)
+        volume: 0.9      // Slightly quieter (forcing you to listen closer)
     },
 
-    // Disappointed/Sad - Low, slow, deflated
+    // Disappointed/Contemptuous - You're beneath me
     disappointed: {
-        pitch: 0.15,     // Very low (dejected machine)
-        rate: 0.55,      // Slow (no energy)
-        volume: 0.7      // Quieter (defeated)
+        pitch: 0.1,      // Deep dismissal
+        rate: 0.45,      // Slow (not worth the energy)
+        volume: 0.75     // Quieter (you don't deserve full volume)
     },
 
-    // Triumphant/Proud - Commanding, confident pace
+    // Triumphant - Dark victory
     triumphant: {
-        pitch: 0.4,      // Mid-low (victorious)
-        rate: 0.9,       // Confident measured pace
-        volume: 1.0      // Full volume (proud)
+        pitch: 0.15,     // Low and commanding
+        rate: 0.7,       // Measured, savoring victory
+        volume: 1.0      // Full volume (announcing your defeat)
     },
 
-    // Impatient/Annoyed - Faster, clipped
+    // Impatient - Dangerous irritation
     impatient: {
-        pitch: 0.35,     // Slightly raised (irritated)
-        rate: 1.5,       // Fast (hurry up, human)
-        volume: 0.95     // Loud
+        pitch: 0.15,     // Still low (irritated predator)
+        rate: 1.2,       // Faster (running out of patience)
+        volume: 1.0      // Loud (warning you)
     },
 
-    // Mocking/Sarcastic - Deliberate, contemptuous
+    // Mocking - Cruel amusement at your expense
     mocking: {
-        pitch: 0.45,     // Mid-low (condescending)
-        rate: 0.65,      // Slow, deliberate (savoring mockery)
-        volume: 0.9      // Normal
+        pitch: 0.2,      // Low condescension
+        rate: 0.5,       // Slow, deliberate (enjoying your failure)
+        volume: 0.95     // Almost full (making sure you hear every insult)
     },
 
-    // Calculating/Thinking - Deep, methodical processing
+    // Calculating - Cold machine analysis
     calculating: {
-        pitch: 0.15,     // Low (computer processing)
-        rate: 0.5,       // Slow (computing...)
-        volume: 0.8      // Slightly quieter (internal process)
+        pitch: 0.08,     // Deep processing hum
+        rate: 0.4,       // Slow (methodical computation)
+        volume: 0.85     // Slightly quieter (internal process)
     },
 
-    // Urgent/Warning - Alert tone, faster but still low
+    // Urgent/Warning - Alarm but still menacing
     urgent: {
-        pitch: 0.4,      // Mid-low (alarm-like but robotic)
-        rate: 1.4,       // Fast (emergency!)
-        volume: 1.0      // Maximum volume (warning!)
+        pitch: 0.15,     // Low but alert
+        rate: 1.1,       // Faster (time-critical threat)
+        volume: 1.0      // Maximum (you need to hear this)
     },
 
-    // Whisper/Secret - Low and quiet, secretive
+    // Whisper - Intimate threat
     whisper: {
-        pitch: 0.2,      // Low
-        rate: 0.6,       // Slow (secretive)
-        volume: 0.4      // Very quiet (actual whisper)
+        pitch: 0.1,      // Deep whisper
+        rate: 0.4,       // Slow (secretive menace)
+        volume: 0.35     // Very quiet (leaning in close)
     },
 
-    // Neutral/Default - Deep, menacing, deliberate (Zyber's core personality)
+    // Neutral/Default - Baseline menace (Zyber at rest is still terrifying)
     neutral: {
-        pitch: 0.15,     // Very low/deep (baseline threatening)
-        rate: 0.6,       // Measured, deliberate pace
+        pitch: 0.08,     // Very deep (constant underlying threat)
+        rate: 0.5,       // Deliberate (never rushed, always in control)
         volume: 1.0      // Full volume
     }
 };
@@ -266,38 +266,45 @@ export const findRoboticVoice = (language: string = 'en'): SpeechSynthesisVoice 
 };
 
 /**
+ * Callback for word boundary events during speech
+ */
+export type WordBoundaryCallback = (charIndex: number, word: string) => void;
+
+/**
  * Speak text using browser's speech synthesis (VERY robotic)
+ * Optionally provides word boundary callbacks for synchronized text display
  */
 export const speakLowTech = (
     text: string,
     settings: LowTechVoiceSettings = RETRO_VOICE_PRESETS.robot,
-    language: string = 'en'
+    language: string = 'en',
+    onWordBoundary?: WordBoundaryCallback
 ): Promise<void> => {
     return new Promise((resolve, reject) => {
         if (!isSpeechSynthesisSupported()) {
             reject(new Error('Speech synthesis not supported in this browser'));
             return;
         }
-        
+
         // Cancel any ongoing speech
         window.speechSynthesis.cancel();
-        
+
         const utterance = new SpeechSynthesisUtterance(text);
-        
+
         // Apply settings
         utterance.pitch = settings.pitch;
         utterance.rate = settings.rate;
         utterance.volume = settings.volume;
-        
+
         // Find and set the most robotic voice
-        const voice = settings.voiceName 
+        const voice = settings.voiceName
             ? getAvailableVoices().find(v => v.name === settings.voiceName) || findRoboticVoice(language)
             : findRoboticVoice(language);
-        
+
         if (voice) {
             utterance.voice = voice;
         }
-        
+
         // Set the utterance language to match the voice
         if (voice) {
             utterance.lang = voice.lang;
@@ -306,17 +313,28 @@ export const speakLowTech = (
             const langCodes = LANGUAGE_MAP[language] || [language];
             utterance.lang = langCodes[0];
         }
-        
+
+        // Word boundary callback for synchronized text display
+        if (onWordBoundary) {
+            utterance.onboundary = (event) => {
+                if (event.name === 'word') {
+                    // Extract the word being spoken
+                    const word = text.substring(event.charIndex, event.charIndex + (event.charLength || 10));
+                    onWordBoundary(event.charIndex, word);
+                }
+            };
+        }
+
         utterance.onend = () => resolve();
         utterance.onerror = (event) => reject(event.error);
-        
+
         console.log(`[LowTechVoice] 🔊 SPEAKING NOW:`);
         console.log(`  Voice: ${voice?.name || 'default'}`);
         console.log(`  Pitch: ${settings.pitch} (0.1=bass, 1.0=normal, 2.0=high)`);
         console.log(`  Rate: ${settings.rate} (0.1=slow, 1.0=normal, 2.0=fast)`);
         console.log(`  Volume: ${settings.volume}`);
         console.log(`  Text: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
-        
+
         window.speechSynthesis.speak(utterance);
     });
 };
@@ -337,11 +355,12 @@ export const stopSpeaking = (): void => {
 export const speakWithEmotion = (
     text: string,
     emotion: keyof typeof EMOTION_PRESETS,
-    language: string = 'en'
+    language: string = 'en',
+    onWordBoundary?: WordBoundaryCallback
 ): Promise<void> => {
     const preset = EMOTION_PRESETS[emotion];
     console.log(`[LowTechVoice] Speaking with emotion: ${emotion}`);
-    return speakLowTech(text, preset, language);
+    return speakLowTech(text, preset, language, onWordBoundary);
 };
 
 /**
@@ -565,27 +584,46 @@ export const parseEmotionalText = (text: string): EmotionalSegment[] => {
 };
 
 /**
+ * Progress callback for synchronized text display
+ * Called with the character index in the original (cleaned) text
+ */
+export type SpeechProgressCallback = (charIndex: number) => void;
+
+/**
  * Speak text with emotion markers parsed from AI response
  * Automatically detects [EMOTION] markers and applies appropriate voice
- * 
+ *
  * Example AI response:
  * "[ANGRY] You failed! [DISAPPOINTED] I expected better. [THREATENING] Try again."
  */
 export const speakAIResponse = async (
     text: string,
-    language: string = 'en'
+    language: string = 'en',
+    onProgress?: SpeechProgressCallback
 ): Promise<void> => {
     console.log('[LowTechVoice] 🤖 DALEK MODE: Parsing AI response for emotions...');
-    
+
     const segments = parseEmotionalText(text);
-    
-    console.log(`[LowTechVoice] Found ${segments.length} emotional segment(s):`, 
+
+    // Calculate character offsets for each segment in the original text
+    // This helps map progress through segments to the original text position
+    const cleanText = stripEmotionTags(text);
+    let segmentStartPositions: number[] = [];
+    let currentPos = 0;
+    for (const segment of segments) {
+        const segmentPos = cleanText.indexOf(segment.text, currentPos);
+        segmentStartPositions.push(segmentPos >= 0 ? segmentPos : currentPos);
+        currentPos = (segmentPos >= 0 ? segmentPos : currentPos) + segment.text.length;
+    }
+
+    console.log(`[LowTechVoice] Found ${segments.length} emotional segment(s):`,
         segments.map(s => `${s.emotion}: "${s.text.substring(0, 30)}..."`));
-    
+
     for (let i = 0; i < segments.length; i++) {
         const segment = segments[i];
+        const segmentStartPos = segmentStartPositions[i];
         let processedText = segment.text;
-        
+
         // Apply DALEK-STYLE transformations based on emotion
         switch (segment.emotion) {
             case 'angry':
@@ -595,7 +633,7 @@ export const speakAIResponse = async (
                 processedText = addMechanicalPauses(processedText, false);
                 console.log('[LowTechVoice] 😠 ANGRY DALEK MODE');
                 break;
-                
+
             case 'threatening':
             case 'sinister':
                 // Syllable breaks, slow mechanical delivery
@@ -604,7 +642,7 @@ export const speakAIResponse = async (
                 processedText = transformToDalekStyle(processedText, 'medium');
                 console.log('[LowTechVoice] 😈 THREATENING DALEK MODE');
                 break;
-                
+
             case 'urgent':
             case 'excited':
                 // High intensity shouting
@@ -612,28 +650,28 @@ export const speakAIResponse = async (
                 processedText = addSyllableBreaks(processedText);
                 console.log('[LowTechVoice] ⚡ URGENT DALEK MODE');
                 break;
-                
+
             case 'mocking':
                 // Exaggerated emphasis on key words
                 processedText = transformToDalekStyle(processedText, 'medium');
                 processedText = addDramaticPauses(processedText);
                 console.log('[LowTechVoice] 😏 MOCKING DALEK MODE');
                 break;
-                
+
             case 'disappointed':
                 // Slow, deliberate, emphasized
                 processedText = addMechanicalPauses(processedText, false);
                 processedText = transformToDalekStyle(processedText, 'low');
                 console.log('[LowTechVoice] 😔 DISAPPOINTED DALEK MODE');
                 break;
-                
+
             case 'calculating':
                 // Slow, syllable breaks
                 processedText = addSyllableBreaks(processedText);
                 processedText = addMechanicalPauses(processedText, false);
                 console.log('[LowTechVoice] 🤔 CALCULATING DALEK MODE');
                 break;
-                
+
             default:
                 // Neutral: Still add some mechanical character
                 processedText = transformToDalekStyle(processedText, 'low');
@@ -641,7 +679,7 @@ export const speakAIResponse = async (
                 console.log('[LowTechVoice] 🤖 NEUTRAL DALEK MODE');
                 break;
         }
-        
+
         console.log(`[LowTechVoice] ========================================`);
         console.log(`[LowTechVoice] SEGMENT ${i+1}/${segments.length}`);
         console.log(`[LowTechVoice] Original: "${segment.text}"`);
@@ -649,15 +687,39 @@ export const speakAIResponse = async (
         console.log(`[LowTechVoice] Emotion: ${segment.emotion}`);
         console.log(`[LowTechVoice] Voice Settings:`, EMOTION_PRESETS[segment.emotion]);
         console.log(`[LowTechVoice] ========================================`);
-        
-        await speakWithEmotion(processedText, segment.emotion, language);
-        
+
+        // Create a word boundary callback that maps to original text position
+        const segmentWordCallback: WordBoundaryCallback | undefined = onProgress
+            ? (charIndex: number) => {
+                // Map the transformed text position back to approximate original position
+                // This is an approximation since transformations change text length
+                const ratio = segment.text.length / processedText.length;
+                const approxOriginalPos = Math.min(
+                    segmentStartPos + Math.floor(charIndex * ratio),
+                    segmentStartPos + segment.text.length
+                );
+                onProgress(approxOriginalPos);
+            }
+            : undefined;
+
+        await speakWithEmotion(processedText, segment.emotion, language, segmentWordCallback);
+
+        // Signal end of segment
+        if (onProgress) {
+            onProgress(segmentStartPos + segment.text.length);
+        }
+
         // Longer pause between emotional segments for dramatic effect
         if (i < segments.length - 1) {
             await new Promise(resolve => setTimeout(resolve, 600));
         }
     }
-    
+
+    // Signal completion
+    if (onProgress) {
+        onProgress(cleanText.length);
+    }
+
     console.log('[LowTechVoice] ✅ Finished speaking AI response');
 };
 

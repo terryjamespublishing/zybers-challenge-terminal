@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { QuestChallenge, ChallengeType, AdminScreen } from '../../types';
 import { getChallenges, deleteChallenge } from '../../services/questDataService';
-import { playKeyPressSound, playErrorSound, playSuccessSound } from '../../utils/uiSfx';
 
 interface ChallengeManagerProps {
     onNavigate: (screen: AdminScreen, data?: { challengeId?: number }) => void;
@@ -17,6 +16,7 @@ const ChallengeManager: React.FC<ChallengeManagerProps> = ({ onNavigate, onBack 
     const [selectedCategory, setSelectedCategory] = useState<ChallengeType | 'all'>('all');
     const [selectedDifficulty, setSelectedDifficulty] = useState<1 | 2 | 3 | 'all'>('all');
     const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+    const [expandedId, setExpandedId] = useState<number | null>(null);
 
     useEffect(() => {
         setChallenges(getChallenges());
@@ -24,7 +24,6 @@ const ChallengeManager: React.FC<ChallengeManagerProps> = ({ onNavigate, onBack 
 
     const filteredChallenges = useMemo(() => {
         return challenges.filter(c => {
-            // Search filter
             if (searchQuery) {
                 const query = searchQuery.toLowerCase();
                 const matchesSearch =
@@ -35,12 +34,10 @@ const ChallengeManager: React.FC<ChallengeManagerProps> = ({ onNavigate, onBack 
                 if (!matchesSearch) return false;
             }
 
-            // Category filter
             if (selectedCategory !== 'all' && c.category !== selectedCategory) {
                 return false;
             }
 
-            // Difficulty filter
             if (selectedDifficulty !== 'all' && c.difficulty !== selectedDifficulty) {
                 return false;
             }
@@ -52,192 +49,213 @@ const ChallengeManager: React.FC<ChallengeManagerProps> = ({ onNavigate, onBack 
     const handleDelete = (id: number) => {
         if (deleteConfirm === id) {
             if (deleteChallenge(id)) {
-                playSuccessSound();
                 setChallenges(getChallenges());
-            } else {
-                playErrorSound();
             }
             setDeleteConfirm(null);
         } else {
             setDeleteConfirm(id);
-            playKeyPressSound();
         }
     };
 
     const getDifficultyLabel = (diff: number): string => {
         switch (diff) {
-            case 1: return 'EASY';
-            case 2: return 'MEDIUM';
-            case 3: return 'HARD';
-            default: return 'UNKNOWN';
+            case 1: return 'Easy';
+            case 2: return 'Medium';
+            case 3: return 'Hard';
+            default: return 'Unknown';
         }
     };
 
-    const getDifficultyColor = (diff: number): string => {
+    const getDifficultyBadge = (diff: number): string => {
         switch (diff) {
-            case 1: return 'text-green-400';
-            case 2: return 'text-yellow-400';
-            case 3: return 'text-red-400';
-            default: return 'text-primary';
+            case 1: return 'bg-emerald-100 text-emerald-700';
+            case 2: return 'bg-amber-100 text-amber-700';
+            case 3: return 'bg-red-100 text-red-700';
+            default: return 'bg-slate-100 text-slate-700';
         }
     };
 
     return (
-        <div className="min-h-screen p-4 md:p-8">
+        <div className="min-h-screen">
             {/* Header */}
-            <div className="flex justify-between items-start mb-6">
-                <div>
+            <header className="bg-white border-b border-slate-200 px-6 py-4">
+                <div className="max-w-7xl mx-auto flex justify-between items-center">
+                    <div>
+                        <button
+                            onClick={onBack}
+                            className="text-indigo-600 hover:text-indigo-800 transition-colors text-base font-medium flex items-center gap-1 mb-1"
+                        >
+                            &larr; Back to Dashboard
+                        </button>
+                        <h1 className="text-3xl font-bold text-slate-800">
+                            Challenge Manager
+                        </h1>
+                    </div>
                     <button
-                        onClick={onBack}
-                        className="text-accent hover:text-primary transition-colors mb-2 flex items-center gap-2"
+                        onClick={() => onNavigate(AdminScreen.ChallengeEdit)}
+                        className="px-5 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium text-base"
                     >
-                        ← BACK TO DASHBOARD
+                        + New Challenge
                     </button>
-                    <h1 className="text-3xl md:text-4xl text-primary" style={{ textShadow: '0 0 10px currentColor' }}>
-                        CHALLENGE MANAGER
-                    </h1>
                 </div>
-                <button
-                    onClick={() => onNavigate(AdminScreen.ChallengeEdit)}
-                    className="px-4 py-2 border border-accent text-accent hover:bg-accent/10 transition-all"
-                >
-                    + NEW CHALLENGE
-                </button>
-            </div>
+            </header>
 
-            {/* Filters */}
-            <div className="border border-primary/30 p-4 bg-black/30 mb-6">
-                <div className="grid md:grid-cols-3 gap-4">
-                    {/* Search */}
-                    <div>
-                        <label className="block text-primary/70 text-sm mb-1">SEARCH</label>
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search challenges..."
-                            className="w-full bg-black/50 border border-primary/30 px-3 py-2 text-primary placeholder-primary/30 focus:border-primary outline-none"
-                        />
-                    </div>
-
-                    {/* Category Filter */}
-                    <div>
-                        <label className="block text-primary/70 text-sm mb-1">CATEGORY</label>
-                        <select
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value as ChallengeType | 'all')}
-                            className="w-full bg-black/50 border border-primary/30 px-3 py-2 text-primary focus:border-primary outline-none"
-                        >
-                            <option value="all">All Categories</option>
-                            {CATEGORIES.map(cat => (
-                                <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Difficulty Filter */}
-                    <div>
-                        <label className="block text-primary/70 text-sm mb-1">DIFFICULTY</label>
-                        <select
-                            value={selectedDifficulty}
-                            onChange={(e) => setSelectedDifficulty(e.target.value === 'all' ? 'all' : parseInt(e.target.value) as 1 | 2 | 3)}
-                            className="w-full bg-black/50 border border-primary/30 px-3 py-2 text-primary focus:border-primary outline-none"
-                        >
-                            <option value="all">All Difficulties</option>
-                            {DIFFICULTIES.map(diff => (
-                                <option key={diff} value={diff}>{getDifficultyLabel(diff)}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            {/* Results Count */}
-            <div className="text-primary/70 mb-4">
-                Showing {filteredChallenges.length} of {challenges.length} challenges
-            </div>
-
-            {/* Challenge List */}
-            <div className="space-y-3">
-                {filteredChallenges.map(challenge => (
-                    <div
-                        key={challenge.id}
-                        className="border border-primary/30 bg-black/30 hover:border-primary/50 transition-all"
-                    >
-                        <div className="p-4">
-                            <div className="flex items-start justify-between gap-4">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="text-accent text-sm">#{challenge.id}</span>
-                                        <span className={`text-sm ${getDifficultyColor(challenge.difficulty)}`}>
-                                            [{getDifficultyLabel(challenge.difficulty)}]
-                                        </span>
-                                        <span className="text-primary/50 text-sm">
-                                            {challenge.category}
-                                        </span>
-                                    </div>
-                                    <h3 className="text-xl text-primary mb-2">{challenge.name}</h3>
-                                    <p className="text-primary/60 text-sm line-clamp-2 mb-3">
-                                        {challenge.description}
-                                    </p>
-                                    <div className="flex flex-wrap gap-4 text-sm">
-                                        <span className="text-accent/70">
-                                            ⏱️ {challenge.time_minutes} min
-                                        </span>
-                                        <span className="text-accent/70">
-                                            👥 Ages {challenge.age_range}
-                                        </span>
-                                        <span className="text-accent/70">
-                                            📦 {challenge.materials.length} materials
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <button
-                                        onClick={() => {
-                                            playKeyPressSound();
-                                            onNavigate(AdminScreen.ChallengeEdit, { challengeId: challenge.id });
-                                        }}
-                                        className="px-3 py-1 border border-primary/50 text-primary text-sm hover:bg-primary/10 transition-all"
-                                    >
-                                        EDIT
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(challenge.id)}
-                                        className={`px-3 py-1 border text-sm transition-all ${
-                                            deleteConfirm === challenge.id
-                                                ? 'border-red-500 text-red-500 bg-red-500/10'
-                                                : 'border-red-500/50 text-red-500/70 hover:bg-red-500/10'
-                                        }`}
-                                    >
-                                        {deleteConfirm === challenge.id ? 'CONFIRM?' : 'DELETE'}
-                                    </button>
-                                </div>
-                            </div>
+            <main className="max-w-7xl mx-auto px-6 py-6">
+                {/* Filters */}
+                <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200 mb-6">
+                    <div className="grid md:grid-cols-3 gap-4">
+                        {/* Search */}
+                        <div>
+                            <label className="block text-slate-600 text-base font-medium mb-2">Search</label>
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search challenges..."
+                                className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-base text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors"
+                            />
                         </div>
 
-                        {/* Expandable Details - shown on hover or click */}
-                        <div className="border-t border-primary/20 p-4 bg-black/20 hidden group-hover:block">
-                            <div className="grid md:grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <h4 className="text-primary/70 mb-1">Learning Objectives:</h4>
-                                    <p className="text-primary/50">{challenge.learning_objectives}</p>
-                                </div>
-                                <div>
-                                    <h4 className="text-primary/70 mb-1">Story Ideas:</h4>
-                                    <p className="text-primary/50">{challenge.story_ideas}</p>
-                                </div>
-                            </div>
+                        {/* Category Filter */}
+                        <div>
+                            <label className="block text-slate-600 text-base font-medium mb-2">Category</label>
+                            <select
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value as ChallengeType | 'all')}
+                                className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-base text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors bg-white"
+                            >
+                                <option value="all">All Categories</option>
+                                {CATEGORIES.map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Difficulty Filter */}
+                        <div>
+                            <label className="block text-slate-600 text-base font-medium mb-2">Difficulty</label>
+                            <select
+                                value={selectedDifficulty}
+                                onChange={(e) => setSelectedDifficulty(e.target.value === 'all' ? 'all' : parseInt(e.target.value) as 1 | 2 | 3)}
+                                className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-base text-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors bg-white"
+                            >
+                                <option value="all">All Difficulties</option>
+                                {DIFFICULTIES.map(diff => (
+                                    <option key={diff} value={diff}>{getDifficultyLabel(diff)}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
-                ))}
-            </div>
-
-            {filteredChallenges.length === 0 && (
-                <div className="text-center py-12 text-primary/50">
-                    No challenges match your filters.
                 </div>
-            )}
+
+                {/* Results Count */}
+                <div className="text-slate-500 text-base mb-4">
+                    Showing {filteredChallenges.length} of {challenges.length} challenges
+                </div>
+
+                {/* Challenge List */}
+                <div className="space-y-4">
+                    {filteredChallenges.map(challenge => (
+                        <div
+                            key={challenge.id}
+                            className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow"
+                        >
+                            <div className="p-6">
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-3 flex-wrap">
+                                            <span className="text-slate-400 text-base font-mono">#{challenge.id}</span>
+                                            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getDifficultyBadge(challenge.difficulty)}`}>
+                                                {getDifficultyLabel(challenge.difficulty)}
+                                            </span>
+                                            <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-sm font-medium">
+                                                {challenge.category}
+                                            </span>
+                                        </div>
+                                        <h3 className="text-xl font-semibold text-slate-800 mb-2">{challenge.name}</h3>
+                                        <p className="text-slate-500 text-base line-clamp-2 mb-4">
+                                            {challenge.description}
+                                        </p>
+                                        <div className="flex flex-wrap gap-5 text-base text-slate-500">
+                                            <span className="flex items-center gap-1">
+                                                <span>⏱️</span> {challenge.time_minutes} min
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <span>👥</span> Ages {challenge.age_range}
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <span>📦</span> {challenge.materials.length} materials
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2 flex-shrink-0">
+                                        <button
+                                            onClick={() => onNavigate(AdminScreen.ChallengeEdit, { challengeId: challenge.id })}
+                                            className="px-5 py-2 bg-slate-100 text-slate-700 rounded-lg text-base font-medium hover:bg-slate-200 transition-colors"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => setExpandedId(expandedId === challenge.id ? null : challenge.id)}
+                                            className="px-5 py-2 bg-slate-100 text-slate-700 rounded-lg text-base font-medium hover:bg-slate-200 transition-colors"
+                                        >
+                                            {expandedId === challenge.id ? 'Less' : 'More'}
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(challenge.id)}
+                                            className={`px-5 py-2 rounded-lg text-base font-medium transition-colors ${
+                                                deleteConfirm === challenge.id
+                                                    ? 'bg-red-600 text-white'
+                                                    : 'bg-red-50 text-red-600 hover:bg-red-100'
+                                            }`}
+                                        >
+                                            {deleteConfirm === challenge.id ? 'Confirm?' : 'Delete'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Expanded Details */}
+                            {expandedId === challenge.id && (
+                                <div className="border-t border-slate-100 bg-slate-50 p-6">
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <h4 className="text-base font-semibold text-slate-700 mb-2">Learning Objectives</h4>
+                                            <p className="text-slate-600 text-base">{challenge.learning_objectives}</p>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-base font-semibold text-slate-700 mb-2">Story Ideas</h4>
+                                            <p className="text-slate-600 text-base">{challenge.story_ideas}</p>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-base font-semibold text-slate-700 mb-2">Materials</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {challenge.materials.map((m, i) => (
+                                                    <span key={i} className="bg-white border border-slate-200 px-3 py-1.5 rounded text-sm text-slate-600">
+                                                        {m}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        {challenge.safety_notes && (
+                                            <div>
+                                                <h4 className="text-base font-semibold text-slate-700 mb-2">Safety Notes</h4>
+                                                <p className="text-slate-600 text-base">{challenge.safety_notes}</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                {filteredChallenges.length === 0 && (
+                    <div className="text-center py-12 text-slate-400 text-lg">
+                        No challenges match your filters.
+                    </div>
+                )}
+            </main>
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import { QuestData, QuestChallenge, Story, StoryNode, ChallengeType } from '../types';
+import { QuestData, QuestChallenge, Story, StoryNode, ChallengeType, AdminUser, UserRole, UserStatus } from '../types';
 import defaultQuestData from '../zyber_quest_data.json';
 
 const STORAGE_KEY = 'zyber_quest_data';
@@ -318,10 +318,185 @@ export const getStats = () => {
     return {
         totalChallenges: data.challenges.length,
         totalStories: data.stories.length,
+        totalUsers: getUsers().length,
         categoryCounts: categories,
         difficultyCounts: difficulties,
         avgTimeMinutes: Math.round(
             data.challenges.reduce((sum, c) => sum + c.time_minutes, 0) / data.challenges.length
         )
+    };
+};
+
+// ========== USER MANAGEMENT ==========
+
+const USERS_STORAGE_KEY = 'zyber_users';
+
+// Sample default users for demo purposes
+const defaultUsers: AdminUser[] = [
+    {
+        id: 'user-demo-1',
+        username: 'agent_nova',
+        displayName: 'Nova',
+        role: 'player',
+        status: 'active',
+        level: 5,
+        xp: 2450,
+        dataBits: 180,
+        accessKeys: 3,
+        challengesCompleted: 12,
+        totalPlayTime: 340,
+        lastActive: Date.now() - 3600000, // 1 hour ago
+        createdAt: Date.now() - 86400000 * 7, // 7 days ago
+    },
+    {
+        id: 'user-demo-2',
+        username: 'cyber_fox',
+        displayName: 'Fox',
+        role: 'player',
+        status: 'active',
+        level: 3,
+        xp: 980,
+        dataBits: 75,
+        accessKeys: 1,
+        challengesCompleted: 5,
+        totalPlayTime: 120,
+        lastActive: Date.now() - 7200000, // 2 hours ago
+        createdAt: Date.now() - 86400000 * 3, // 3 days ago
+    },
+];
+
+export const loadUsers = (): AdminUser[] => {
+    try {
+        const stored = localStorage.getItem(USERS_STORAGE_KEY);
+        if (stored) {
+            return JSON.parse(stored) as AdminUser[];
+        }
+    } catch (e) {
+        console.error('[QuestDataService] Failed to load users from localStorage:', e);
+    }
+    return defaultUsers;
+};
+
+export const saveUsers = (users: AdminUser[]): void => {
+    try {
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+        console.log('[QuestDataService] Users saved successfully');
+    } catch (e) {
+        console.error('[QuestDataService] Failed to save users:', e);
+    }
+};
+
+export const getUsers = (): AdminUser[] => {
+    return loadUsers();
+};
+
+export const getUserById = (id: string): AdminUser | undefined => {
+    return loadUsers().find(u => u.id === id);
+};
+
+export const getUserByUsername = (username: string): AdminUser | undefined => {
+    return loadUsers().find(u => u.username.toLowerCase() === username.toLowerCase());
+};
+
+export const getUsersByStatus = (status: UserStatus): AdminUser[] => {
+    return loadUsers().filter(u => u.status === status);
+};
+
+export const getUsersByRole = (role: UserRole): AdminUser[] => {
+    return loadUsers().filter(u => u.role === role);
+};
+
+export const searchUsers = (query: string): AdminUser[] => {
+    const lowerQuery = query.toLowerCase();
+    return loadUsers().filter(u =>
+        u.username.toLowerCase().includes(lowerQuery) ||
+        u.displayName.toLowerCase().includes(lowerQuery) ||
+        (u.email && u.email.toLowerCase().includes(lowerQuery)) ||
+        (u.notes && u.notes.toLowerCase().includes(lowerQuery))
+    );
+};
+
+export const createUser = (user: Omit<AdminUser, 'id' | 'createdAt'>): AdminUser => {
+    const users = loadUsers();
+
+    // Check if username already exists
+    if (users.some(u => u.username.toLowerCase() === user.username.toLowerCase())) {
+        throw new Error('Username already exists');
+    }
+
+    const newUser: AdminUser = {
+        ...user,
+        id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        createdAt: Date.now()
+    };
+
+    users.push(newUser);
+    saveUsers(users);
+    return newUser;
+};
+
+export const updateUser = (id: string, updates: Partial<AdminUser>): AdminUser | null => {
+    const users = loadUsers();
+    const index = users.findIndex(u => u.id === id);
+    if (index === -1) return null;
+
+    // If updating username, check for duplicates
+    if (updates.username) {
+        const duplicate = users.find(u =>
+            u.id !== id &&
+            u.username.toLowerCase() === updates.username!.toLowerCase()
+        );
+        if (duplicate) {
+            throw new Error('Username already exists');
+        }
+    }
+
+    users[index] = { ...users[index], ...updates, id }; // Ensure ID doesn't change
+    saveUsers(users);
+    return users[index];
+};
+
+export const deleteUser = (id: string): boolean => {
+    const users = loadUsers();
+    const index = users.findIndex(u => u.id === id);
+    if (index === -1) return false;
+
+    users.splice(index, 1);
+    saveUsers(users);
+    return true;
+};
+
+export const updateUserStatus = (id: string, status: UserStatus): AdminUser | null => {
+    return updateUser(id, { status });
+};
+
+export const resetUserProgress = (id: string): AdminUser | null => {
+    return updateUser(id, {
+        level: 1,
+        xp: 0,
+        dataBits: 0,
+        accessKeys: 0,
+        challengesCompleted: 0,
+        totalPlayTime: 0
+    });
+};
+
+export const getUserStats = () => {
+    const users = loadUsers();
+    const activeUsers = users.filter(u => u.status === 'active').length;
+    const totalPlayTime = users.reduce((sum, u) => sum + u.totalPlayTime, 0);
+    const totalChallengesCompleted = users.reduce((sum, u) => sum + u.challengesCompleted, 0);
+    const avgLevel = users.length > 0
+        ? Math.round(users.reduce((sum, u) => sum + u.level, 0) / users.length * 10) / 10
+        : 0;
+
+    return {
+        totalUsers: users.length,
+        activeUsers,
+        inactiveUsers: users.filter(u => u.status === 'inactive').length,
+        bannedUsers: users.filter(u => u.status === 'banned').length,
+        totalPlayTime,
+        totalChallengesCompleted,
+        avgLevel
     };
 };

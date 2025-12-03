@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AdminScreen } from '../../types';
 import { isAdminLoggedIn } from '../../services/questDataService';
 import AdminLoginScreen from './AdminLoginScreen';
@@ -6,6 +6,7 @@ import AdminDashboard from './AdminDashboard';
 import ChallengeManager from './ChallengeManager';
 import ChallengeEditor from './ChallengeEditor';
 import StoryPlanner from './StoryPlanner';
+import UserManager from './UserManager';
 
 interface AdminAppProps {
     onExit: () => void;
@@ -34,20 +35,31 @@ const AdminApp: React.FC<AdminAppProps> = ({ onExit }) => {
         setCurrentScreen(AdminScreen.Login);
     };
 
-    const renderScreen = () => {
-        switch (currentScreen) {
-            case AdminScreen.Login:
-                return (
+    // Login screen keeps the hacker aesthetic
+    if (currentScreen === AdminScreen.Login) {
+        return (
+            <div className="crt-screen min-h-screen selection:bg-primary selection:text-bg">
+                <div className="crt-vignette"></div>
+                <div className="crt-scanline-bar"></div>
+                <div className="terminal-text">
                     <AdminLoginScreen
                         onLogin={handleLogin}
                         onBack={onExit}
                     />
-                );
+                </div>
+            </div>
+        );
+    }
+
+    // All other admin screens get a clean, professional interface
+    const renderScreen = () => {
+        switch (currentScreen) {
             case AdminScreen.Dashboard:
                 return (
                     <AdminDashboard
                         onNavigate={handleNavigate}
                         onLogout={handleLogout}
+                        onExit={onExit}
                     />
                 );
             case AdminScreen.Challenges:
@@ -71,23 +83,30 @@ const AdminApp: React.FC<AdminAppProps> = ({ onExit }) => {
                         onBack={() => handleNavigate(AdminScreen.Dashboard)}
                     />
                 );
+            case AdminScreen.Users:
+                return (
+                    <UserManager
+                        onNavigate={handleNavigate}
+                        onBack={() => handleNavigate(AdminScreen.Dashboard)}
+                    />
+                );
             default:
                 return (
                     <AdminDashboard
                         onNavigate={handleNavigate}
                         onLogout={handleLogout}
+                        onExit={onExit}
                     />
                 );
         }
     };
 
     return (
-        <div className="crt-screen min-h-screen selection:bg-primary selection:text-bg">
-            <div className="crt-vignette"></div>
-            <div className="crt-scanline-bar"></div>
-            <div className="terminal-text">
-                {renderScreen()}
-            </div>
+        <div
+            className="admin-panel min-h-screen bg-slate-50 text-slate-800 text-base"
+            style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}
+        >
+            {renderScreen()}
         </div>
     );
 };

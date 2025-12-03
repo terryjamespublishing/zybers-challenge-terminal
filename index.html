@@ -5,55 +5,9 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zyber's Challenge Terminal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        --color-primary: #00FF41;
-        --color-background: #0D0208;
-        --color-accent: #A0FFA0;
-      }
-
-      body {
-        font-family: 'VT323', monospace;
-        background-color: #000;
-        color: var(--color-primary);
-        transition: background-color 0.5s, color 0.5s;
-        letter-spacing: 0.08em;
-        font-size: 26px;
-      }
-
-      .text-primary { color: var(--color-primary); }
-      .bg-primary { background-color: var(--color-primary); }
-      .border-primary { border-color: var(--color-primary); }
-      .shadow-primary { box-shadow: 0 0 15px var(--color-primary); }
-      .hover\:border-primary:hover { border-color: var(--color-primary); }
-      .hover\:bg-primary\/10:hover { background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); }
-      .focus\:border-primary:focus { border-color: var(--color-primary); }
-      .focus\:bg-primary\/10:focus { background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); }
-      .text-bg { color: var(--color-background); }
-      .bg-background { background-color: var(--color-background); }
-      .selection\:bg-primary selection { background-color: var(--color-primary); }
-      .selection\:text-bg selection { color: var(--color-background); }
-      
-      .text-accent { color: var(--color-accent); }
-      .border-accent { border-color: var(--color-accent); }
-      .hover\:border-accent:hover { border-color: var(--color-accent); }
-      .hover\:bg-accent\/10:hover { background-color: color-mix(in srgb, var(--color-accent) 10%, transparent); }
-      .focus\:border-accent:focus { border-color: var(--color-accent); }
-      .focus\:bg-accent\/10:focus { background-color: color-mix(in srgb, var(--color-accent) 10%, transparent); }
-
-      @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0; }
-      }
-      .animate-blink {
-        animation: blink 1s step-end infinite;
-      }
-
-    </style>
   <script type="importmap">
 {
   "imports": {

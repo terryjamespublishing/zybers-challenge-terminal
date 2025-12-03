@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChallengeCategory, Message, VoiceSettings } from '../types';
+import { QuestChallenge, Message, VoiceSettings } from '../types';
 import * as geminiService from '../services/geminiService';
 import TerminalWindow from './TerminalWindow';
 import TypingEffect from './TypingEffect';
+import StreamingTypingEffect from './StreamingTypingEffect';
+import ChallengeTimer from './ChallengeTimer';
 import { playKeyPressSound, playSubmitSound, playSpacebarSound, playEnterSound } from '../utils/uiSfx';
-import { speakAIResponse, stopSpeaking } from '../utils/lowTechVoice';
+import { speakAIResponse, stopSpeaking, SpeechProgressCallback } from '../utils/lowTechVoice';
+import { completeCurrentChallenge } from '../services/progressService';
 
 interface ChallengeScreenProps {
-  challenge: ChallengeCategory;
+  challenge: QuestChallenge;
   onExit: () => void;
   addRewards: (rewards: { xp: number; dataBits: number; accessKeys?: number }) => void;
   voiceSettings: VoiceSettings;
@@ -23,6 +26,27 @@ const SoundIcon: React.FC<{ isPlaying: boolean }> = ({ isPlaying }) => (
     </svg>
 );
 
+// Generate a prompt from QuestChallenge data
+const generateChallengePrompt = (challenge: QuestChallenge): string => {
+  return `You are Zyber, a sarcastic adversarial AI in a retro 80s terminal. Present this challenge to the user:
+
+CHALLENGE: ${challenge.name}
+CATEGORY: ${challenge.category}
+DIFFICULTY: ${challenge.difficulty}/3
+
+DESCRIPTION: ${challenge.description}
+
+MATERIALS NEEDED: ${challenge.materials.join(', ')}
+
+LEARNING OBJECTIVES: ${challenge.learning_objectives}
+
+STORY CONTEXT: ${challenge.story_ideas}
+
+${challenge.safety_notes ? `SAFETY NOTES: ${challenge.safety_notes}` : ''}
+
+Present this challenge in your sarcastic Zyber personality. Guide the user through the challenge, asking them questions and helping them along the way. Be challenging but fair. Use emotion markers like [MOCKING], [CALCULATING], [TRIUMPHANT] in your responses.`;
+};
+
 
 const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, addRewards, voiceSettings }) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -30,32 +54,25 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
   const [isLoading, setIsLoading] = useState(true);
   const [isFirstAttempt, setIsFirstAttempt] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(1800); // 30 minutes in seconds
+  const [speechCharIndex, setSpeechCharIndex] = useState(0);
+  const [challengeComplete, setChallengeComplete] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
-  const isEscapeProtocol = challenge.title === 'Escape Protocol';
+
+  const CHALLENGE_DURATION = 30; // 30 minutes
 
   const focusInput = useCallback(() => {
     inputRef.current?.focus();
   }, []);
 
-  // Countdown timer for Escape Protocol
+  // Track elapsed time
   useEffect(() => {
-    if (!isEscapeProtocol) return;
-    
     const timer = setInterval(() => {
-      setTimeRemaining(prev => {
-        if (prev <= 0) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
+      setElapsedSeconds(prev => prev + 1);
     }, 1000);
-    
     return () => clearInterval(timer);
-  }, [isEscapeProtocol]);
+  }, []);
 
   // Cleanup: Stop speech when component unmounts
   useEffect(() => {
@@ -64,22 +81,41 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
     };
   }, []);
 
+  const handleTimeUp = useCallback(() => {
+    // Time's up! Mark as complete anyway
+    setChallengeComplete(true);
+    completeCurrentChallenge(CHALLENGE_DURATION * 60);
+  }, []);
+
+  const handleChallengeComplete = useCallback(() => {
+    if (!challengeComplete) {
+      setChallengeComplete(true);
+      completeCurrentChallenge(elapsedSeconds);
+    }
+  }, [challengeComplete, elapsedSeconds]);
+
   const addMessage = useCallback(async (sender: 'user' | 'Zyber', text: string, spokenText?: string) => {
     const textToSpeak = spokenText || text;
     const newMessage: Message = { sender, text, spokenText };
-    
+
     setMessages(prev => [...prev, newMessage]);
-    
-    // Speak Zyber's messages using the new low-tech voice with emotions
+
+    // Speak Zyber's messages
     if (sender === 'Zyber') {
         try {
             setIsSpeaking(true);
-            console.log('[ChallengeScreen] 🤖 Speaking with Dalek voice:', textToSpeak);
-            await speakAIResponse(textToSpeak, voiceSettings.language);
+            setSpeechCharIndex(0);
+
+            const onProgress: SpeechProgressCallback = (charIndex) => {
+                setSpeechCharIndex(charIndex);
+            };
+
+            await speakAIResponse(textToSpeak, voiceSettings.language, onProgress);
             setIsSpeaking(false);
         } catch (error) {
             console.error("[ChallengeScreen] TTS Error:", error);
             setIsSpeaking(false);
+            setSpeechCharIndex(Infinity);
         }
     }
   }, [voiceSettings.language]);
@@ -87,7 +123,8 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
   const fetchInitialChallenge = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await geminiService.generateChallenge(challenge.prompt, voiceSettings.language);
+      const prompt = generateChallengePrompt(challenge);
+      const response = await geminiService.generateChallenge(prompt, voiceSettings.language);
       await addMessage('Zyber', response.displayText, response.spokenText);
     } catch (error) {
       console.error(error);
@@ -95,7 +132,7 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
     } finally {
       setIsLoading(false);
     }
-  }, [challenge.prompt, addMessage, voiceSettings.language]);
+  }, [challenge, addMessage, voiceSettings.language]);
 
   useEffect(() => {
     fetchInitialChallenge();
@@ -130,18 +167,21 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
         role: m.sender === 'user' ? 'user' : 'model',
         parts: [{ text: m.text }],
       }));
-      
+
       const response = await geminiService.getChatResponse(history, currentInput, voiceSettings.language);
 
-      // Use structured reward data from AI response
+      // Handle rewards
       if (response.reward.isCorrect && response.reward.xp > 0) {
           const accessKeys = isFirstAttempt ? 1 : 0;
-          addRewards({ 
-            xp: response.reward.xp, 
-            dataBits: response.reward.dataBits, 
-            accessKeys 
+          addRewards({
+            xp: response.reward.xp,
+            dataBits: response.reward.dataBits,
+            accessKeys
           });
           setIsFirstAttempt(false);
+
+          // Mark challenge as complete on correct answer
+          handleChallengeComplete();
       }
 
       await addMessage('Zyber', response.displayText, response.spokenText);
@@ -156,7 +196,6 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!voiceSettings.uiSoundsEnabled) return;
 
-    // Play different sounds for different keys
     if (e.key === ' ') {
       playSpacebarSound();
     } else if (e.key === 'Enter') {
@@ -170,204 +209,128 @@ const ChallengeScreen: React.FC<ChallengeScreenProps> = ({ challenge, onExit, ad
     setUserInput(e.target.value);
   };
 
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const getASCIIDigit = (digit: string): string[] => {
-    const digits: { [key: string]: string[] } = {
-      '0': [
-        '  ██████  ',
-        ' ██    ██ ',
-        '██      ██',
-        '██      ██',
-        '██      ██',
-        ' ██    ██ ',
-        '  ██████  '
-      ],
-      '1': [
-        '    ██    ',
-        '  ████    ',
-        '    ██    ',
-        '    ██    ',
-        '    ██    ',
-        '    ██    ',
-        '  ██████  '
-      ],
-      '2': [
-        '  ██████  ',
-        ' ██    ██ ',
-        '       ██ ',
-        '     ██   ',
-        '   ██     ',
-        ' ██       ',
-        ' █████████'
-      ],
-      '3': [
-        '  ██████  ',
-        ' ██    ██ ',
-        '       ██ ',
-        '   █████  ',
-        '       ██ ',
-        ' ██    ██ ',
-        '  ██████  '
-      ],
-      '4': [
-        '      ██  ',
-        '     ███  ',
-        '    ████  ',
-        '   ██ ██  ',
-        '  ████████',
-        '      ██  ',
-        '      ██  '
-      ],
-      '5': [
-        ' █████████',
-        ' ██       ',
-        ' ██       ',
-        ' ███████  ',
-        '       ██ ',
-        ' ██    ██ ',
-        '  ██████  '
-      ],
-      '6': [
-        '  ██████  ',
-        ' ██    ██ ',
-        '██        ',
-        '███████   ',
-        '██     ██ ',
-        '██     ██ ',
-        ' ███████  '
-      ],
-      '7': [
-        ' █████████',
-        '       ██ ',
-        '      ██  ',
-        '     ██   ',
-        '    ██    ',
-        '   ██     ',
-        '  ██      '
-      ],
-      '8': [
-        '  ██████  ',
-        ' ██    ██ ',
-        ' ██    ██ ',
-        '  ██████  ',
-        ' ██    ██ ',
-        ' ██    ██ ',
-        '  ██████  '
-      ],
-      '9': [
-        '  ██████  ',
-        ' ██    ██ ',
-        ' ██    ██ ',
-        '  ███████ ',
-        '       ██ ',
-        ' ██    ██ ',
-        '  ██████  '
-      ],
-      ':': [
-        '          ',
-        '   ████   ',
-        '   ████   ',
-        '          ',
-        '   ████   ',
-        '   ████   ',
-        '          '
-      ]
-    };
-    return digits[digit] || digits['0'];
-  };
-
-  const renderASCIITime = (timeStr: string): string[] => {
-    const chars = timeStr.split('');
-    const digitArrays = chars.map(c => getASCIIDigit(c));
-    
-    const lines: string[] = [];
-    for (let i = 0; i < 7; i++) {
-      let line = '';
-      for (const digitArray of digitArrays) {
-        line += digitArray[i] + '  ';
-      }
-      lines.push(line);
+  const getDifficultyLabel = (diff: number): string => {
+    switch (diff) {
+      case 1: return 'EASY';
+      case 2: return 'MEDIUM';
+      case 3: return 'HARD';
+      default: return 'UNKNOWN';
     }
-    return lines;
   };
-
-  const timeColor = timeRemaining < 300 ? 'text-red-500' : timeRemaining < 600 ? 'text-yellow-500' : 'text-primary';
 
   return (
-    <TerminalWindow title={`SESSION: ${challenge.title.toUpperCase()}`} onExit={onExit}>
-      {isEscapeProtocol && (
-        <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
-          <div className={`font-mono font-bold text-center ${timeColor} opacity-30 select-none`} 
-               style={{ 
-                 fontSize: 'clamp(8rem, 18vw, 16rem)',
-                 textShadow: `0 0 20px currentColor, 0 0 40px currentColor`,
-                 lineHeight: '1',
-                 letterSpacing: '0.3em',
-                 fontVariantNumeric: 'tabular-nums'
-               }}>
-            [{formatTime(timeRemaining)}]
+    <>
+      {/* Always visible timer */}
+      <ChallengeTimer
+        durationMinutes={CHALLENGE_DURATION}
+        onTimeUp={handleTimeUp}
+        isPaused={challengeComplete}
+      />
+
+      <TerminalWindow title={`MISSION: ${challenge.name.toUpperCase()}`} onExit={onExit}>
+        {/* Challenge header info */}
+        <div className="mb-4 pb-3 border-b border-primary/30">
+          <div className="flex flex-wrap gap-4 text-sm">
+            <div>
+              <span className="text-primary/50">CATEGORY:</span>{' '}
+              <span className="text-primary">{challenge.category}</span>
+            </div>
+            <div>
+              <span className="text-primary/50">DIFFICULTY:</span>{' '}
+              <span className={
+                challenge.difficulty === 1 ? 'text-primary' :
+                challenge.difficulty === 2 ? 'text-accent' :
+                'text-red-400'
+              }>
+                {getDifficultyLabel(challenge.difficulty)}
+              </span>
+            </div>
+            {challenge.materials.length > 0 && (
+              <div className="w-full">
+                <span className="text-primary/50">MATERIALS:</span>{' '}
+                <span className="text-primary/70">{challenge.materials.join(' | ')}</span>
+              </div>
+            )}
           </div>
         </div>
-      )}
-      <div className="flex flex-col text-2xl sm:text-3xl md:text-4xl" style={{ height: 'calc(100vh - 12rem)', minHeight: '400px' }}>
-        <div className="flex-grow overflow-y-auto">
-          {messages.map((msg, index) => (
-            <div key={index} className="mb-3">
-              <div className="flex items-start gap-2">
-                <span className={`${msg.sender === 'user' ? 'text-accent' : 'text-primary'} opacity-70`}>
-                  {msg.sender === 'user' ? '>' : '>>'}
-                </span>
-                <div className="flex-1">
-                  {msg.sender === 'Zyber' && isSpeaking && index === messages.length - 1 && (
-                    <span className="inline-block mr-2 opacity-70">
-                      <SoundIcon isPlaying={true} />
+
+        <div className="flex flex-col text-2xl sm:text-3xl md:text-4xl" style={{ height: 'calc(100vh - 16rem)', minHeight: '400px' }}>
+          <div className="flex-grow overflow-y-auto">
+            {messages.map((msg, index) => {
+              const isLatestZyberMessage = msg.sender === 'Zyber' && index === messages.length - 1;
+              const isCurrentlySpeaking = isLatestZyberMessage && isSpeaking;
+
+              return (
+                <div key={index} className="mb-3">
+                  <div className="flex items-start gap-2">
+                    <span className={`${msg.sender === 'user' ? 'text-accent' : 'text-primary'} opacity-70`}>
+                      {msg.sender === 'user' ? '>' : '>>'}
                     </span>
-                  )}
-                  <span className={`${msg.sender === 'user' ? 'text-accent' : ''} whitespace-pre-wrap leading-relaxed`}>
-                    {msg.sender === 'Zyber' ? <TypingEffect text={msg.text} key={index} instant={index < messages.length - 1} playSound={voiceSettings.uiSoundsEnabled}/> : msg.text}
-                  </span>
+                    <div className="flex-1">
+                      {isCurrentlySpeaking && (
+                        <span className="inline-block mr-2 opacity-70">
+                          <SoundIcon isPlaying={true} />
+                        </span>
+                      )}
+                      <span className={`${msg.sender === 'user' ? 'text-accent' : ''} whitespace-pre-wrap leading-relaxed`}>
+                        {msg.sender === 'Zyber' ? (
+                          isCurrentlySpeaking ? (
+                            <StreamingTypingEffect
+                              text={msg.text}
+                              charIndex={speechCharIndex}
+                              isComplete={false}
+                            />
+                          ) : (
+                            <TypingEffect
+                              text={msg.text}
+                              key={index}
+                              instant={true}
+                              playSound={false}
+                            />
+                          )
+                        ) : (
+                          msg.text
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {isLoading && (
+              <div className="mb-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-primary opacity-70">&gt;&gt;</span>
+                  <TypingEffect text="Processing..." playSound={voiceSettings.uiSoundsEnabled}/>
                 </div>
               </div>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="mb-3">
-              <div className="flex items-start gap-2">
-                <span className="text-primary opacity-70">&gt;&gt;</span>
-                <TypingEffect text="Processing..." playSound={voiceSettings.uiSoundsEnabled}/>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-        <form onSubmit={handleSubmit} className="mt-4 pt-3 border-t border-primary/20 flex-shrink-0">
-          <div className="flex items-center cursor-text text-3xl" onClick={focusInput}>
-            <span className="mr-2 text-primary opacity-70">$</span>
-            <span>{userInput}</span>
-            {!userInput && (
-              <span className="opacity-30 italic">
-                {isLoading ? 'awaiting_response' : 'enter_command'}
-              </span>
             )}
-            {!isLoading && <span className="animate-blink">▋</span>}
-            <input
-              ref={inputRef}
-              type="text"
-              value={userInput}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              className="absolute -left-[9999px] opacity-0"
-              disabled={isLoading}
-            />
+            <div ref={messagesEndRef} />
           </div>
-        </form>
-      </div>
-    </TerminalWindow>
+          <form onSubmit={handleSubmit} className="mt-4 pt-3 border-t border-primary/20 flex-shrink-0">
+            <div className="flex items-center cursor-text text-3xl" onClick={focusInput}>
+              <span className="mr-2 text-primary opacity-70">$</span>
+              <span>{userInput}</span>
+              {!userInput && (
+                <span className="opacity-30 italic">
+                  {isLoading ? 'awaiting_response' : 'enter_command'}
+                </span>
+              )}
+              {!isLoading && <span className="animate-blink">▋</span>}
+              <input
+                ref={inputRef}
+                type="text"
+                value={userInput}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                className="absolute -left-[9999px] opacity-0"
+                disabled={isLoading}
+              />
+            </div>
+          </form>
+        </div>
+      </TerminalWindow>
+    </>
   );
 };
 
